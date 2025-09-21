@@ -12,274 +12,65 @@
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 use crate::{apis::ResponseContent, models};
-use super::{Error, configuration, ContentType};
+use super::{Error, configuration, ContentType, StandardApiError};
 
 
 /// struct for typed errors of method [`artists_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_patch`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdPatchError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdPatchError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_albums_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsAlbumsGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsAlbumsGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_biography_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsBiographyGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsBiographyGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_followers_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsFollowersGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsFollowersGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_following_delete`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsFollowingDeleteError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsFollowingDeleteError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_following_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsFollowingGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsFollowingGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_following_post`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsFollowingPostError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsFollowingPostError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_owners_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsOwnersGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsOwnersGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_profile_art_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsProfileArtGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsProfileArtGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_profile_art_patch`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsProfileArtPatchError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsProfileArtPatchError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_radio_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsRadioGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsRadioGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_roles_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsRolesGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsRolesGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_similar_artists_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsSimilarArtistsGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsSimilarArtistsGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_track_providers_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsTrackProvidersGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsTrackProvidersGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_tracks_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsTracksGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsTracksGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_id_relationships_videos_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsIdRelationshipsVideosGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsIdRelationshipsVideosGetError = StandardApiError;
 
 /// struct for typed errors of method [`artists_post`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistsPostError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistsPostError = StandardApiError;
 
 
 /// Retrieves multiple artists by available filters, or without if applicable.

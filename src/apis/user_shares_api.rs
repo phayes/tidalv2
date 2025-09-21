@@ -12,78 +12,23 @@
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 use crate::{apis::ResponseContent, models};
-use super::{Error, configuration, ContentType};
+use super::{Error, configuration, ContentType, StandardApiError};
 
 
 /// struct for typed errors of method [`user_shares_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum UserSharesGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type UserSharesGetError = StandardApiError;
 
 /// struct for typed errors of method [`user_shares_id_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum UserSharesIdGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type UserSharesIdGetError = StandardApiError;
 
 /// struct for typed errors of method [`user_shares_id_relationships_owners_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum UserSharesIdRelationshipsOwnersGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type UserSharesIdRelationshipsOwnersGetError = StandardApiError;
 
 /// struct for typed errors of method [`user_shares_id_relationships_shared_resources_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum UserSharesIdRelationshipsSharedResourcesGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type UserSharesIdRelationshipsSharedResourcesGetError = StandardApiError;
 
 /// struct for typed errors of method [`user_shares_post`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum UserSharesPostError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type UserSharesPostError = StandardApiError;
 
 
 /// Retrieves multiple userShares by available filters, or without if applicable.

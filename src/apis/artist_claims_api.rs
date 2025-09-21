@@ -12,106 +12,29 @@
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 use crate::{apis::ResponseContent, models};
-use super::{Error, configuration, ContentType};
+use super::{Error, configuration, ContentType, StandardApiError};
 
 
 /// struct for typed errors of method [`artist_claims_id_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistClaimsIdGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistClaimsIdGetError = StandardApiError;
 
 /// struct for typed errors of method [`artist_claims_id_patch`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistClaimsIdPatchError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistClaimsIdPatchError = StandardApiError;
 
 /// struct for typed errors of method [`artist_claims_id_relationships_accepted_artists_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistClaimsIdRelationshipsAcceptedArtistsGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistClaimsIdRelationshipsAcceptedArtistsGetError = StandardApiError;
 
 /// struct for typed errors of method [`artist_claims_id_relationships_accepted_artists_patch`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistClaimsIdRelationshipsAcceptedArtistsPatchError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistClaimsIdRelationshipsAcceptedArtistsPatchError = StandardApiError;
 
 /// struct for typed errors of method [`artist_claims_id_relationships_owners_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistClaimsIdRelationshipsOwnersGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistClaimsIdRelationshipsOwnersGetError = StandardApiError;
 
 /// struct for typed errors of method [`artist_claims_id_relationships_recommended_artists_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistClaimsIdRelationshipsRecommendedArtistsGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistClaimsIdRelationshipsRecommendedArtistsGetError = StandardApiError;
 
 /// struct for typed errors of method [`artist_claims_post`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ArtistClaimsPostError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type ArtistClaimsPostError = StandardApiError;
 
 
 /// Retrieves single artistClaim by id.

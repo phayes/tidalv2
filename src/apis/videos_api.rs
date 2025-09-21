@@ -12,92 +12,26 @@
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 use crate::{apis::ResponseContent, models};
-use super::{Error, configuration, ContentType};
+use super::{Error, configuration, ContentType, StandardApiError};
 
 
 /// struct for typed errors of method [`videos_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum VideosGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type VideosGetError = StandardApiError;
 
 /// struct for typed errors of method [`videos_id_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum VideosIdGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type VideosIdGetError = StandardApiError;
 
 /// struct for typed errors of method [`videos_id_relationships_albums_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum VideosIdRelationshipsAlbumsGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type VideosIdRelationshipsAlbumsGetError = StandardApiError;
 
 /// struct for typed errors of method [`videos_id_relationships_artists_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum VideosIdRelationshipsArtistsGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type VideosIdRelationshipsArtistsGetError = StandardApiError;
 
 /// struct for typed errors of method [`videos_id_relationships_providers_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum VideosIdRelationshipsProvidersGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type VideosIdRelationshipsProvidersGetError = StandardApiError;
 
 /// struct for typed errors of method [`videos_id_relationships_thumbnail_art_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum VideosIdRelationshipsThumbnailArtGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type VideosIdRelationshipsThumbnailArtGetError = StandardApiError;
 
 
 /// Retrieves multiple videos by available filters, or without if applicable.

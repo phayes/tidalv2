@@ -12,36 +12,14 @@
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 use crate::{apis::ResponseContent, models};
-use super::{Error, configuration, ContentType};
+use super::{Error, configuration, ContentType, StandardApiError};
 
 
 /// struct for typed errors of method [`search_suggestions_id_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum SearchSuggestionsIdGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type SearchSuggestionsIdGetError = StandardApiError;
 
 /// struct for typed errors of method [`search_suggestions_id_relationships_direct_hits_get`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum SearchSuggestionsIdRelationshipsDirectHitsGetError {
-    Status400(models::ErrorsDocument),
-    Status404(models::ErrorsDocument),
-    Status405(models::ErrorsDocument),
-    Status406(models::ErrorsDocument),
-    Status415(models::ErrorsDocument),
-    Status429(),
-    Status500(models::ErrorsDocument),
-    UnknownValue(serde_json::Value),
-}
+pub type SearchSuggestionsIdRelationshipsDirectHitsGetError = StandardApiError;
 
 
 /// Retrieves single searchSuggestion by id.

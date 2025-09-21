@@ -13,3 +13,4 @@ serde_json = "^1.0"
 serde_repr = "^0.1"
 url = "^2.5"
 reqwest = { version = "^0.12", default-features = false, features = ["json", "multipart"] }
+tidalrs = { git = "https://github.com/phayes/tidalrs", optional = true }

@@ -57,6 +57,24 @@ impl <T> From<std::io::Error> for Error<T> {
     }
 }
 
+// Common API Error Types - these replace the duplicated error enums across all API files
+use serde::{Deserialize, Serialize};
+use crate::models;
+
+/// Standard API error type used by most endpoints
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum StandardApiError {
+    Status400(models::ErrorsDocument),
+    Status404(models::ErrorsDocument),
+    Status405(models::ErrorsDocument),
+    Status406(models::ErrorsDocument),
+    Status415(models::ErrorsDocument),
+    Status429(),
+    Status500(models::ErrorsDocument),
+    UnknownValue(serde_json::Value),
+}
+
 pub fn urlencode<T: AsRef<str>>(s: T) -> String {
     ::url::form_urlencoded::byte_serialize(s.as_ref().as_bytes()).collect()
 }
