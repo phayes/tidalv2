@@ -21,6 +21,147 @@ Put the package under your project folder in a directory named `tidalv2` and add
 tidalv2 = { path = "./tidalv2" }
 ```
 
+## HTTP Request Logging
+
+This crate includes comprehensive HTTP request and response logging to help with debugging and monitoring API interactions. All HTTP requests made through the TIDAL API client can be logged with detailed information including:
+
+- HTTP method (GET, POST, PATCH, DELETE, etc.)
+- Request URL
+- Request headers
+- Response status code
+- Response headers
+
+### Enabling Logging
+
+The logging functionality uses Rust's standard `log` crate and can be controlled via environment variables.
+
+#### Basic Setup
+
+First, initialize logging in your application:
+
+```rust
+use tidalv2::init_logging;
+
+fn main() {
+    // Initialize logging (call this once at the start of your program)
+    init_logging();
+    
+    // Your API calls will now be logged
+    // ...
+}
+```
+
+#### Environment Variables
+
+Control logging levels using the `RUST_LOG` environment variable:
+
+##### Info Level (Recommended for Production)
+Shows basic request/response information:
+
+```bash
+export RUST_LOG=info
+cargo run --example logging_demo
+```
+
+This will show output like:
+```
+[2024-01-01T12:00:00Z INFO  tidalv2::apis::configuration] HTTP Response - Method: GET, URL: https://openapi.tidal.com/v2/genres, Status: 200 OK
+```
+
+##### Debug Level (Detailed Debugging)
+Shows all request/response details including headers:
+
+```bash
+export RUST_LOG=debug
+cargo run --example logging_demo
+```
+
+This will show detailed output like:
+```
+[2024-01-01T12:00:00Z DEBUG tidalv2::apis::configuration] HTTP Request - Method: GET, URL: https://openapi.tidal.com/v2/genres
+[2024-01-01T12:00:00Z DEBUG tidalv2::apis::configuration] HTTP Request Headers: {"user-agent": "OpenAPI-Generator/0.1.76/rust", "accept": "application/json"}
+[2024-01-01T12:00:00Z INFO  tidalv2::apis::configuration] HTTP Response - Method: GET, URL: https://openapi.tidal.com/v2/genres, Status: 200 OK
+[2024-01-01T12:00:00Z DEBUG tidalv2::apis::configuration] HTTP Response Headers: {"content-type": "application/json", "content-length": "1234"}
+```
+
+##### Trace Level (Maximum Detail)
+Shows the most verbose output including all internal operations:
+
+```bash
+export RUST_LOG=trace
+cargo run --example logging_demo
+```
+
+#### Module-Specific Logging
+
+You can also enable logging for specific modules only:
+
+```bash
+# Only log TIDAL API requests
+export RUST_LOG=tidalv2=debug
+
+# Log TIDAL API at debug level, everything else at info level
+export RUST_LOG=info,tidalv2=debug
+
+# Only log the configuration module (where HTTP requests are handled)
+export RUST_LOG=tidalv2::apis::configuration=debug
+```
+
+#### Runtime Examples
+
+**Example 1: Basic API call with logging**
+```bash
+RUST_LOG=info cargo run --example logging_demo
+```
+
+**Example 2: Debug a specific API call**
+```bash
+RUST_LOG=debug cargo run --example logging_demo
+```
+
+**Example 3: Production logging (errors and basic info only)**
+```bash
+RUST_LOG=warn,tidalv2=info cargo run --example logging_demo
+```
+
+### Custom Logging Setup
+
+If you prefer to use your own logging configuration instead of the provided `init_logging()` function, you can set up any `log`-compatible logger (like `env_logger`, `simple_logger`, `fern`, etc.):
+
+```rust
+use log::LevelFilter;
+use env_logger::Builder;
+
+fn main() {
+    // Custom logging setup
+    Builder::from_default_env()
+        .filter_level(LevelFilter::Info)
+        .filter_module("tidalv2", LevelFilter::Debug)
+        .init();
+    
+    // Your API calls will now be logged with your custom configuration
+}
+```
+
+### Logging in Production
+
+For production environments, we recommend:
+
+1. Use `RUST_LOG=warn,tidalv2=info` to log errors and basic API request information
+2. Consider using structured logging with JSON output for better log parsing
+3. Implement log rotation to manage disk space
+4. Be mindful that debug-level logging may include sensitive header information
+
+### Example Output
+
+When running with `RUST_LOG=info`, you'll see logs like:
+
+```
+[2024-01-01T12:00:00Z INFO  tidalv2::apis::configuration] HTTP Response - Method: GET, URL: https://openapi.tidal.com/v2/genres, Status: 200 OK
+[2024-01-01T12:00:00Z INFO  tidalv2::apis::configuration] HTTP Response - Method: GET, URL: https://openapi.tidal.com/v2/artists/123, Status: 404 Not Found
+[2024-01-01T12:00:00Z INFO  tidalv2::apis::configuration] HTTP Response - Method: POST, URL: https://openapi.tidal.com/v2/playlists, Status: 201 Created
+```
+
 ## Documentation for API Endpoints
 
 All URIs are relative to *https://openapi.tidal.com/v2*

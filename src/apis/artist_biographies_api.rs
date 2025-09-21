@@ -60,8 +60,7 @@ pub async fn artist_biographies_get(configuration: &configuration::Configuration
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -111,8 +110,7 @@ pub async fn artist_biographies_id_get(configuration: &configuration::Configurat
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -153,8 +151,7 @@ pub async fn artist_biographies_id_patch(configuration: &configuration::Configur
     };
     req_builder = req_builder.json(&p_artist_biography_update_body);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -193,8 +190,7 @@ pub async fn artist_biographies_id_relationships_owners_get(configuration: &conf
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp

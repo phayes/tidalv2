@@ -111,8 +111,7 @@ pub async fn tracks_get(configuration: &configuration::Configuration, page_curso
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -151,8 +150,7 @@ pub async fn tracks_id_delete(configuration: &configuration::Configuration, id: 
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -191,8 +189,7 @@ pub async fn tracks_id_get(configuration: &configuration::Configuration, id: &st
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -233,8 +230,7 @@ pub async fn tracks_id_patch(configuration: &configuration::Configuration, id: &
     };
     req_builder = req_builder.json(&p_track_update_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -277,8 +273,7 @@ pub async fn tracks_id_relationships_albums_get(configuration: &configuration::C
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -332,8 +327,7 @@ pub async fn tracks_id_relationships_artists_get(configuration: &configuration::
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -387,8 +381,7 @@ pub async fn tracks_id_relationships_genres_get(configuration: &configuration::C
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -441,8 +434,7 @@ pub async fn tracks_id_relationships_lyrics_get(configuration: &configuration::C
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -492,8 +484,7 @@ pub async fn tracks_id_relationships_owners_get(configuration: &configuration::C
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -547,8 +538,7 @@ pub async fn tracks_id_relationships_providers_get(configuration: &configuration
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -601,8 +591,7 @@ pub async fn tracks_id_relationships_radio_get(configuration: &configuration::Co
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -656,8 +645,7 @@ pub async fn tracks_id_relationships_similar_tracks_get(configuration: &configur
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -706,8 +694,7 @@ pub async fn tracks_id_relationships_source_file_get(configuration: &configurati
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -756,8 +743,7 @@ pub async fn tracks_id_relationships_track_statistics_get(configuration: &config
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -797,8 +783,7 @@ pub async fn tracks_post(configuration: &configuration::Configuration, track_cre
     };
     req_builder = req_builder.json(&p_track_create_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp

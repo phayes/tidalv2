@@ -59,8 +59,7 @@ pub async fn artist_claims_id_get(configuration: &configuration::Configuration, 
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -101,8 +100,7 @@ pub async fn artist_claims_id_patch(configuration: &configuration::Configuration
     };
     req_builder = req_builder.json(&p_artist_claims_update_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -141,8 +139,7 @@ pub async fn artist_claims_id_relationships_accepted_artists_get(configuration: 
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -183,8 +180,7 @@ pub async fn artist_claims_id_relationships_accepted_artists_patch(configuration
     };
     req_builder = req_builder.json(&p_artist_claim_accepted_artists_relationship_update_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -223,8 +219,7 @@ pub async fn artist_claims_id_relationships_owners_get(configuration: &configura
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -274,8 +269,7 @@ pub async fn artist_claims_id_relationships_recommended_artists_get(configuratio
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -316,8 +310,7 @@ pub async fn artist_claims_post(configuration: &configuration::Configuration, ar
     };
     req_builder = req_builder.json(&p_artist_claims_create_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp

@@ -56,8 +56,7 @@ pub async fn track_source_files_get(configuration: &configuration::Configuration
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -103,8 +102,7 @@ pub async fn track_source_files_id_get(configuration: &configuration::Configurat
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -154,8 +152,7 @@ pub async fn track_source_files_id_relationships_owners_get(configuration: &conf
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -195,8 +192,7 @@ pub async fn track_source_files_post(configuration: &configuration::Configuratio
     };
     req_builder = req_builder.json(&p_track_source_file_create_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp

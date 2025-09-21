@@ -102,8 +102,7 @@ pub async fn playlists_get(configuration: &configuration::Configuration, page_cu
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -142,8 +141,7 @@ pub async fn playlists_id_delete(configuration: &configuration::Configuration, i
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -182,8 +180,7 @@ pub async fn playlists_id_get(configuration: &configuration::Configuration, id: 
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -225,8 +222,7 @@ pub async fn playlists_id_patch(configuration: &configuration::Configuration, id
     };
     req_builder = req_builder.json(&p_playlist_update_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -269,8 +265,7 @@ pub async fn playlists_id_relationships_cover_art_get(configuration: &configurat
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -311,8 +306,7 @@ pub async fn playlists_id_relationships_cover_art_patch(configuration: &configur
     };
     req_builder = req_builder.json(&p_playlist_cover_art_relationship_update_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -342,8 +336,7 @@ pub async fn playlists_id_relationships_items_delete(configuration: &configurati
     };
     req_builder = req_builder.json(&p_playlist_items_relationship_remove_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -386,8 +379,7 @@ pub async fn playlists_id_relationships_items_get(configuration: &configuration:
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -428,8 +420,7 @@ pub async fn playlists_id_relationships_items_patch(configuration: &configuratio
     };
     req_builder = req_builder.json(&p_playlist_items_relationship_reorder_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -460,8 +451,7 @@ pub async fn playlists_id_relationships_items_post(configuration: &configuration
     };
     req_builder = req_builder.json(&p_playlist_items_relationship_add_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
 
@@ -501,8 +491,7 @@ pub async fn playlists_id_relationships_owners_get(configuration: &configuration
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
@@ -543,8 +532,7 @@ pub async fn playlists_post(configuration: &configuration::Configuration, playli
     };
     req_builder = req_builder.json(&p_playlist_create_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp

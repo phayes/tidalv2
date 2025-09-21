@@ -35,8 +35,7 @@ pub async fn user_reports_post(configuration: &configuration::Configuration, use
     };
     req_builder = req_builder.json(&p_user_report_create_operation_payload);
 
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.execute_request(req_builder).await?;
 
     let status = resp.status();
     let content_type = resp
