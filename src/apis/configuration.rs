@@ -59,7 +59,14 @@ impl Configuration {
             req_builder = req_builder.basic_auth(&basic_auth.0, basic_auth.1.as_ref());
         }
         
-        // TODO: Apply api-key auth if configured
+        // Apply API key if configured (typically as a header)
+        if let Some(ref api_key) = self.api_key {
+            let header_name = match &api_key.prefix {
+                Some(prefix) => format!("{} {}", prefix, api_key.key),
+                None => api_key.key.clone(),
+            };
+            req_builder = req_builder.header("Authorization", header_name);
+        }
         
         let req = req_builder.build()?;
         
