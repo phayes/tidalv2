@@ -377,15 +377,14 @@ pub async fn artist_claims_id_relationships_recommended_artists_get(configuratio
 }
 
 /// Creates a new artistClaim.
-pub async fn artist_claims_post(configuration: &configuration::Configuration, country_code: &str, artist_claims_create_operation_payload: Option<models::ArtistClaimsCreateOperationPayload>) -> Result<models::ArtistClaimsSingleResourceDataDocument, Error<ArtistClaimsPostError>> {
+pub async fn artist_claims_post(configuration: &configuration::Configuration, artist_claims_create_operation_payload: Option<models::ArtistClaimsCreateOperationPayload>) -> Result<models::ArtistClaimsSingleResourceDataDocument, Error<ArtistClaimsPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
-    let p_country_code = country_code;
     let p_artist_claims_create_operation_payload = artist_claims_create_operation_payload;
 
     let uri_str = format!("{}/artistClaims", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }

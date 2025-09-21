@@ -238,17 +238,16 @@ pub async fn lyrics_id_patch(configuration: &configuration::Configuration, id: &
 }
 
 /// Retrieves owners relationship.
-pub async fn lyrics_id_relationships_owners_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::LyricsMultiRelationshipDataDocument, Error<LyricsIdRelationshipsOwnersGetError>> {
+pub async fn lyrics_id_relationships_owners_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::LyricsMultiRelationshipDataDocument, Error<LyricsIdRelationshipsOwnersGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!("{}/lyrics/{id}/relationships/owners", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -291,16 +290,15 @@ pub async fn lyrics_id_relationships_owners_get(configuration: &configuration::C
 }
 
 /// Retrieves track relationship.
-pub async fn lyrics_id_relationships_track_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>) -> Result<models::LyricsSingleRelationshipDataDocument, Error<LyricsIdRelationshipsTrackGetError>> {
+pub async fn lyrics_id_relationships_track_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>) -> Result<models::LyricsSingleRelationshipDataDocument, Error<LyricsIdRelationshipsTrackGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
 
     let uri_str = format!("{}/lyrics/{id}/relationships/track", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),

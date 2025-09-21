@@ -73,17 +73,16 @@ pub enum UserRecommendationsIdRelationshipsNewArrivalMixesGetError {
 
 
 /// Retrieves single userRecommendation by id.
-pub async fn user_recommendations_id_get(configuration: &configuration::Configuration, id: &str, country_code: &str, locale: &str, include: Option<Vec<String>>) -> Result<models::UserRecommendationsSingleResourceDataDocument, Error<UserRecommendationsIdGetError>> {
+pub async fn user_recommendations_id_get(configuration: &configuration::Configuration, id: &str, locale: &str, include: Option<Vec<String>>) -> Result<models::UserRecommendationsSingleResourceDataDocument, Error<UserRecommendationsIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_locale = locale;
     let p_include = include;
 
     let uri_str = format!("{}/userRecommendations/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
@@ -124,10 +123,9 @@ pub async fn user_recommendations_id_get(configuration: &configuration::Configur
 }
 
 /// Retrieves discoveryMixes relationship.
-pub async fn user_recommendations_id_relationships_discovery_mixes_get(configuration: &configuration::Configuration, id: &str, country_code: &str, locale: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::UserRecommendationsMultiRelationshipDataDocument, Error<UserRecommendationsIdRelationshipsDiscoveryMixesGetError>> {
+pub async fn user_recommendations_id_relationships_discovery_mixes_get(configuration: &configuration::Configuration, id: &str, locale: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::UserRecommendationsMultiRelationshipDataDocument, Error<UserRecommendationsIdRelationshipsDiscoveryMixesGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_locale = locale;
     let p_include = include;
     let p_page_cursor = page_cursor;
@@ -135,7 +133,7 @@ pub async fn user_recommendations_id_relationships_discovery_mixes_get(configura
     let uri_str = format!("{}/userRecommendations/{id}/relationships/discoveryMixes", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
@@ -179,10 +177,9 @@ pub async fn user_recommendations_id_relationships_discovery_mixes_get(configura
 }
 
 /// Retrieves myMixes relationship.
-pub async fn user_recommendations_id_relationships_my_mixes_get(configuration: &configuration::Configuration, id: &str, country_code: &str, locale: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::UserRecommendationsMultiRelationshipDataDocument, Error<UserRecommendationsIdRelationshipsMyMixesGetError>> {
+pub async fn user_recommendations_id_relationships_my_mixes_get(configuration: &configuration::Configuration, id: &str, locale: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::UserRecommendationsMultiRelationshipDataDocument, Error<UserRecommendationsIdRelationshipsMyMixesGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_locale = locale;
     let p_include = include;
     let p_page_cursor = page_cursor;
@@ -190,7 +187,7 @@ pub async fn user_recommendations_id_relationships_my_mixes_get(configuration: &
     let uri_str = format!("{}/userRecommendations/{id}/relationships/myMixes", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
@@ -234,10 +231,9 @@ pub async fn user_recommendations_id_relationships_my_mixes_get(configuration: &
 }
 
 /// Retrieves newArrivalMixes relationship.
-pub async fn user_recommendations_id_relationships_new_arrival_mixes_get(configuration: &configuration::Configuration, id: &str, country_code: &str, locale: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::UserRecommendationsMultiRelationshipDataDocument, Error<UserRecommendationsIdRelationshipsNewArrivalMixesGetError>> {
+pub async fn user_recommendations_id_relationships_new_arrival_mixes_get(configuration: &configuration::Configuration, id: &str, locale: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::UserRecommendationsMultiRelationshipDataDocument, Error<UserRecommendationsIdRelationshipsNewArrivalMixesGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_locale = locale;
     let p_include = include;
     let p_page_cursor = page_cursor;
@@ -245,7 +241,7 @@ pub async fn user_recommendations_id_relationships_new_arrival_mixes_get(configu
     let uri_str = format!("{}/userRecommendations/{id}/relationships/newArrivalMixes", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {

@@ -255,18 +255,17 @@ pub enum UserCollectionsIdRelationshipsVideosPostError {
 
 
 /// Retrieves single userCollection by id.
-pub async fn user_collections_id_get(configuration: &configuration::Configuration, id: &str, locale: &str, country_code: &str, include: Option<Vec<String>>) -> Result<models::UserCollectionsSingleResourceDataDocument, Error<UserCollectionsIdGetError>> {
+pub async fn user_collections_id_get(configuration: &configuration::Configuration, id: &str, locale: &str, include: Option<Vec<String>>) -> Result<models::UserCollectionsSingleResourceDataDocument, Error<UserCollectionsIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
-    let p_country_code = country_code;
     let p_include = include;
 
     let uri_str = format!("{}/userCollections/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -337,10 +336,9 @@ pub async fn user_collections_id_relationships_albums_delete(configuration: &con
 }
 
 /// Retrieves albums relationship.
-pub async fn user_collections_id_relationships_albums_get(configuration: &configuration::Configuration, id: &str, country_code: &str, locale: &str, page_cursor: Option<&str>, sort: Option<Vec<String>>, include: Option<Vec<String>>) -> Result<models::UserCollectionsAlbumsMultiRelationshipDataDocument, Error<UserCollectionsIdRelationshipsAlbumsGetError>> {
+pub async fn user_collections_id_relationships_albums_get(configuration: &configuration::Configuration, id: &str, locale: &str, page_cursor: Option<&str>, sort: Option<Vec<String>>, include: Option<Vec<String>>) -> Result<models::UserCollectionsAlbumsMultiRelationshipDataDocument, Error<UserCollectionsIdRelationshipsAlbumsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_locale = locale;
     let p_page_cursor = page_cursor;
     let p_sort = sort;
@@ -349,7 +347,7 @@ pub async fn user_collections_id_relationships_albums_get(configuration: &config
     let uri_str = format!("{}/userCollections/{id}/relationships/albums", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
@@ -399,16 +397,15 @@ pub async fn user_collections_id_relationships_albums_get(configuration: &config
 }
 
 /// Adds item(s) to albums relationship.
-pub async fn user_collections_id_relationships_albums_post(configuration: &configuration::Configuration, id: &str, country_code: &str, user_collection_albums_relationship_add_operation_payload: Option<models::UserCollectionAlbumsRelationshipAddOperationPayload>) -> Result<(), Error<UserCollectionsIdRelationshipsAlbumsPostError>> {
+pub async fn user_collections_id_relationships_albums_post(configuration: &configuration::Configuration, id: &str, user_collection_albums_relationship_add_operation_payload: Option<models::UserCollectionAlbumsRelationshipAddOperationPayload>) -> Result<(), Error<UserCollectionsIdRelationshipsAlbumsPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_user_collection_albums_relationship_add_operation_payload = user_collection_albums_relationship_add_operation_payload;
 
     let uri_str = format!("{}/userCollections/{id}/relationships/albums", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -463,10 +460,9 @@ pub async fn user_collections_id_relationships_artists_delete(configuration: &co
 }
 
 /// Retrieves artists relationship.
-pub async fn user_collections_id_relationships_artists_get(configuration: &configuration::Configuration, id: &str, country_code: &str, locale: &str, page_cursor: Option<&str>, sort: Option<Vec<String>>, include: Option<Vec<String>>) -> Result<models::UserCollectionsArtistsMultiRelationshipDataDocument, Error<UserCollectionsIdRelationshipsArtistsGetError>> {
+pub async fn user_collections_id_relationships_artists_get(configuration: &configuration::Configuration, id: &str, locale: &str, page_cursor: Option<&str>, sort: Option<Vec<String>>, include: Option<Vec<String>>) -> Result<models::UserCollectionsArtistsMultiRelationshipDataDocument, Error<UserCollectionsIdRelationshipsArtistsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_locale = locale;
     let p_page_cursor = page_cursor;
     let p_sort = sort;
@@ -475,7 +471,7 @@ pub async fn user_collections_id_relationships_artists_get(configuration: &confi
     let uri_str = format!("{}/userCollections/{id}/relationships/artists", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
@@ -525,16 +521,15 @@ pub async fn user_collections_id_relationships_artists_get(configuration: &confi
 }
 
 /// Adds item(s) to artists relationship.
-pub async fn user_collections_id_relationships_artists_post(configuration: &configuration::Configuration, id: &str, country_code: &str, user_collection_artists_relationship_add_operation_payload: Option<models::UserCollectionArtistsRelationshipAddOperationPayload>) -> Result<(), Error<UserCollectionsIdRelationshipsArtistsPostError>> {
+pub async fn user_collections_id_relationships_artists_post(configuration: &configuration::Configuration, id: &str, user_collection_artists_relationship_add_operation_payload: Option<models::UserCollectionArtistsRelationshipAddOperationPayload>) -> Result<(), Error<UserCollectionsIdRelationshipsArtistsPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_user_collection_artists_relationship_add_operation_payload = user_collection_artists_relationship_add_operation_payload;
 
     let uri_str = format!("{}/userCollections/{id}/relationships/artists", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -760,10 +755,9 @@ pub async fn user_collections_id_relationships_tracks_delete(configuration: &con
 }
 
 /// Retrieves tracks relationship.
-pub async fn user_collections_id_relationships_tracks_get(configuration: &configuration::Configuration, id: &str, country_code: &str, locale: &str, page_cursor: Option<&str>, sort: Option<Vec<String>>, include: Option<Vec<String>>) -> Result<models::UserCollectionsTracksMultiRelationshipDataDocument, Error<UserCollectionsIdRelationshipsTracksGetError>> {
+pub async fn user_collections_id_relationships_tracks_get(configuration: &configuration::Configuration, id: &str, locale: &str, page_cursor: Option<&str>, sort: Option<Vec<String>>, include: Option<Vec<String>>) -> Result<models::UserCollectionsTracksMultiRelationshipDataDocument, Error<UserCollectionsIdRelationshipsTracksGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_locale = locale;
     let p_page_cursor = page_cursor;
     let p_sort = sort;
@@ -772,7 +766,7 @@ pub async fn user_collections_id_relationships_tracks_get(configuration: &config
     let uri_str = format!("{}/userCollections/{id}/relationships/tracks", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
@@ -822,16 +816,15 @@ pub async fn user_collections_id_relationships_tracks_get(configuration: &config
 }
 
 /// Adds item(s) to tracks relationship.
-pub async fn user_collections_id_relationships_tracks_post(configuration: &configuration::Configuration, id: &str, country_code: &str, user_collection_tracks_relationship_add_operation_payload: Option<models::UserCollectionTracksRelationshipAddOperationPayload>) -> Result<(), Error<UserCollectionsIdRelationshipsTracksPostError>> {
+pub async fn user_collections_id_relationships_tracks_post(configuration: &configuration::Configuration, id: &str, user_collection_tracks_relationship_add_operation_payload: Option<models::UserCollectionTracksRelationshipAddOperationPayload>) -> Result<(), Error<UserCollectionsIdRelationshipsTracksPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_user_collection_tracks_relationship_add_operation_payload = user_collection_tracks_relationship_add_operation_payload;
 
     let uri_str = format!("{}/userCollections/{id}/relationships/tracks", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -886,10 +879,9 @@ pub async fn user_collections_id_relationships_videos_delete(configuration: &con
 }
 
 /// Retrieves videos relationship.
-pub async fn user_collections_id_relationships_videos_get(configuration: &configuration::Configuration, id: &str, country_code: &str, locale: &str, page_cursor: Option<&str>, sort: Option<Vec<String>>, include: Option<Vec<String>>) -> Result<models::UserCollectionsVideosMultiRelationshipDataDocument, Error<UserCollectionsIdRelationshipsVideosGetError>> {
+pub async fn user_collections_id_relationships_videos_get(configuration: &configuration::Configuration, id: &str, locale: &str, page_cursor: Option<&str>, sort: Option<Vec<String>>, include: Option<Vec<String>>) -> Result<models::UserCollectionsVideosMultiRelationshipDataDocument, Error<UserCollectionsIdRelationshipsVideosGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_locale = locale;
     let p_page_cursor = page_cursor;
     let p_sort = sort;
@@ -898,7 +890,7 @@ pub async fn user_collections_id_relationships_videos_get(configuration: &config
     let uri_str = format!("{}/userCollections/{id}/relationships/videos", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
@@ -948,16 +940,15 @@ pub async fn user_collections_id_relationships_videos_get(configuration: &config
 }
 
 /// Adds item(s) to videos relationship.
-pub async fn user_collections_id_relationships_videos_post(configuration: &configuration::Configuration, id: &str, country_code: &str, user_collection_videos_relationship_add_operation_payload: Option<models::UserCollectionVideosRelationshipAddOperationPayload>) -> Result<(), Error<UserCollectionsIdRelationshipsVideosPostError>> {
+pub async fn user_collections_id_relationships_videos_post(configuration: &configuration::Configuration, id: &str, user_collection_videos_relationship_add_operation_payload: Option<models::UserCollectionVideosRelationshipAddOperationPayload>) -> Result<(), Error<UserCollectionsIdRelationshipsVideosPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_user_collection_videos_relationship_add_operation_payload = user_collection_videos_relationship_add_operation_payload;
 
     let uri_str = format!("{}/userCollections/{id}/relationships/videos", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }

@@ -283,9 +283,8 @@ pub enum ArtistsPostError {
 
 
 /// Retrieves multiple artists by available filters, or without if applicable.
-pub async fn artists_get(configuration: &configuration::Configuration, country_code: &str, include: Option<Vec<String>>, filter_handle: Option<Vec<String>>, filter_id: Option<Vec<String>>) -> Result<models::ArtistsMultiResourceDataDocument, Error<ArtistsGetError>> {
+pub async fn artists_get(configuration: &configuration::Configuration, include: Option<Vec<String>>, filter_handle: Option<Vec<String>>, filter_id: Option<Vec<String>>) -> Result<models::ArtistsMultiResourceDataDocument, Error<ArtistsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
-    let p_country_code = country_code;
     let p_include = include;
     let p_filter_handle = filter_handle;
     let p_filter_id = filter_id;
@@ -293,7 +292,7 @@ pub async fn artists_get(configuration: &configuration::Configuration, country_c
     let uri_str = format!("{}/artists", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -348,16 +347,15 @@ pub async fn artists_get(configuration: &configuration::Configuration, country_c
 }
 
 /// Retrieves single artist by id.
-pub async fn artists_id_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>) -> Result<models::ArtistsSingleResourceDataDocument, Error<ArtistsIdGetError>> {
+pub async fn artists_id_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>) -> Result<models::ArtistsSingleResourceDataDocument, Error<ArtistsIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
 
     let uri_str = format!("{}/artists/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -431,17 +429,16 @@ pub async fn artists_id_patch(configuration: &configuration::Configuration, id: 
 }
 
 /// Retrieves albums relationship.
-pub async fn artists_id_relationships_albums_get(configuration: &configuration::Configuration, id: &str, country_code: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsAlbumsGetError>> {
+pub async fn artists_id_relationships_albums_get(configuration: &configuration::Configuration, id: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsAlbumsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_page_cursor = page_cursor;
     let p_include = include;
 
     let uri_str = format!("{}/artists/{id}/relationships/albums", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -487,16 +484,15 @@ pub async fn artists_id_relationships_albums_get(configuration: &configuration::
 }
 
 /// Retrieves biography relationship.
-pub async fn artists_id_relationships_biography_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>) -> Result<models::ArtistsSingleRelationshipDataDocument, Error<ArtistsIdRelationshipsBiographyGetError>> {
+pub async fn artists_id_relationships_biography_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>) -> Result<models::ArtistsSingleRelationshipDataDocument, Error<ArtistsIdRelationshipsBiographyGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
 
     let uri_str = format!("{}/artists/{id}/relationships/biography", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -680,16 +676,15 @@ pub async fn artists_id_relationships_following_get(configuration: &configuratio
 }
 
 /// Adds item(s) to following relationship.
-pub async fn artists_id_relationships_following_post(configuration: &configuration::Configuration, id: &str, country_code: &str, artist_following_relationship_add_operation_payload: Option<models::ArtistFollowingRelationshipAddOperationPayload>) -> Result<(), Error<ArtistsIdRelationshipsFollowingPostError>> {
+pub async fn artists_id_relationships_following_post(configuration: &configuration::Configuration, id: &str, artist_following_relationship_add_operation_payload: Option<models::ArtistFollowingRelationshipAddOperationPayload>) -> Result<(), Error<ArtistsIdRelationshipsFollowingPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_artist_following_relationship_add_operation_payload = artist_following_relationship_add_operation_payload;
 
     let uri_str = format!("{}/artists/{id}/relationships/following", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -764,17 +759,16 @@ pub async fn artists_id_relationships_owners_get(configuration: &configuration::
 }
 
 /// Retrieves profileArt relationship.
-pub async fn artists_id_relationships_profile_art_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsProfileArtGetError>> {
+pub async fn artists_id_relationships_profile_art_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsProfileArtGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!("{}/artists/{id}/relationships/profileArt", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -851,17 +845,16 @@ pub async fn artists_id_relationships_profile_art_patch(configuration: &configur
 }
 
 /// Retrieves radio relationship.
-pub async fn artists_id_relationships_radio_get(configuration: &configuration::Configuration, id: &str, country_code: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsRadioGetError>> {
+pub async fn artists_id_relationships_radio_get(configuration: &configuration::Configuration, id: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsRadioGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_page_cursor = page_cursor;
     let p_include = include;
 
     let uri_str = format!("{}/artists/{id}/relationships/radio", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -961,17 +954,16 @@ pub async fn artists_id_relationships_roles_get(configuration: &configuration::C
 }
 
 /// Retrieves similarArtists relationship.
-pub async fn artists_id_relationships_similar_artists_get(configuration: &configuration::Configuration, id: &str, country_code: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsSimilarArtistsGetError>> {
+pub async fn artists_id_relationships_similar_artists_get(configuration: &configuration::Configuration, id: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsSimilarArtistsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_page_cursor = page_cursor;
     let p_include = include;
 
     let uri_str = format!("{}/artists/{id}/relationships/similarArtists", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -1071,10 +1063,9 @@ pub async fn artists_id_relationships_track_providers_get(configuration: &config
 }
 
 /// Retrieves tracks relationship.
-pub async fn artists_id_relationships_tracks_get(configuration: &configuration::Configuration, id: &str, country_code: &str, collapse_by: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsTracksGetError>> {
+pub async fn artists_id_relationships_tracks_get(configuration: &configuration::Configuration, id: &str, collapse_by: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsTracksGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_collapse_by = collapse_by;
     let p_page_cursor = page_cursor;
     let p_include = include;
@@ -1082,7 +1073,7 @@ pub async fn artists_id_relationships_tracks_get(configuration: &configuration::
     let uri_str = format!("{}/artists/{id}/relationships/tracks", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("collapseBy", &p_collapse_by.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
@@ -1129,17 +1120,16 @@ pub async fn artists_id_relationships_tracks_get(configuration: &configuration::
 }
 
 /// Retrieves videos relationship.
-pub async fn artists_id_relationships_videos_get(configuration: &configuration::Configuration, id: &str, country_code: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsVideosGetError>> {
+pub async fn artists_id_relationships_videos_get(configuration: &configuration::Configuration, id: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::ArtistsMultiRelationshipDataDocument, Error<ArtistsIdRelationshipsVideosGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_page_cursor = page_cursor;
     let p_include = include;
 
     let uri_str = format!("{}/artists/{id}/relationships/videos", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }

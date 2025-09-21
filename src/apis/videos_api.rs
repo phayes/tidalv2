@@ -101,9 +101,8 @@ pub enum VideosIdRelationshipsThumbnailArtGetError {
 
 
 /// Retrieves multiple videos by available filters, or without if applicable.
-pub async fn videos_get(configuration: &configuration::Configuration, country_code: &str, include: Option<Vec<String>>, filter_isrc: Option<Vec<String>>, filter_id: Option<Vec<String>>) -> Result<models::VideosMultiResourceDataDocument, Error<VideosGetError>> {
+pub async fn videos_get(configuration: &configuration::Configuration, include: Option<Vec<String>>, filter_isrc: Option<Vec<String>>, filter_id: Option<Vec<String>>) -> Result<models::VideosMultiResourceDataDocument, Error<VideosGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
-    let p_country_code = country_code;
     let p_include = include;
     let p_filter_isrc = filter_isrc;
     let p_filter_id = filter_id;
@@ -111,7 +110,7 @@ pub async fn videos_get(configuration: &configuration::Configuration, country_co
     let uri_str = format!("{}/videos", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -166,16 +165,15 @@ pub async fn videos_get(configuration: &configuration::Configuration, country_co
 }
 
 /// Retrieves single video by id.
-pub async fn videos_id_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>) -> Result<models::VideosSingleResourceDataDocument, Error<VideosIdGetError>> {
+pub async fn videos_id_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>) -> Result<models::VideosSingleResourceDataDocument, Error<VideosIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
 
     let uri_str = format!("{}/videos/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -218,17 +216,16 @@ pub async fn videos_id_get(configuration: &configuration::Configuration, id: &st
 }
 
 /// Retrieves albums relationship.
-pub async fn videos_id_relationships_albums_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::VideosMultiRelationshipDataDocument, Error<VideosIdRelationshipsAlbumsGetError>> {
+pub async fn videos_id_relationships_albums_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::VideosMultiRelationshipDataDocument, Error<VideosIdRelationshipsAlbumsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!("{}/videos/{id}/relationships/albums", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -274,17 +271,16 @@ pub async fn videos_id_relationships_albums_get(configuration: &configuration::C
 }
 
 /// Retrieves artists relationship.
-pub async fn videos_id_relationships_artists_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::VideosMultiRelationshipDataDocument, Error<VideosIdRelationshipsArtistsGetError>> {
+pub async fn videos_id_relationships_artists_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::VideosMultiRelationshipDataDocument, Error<VideosIdRelationshipsArtistsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!("{}/videos/{id}/relationships/artists", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -330,17 +326,16 @@ pub async fn videos_id_relationships_artists_get(configuration: &configuration::
 }
 
 /// Retrieves providers relationship.
-pub async fn videos_id_relationships_providers_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::VideosMultiRelationshipDataDocument, Error<VideosIdRelationshipsProvidersGetError>> {
+pub async fn videos_id_relationships_providers_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::VideosMultiRelationshipDataDocument, Error<VideosIdRelationshipsProvidersGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!("{}/videos/{id}/relationships/providers", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -386,17 +381,16 @@ pub async fn videos_id_relationships_providers_get(configuration: &configuration
 }
 
 /// Retrieves thumbnailArt relationship.
-pub async fn videos_id_relationships_thumbnail_art_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::VideosMultiRelationshipDataDocument, Error<VideosIdRelationshipsThumbnailArtGetError>> {
+pub async fn videos_id_relationships_thumbnail_art_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::VideosMultiRelationshipDataDocument, Error<VideosIdRelationshipsThumbnailArtGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!("{}/videos/{id}/relationships/thumbnailArt", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),

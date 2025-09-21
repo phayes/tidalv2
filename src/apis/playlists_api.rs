@@ -185,9 +185,8 @@ pub enum PlaylistsPostError {
 
 
 /// Retrieves multiple playlists by available filters, or without if applicable.
-pub async fn playlists_get(configuration: &configuration::Configuration, country_code: &str, page_cursor: Option<&str>, sort: Option<Vec<String>>, include: Option<Vec<String>>, filter_owners_period_id: Option<Vec<String>>, filter_id: Option<Vec<String>>) -> Result<models::PlaylistsMultiResourceDataDocument, Error<PlaylistsGetError>> {
+pub async fn playlists_get(configuration: &configuration::Configuration, page_cursor: Option<&str>, sort: Option<Vec<String>>, include: Option<Vec<String>>, filter_owners_period_id: Option<Vec<String>>, filter_id: Option<Vec<String>>) -> Result<models::PlaylistsMultiResourceDataDocument, Error<PlaylistsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
-    let p_country_code = country_code;
     let p_page_cursor = page_cursor;
     let p_sort = sort;
     let p_include = include;
@@ -197,7 +196,7 @@ pub async fn playlists_get(configuration: &configuration::Configuration, country
     let uri_str = format!("{}/playlists", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -290,16 +289,15 @@ pub async fn playlists_id_delete(configuration: &configuration::Configuration, i
 }
 
 /// Retrieves single playlist by id.
-pub async fn playlists_id_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>) -> Result<models::PlaylistsSingleResourceDataDocument, Error<PlaylistsIdGetError>> {
+pub async fn playlists_id_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>) -> Result<models::PlaylistsSingleResourceDataDocument, Error<PlaylistsIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
 
     let uri_str = format!("{}/playlists/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -342,16 +340,15 @@ pub async fn playlists_id_get(configuration: &configuration::Configuration, id: 
 }
 
 /// Updates existing playlist.
-pub async fn playlists_id_patch(configuration: &configuration::Configuration, id: &str, country_code: &str, playlist_update_operation_payload: Option<models::PlaylistUpdateOperationPayload>) -> Result<(), Error<PlaylistsIdPatchError>> {
+pub async fn playlists_id_patch(configuration: &configuration::Configuration, id: &str, playlist_update_operation_payload: Option<models::PlaylistUpdateOperationPayload>) -> Result<(), Error<PlaylistsIdPatchError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_playlist_update_operation_payload = playlist_update_operation_payload;
 
     let uri_str = format!("{}/playlists/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::PATCH, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -375,17 +372,16 @@ pub async fn playlists_id_patch(configuration: &configuration::Configuration, id
 }
 
 /// Retrieves coverArt relationship.
-pub async fn playlists_id_relationships_cover_art_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::PlaylistsMultiRelationshipDataDocument, Error<PlaylistsIdRelationshipsCoverArtGetError>> {
+pub async fn playlists_id_relationships_cover_art_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::PlaylistsMultiRelationshipDataDocument, Error<PlaylistsIdRelationshipsCoverArtGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!("{}/playlists/{id}/relationships/coverArt", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -493,17 +489,16 @@ pub async fn playlists_id_relationships_items_delete(configuration: &configurati
 }
 
 /// Retrieves items relationship.
-pub async fn playlists_id_relationships_items_get(configuration: &configuration::Configuration, id: &str, country_code: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::PlaylistsItemsMultiRelationshipDataDocument, Error<PlaylistsIdRelationshipsItemsGetError>> {
+pub async fn playlists_id_relationships_items_get(configuration: &configuration::Configuration, id: &str, page_cursor: Option<&str>, include: Option<Vec<String>>) -> Result<models::PlaylistsItemsMultiRelationshipDataDocument, Error<PlaylistsIdRelationshipsItemsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_page_cursor = page_cursor;
     let p_include = include;
 
     let uri_str = format!("{}/playlists/{id}/relationships/items", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -580,16 +575,15 @@ pub async fn playlists_id_relationships_items_patch(configuration: &configuratio
 }
 
 /// Adds item(s) to items relationship.
-pub async fn playlists_id_relationships_items_post(configuration: &configuration::Configuration, id: &str, country_code: &str, playlist_items_relationship_add_operation_payload: Option<models::PlaylistItemsRelationshipAddOperationPayload>) -> Result<(), Error<PlaylistsIdRelationshipsItemsPostError>> {
+pub async fn playlists_id_relationships_items_post(configuration: &configuration::Configuration, id: &str, playlist_items_relationship_add_operation_payload: Option<models::PlaylistItemsRelationshipAddOperationPayload>) -> Result<(), Error<PlaylistsIdRelationshipsItemsPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_playlist_items_relationship_add_operation_payload = playlist_items_relationship_add_operation_payload;
 
     let uri_str = format!("{}/playlists/{id}/relationships/items", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -613,17 +607,16 @@ pub async fn playlists_id_relationships_items_post(configuration: &configuration
 }
 
 /// Retrieves owners relationship.
-pub async fn playlists_id_relationships_owners_get(configuration: &configuration::Configuration, id: &str, country_code: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::PlaylistsMultiRelationshipDataDocument, Error<PlaylistsIdRelationshipsOwnersGetError>> {
+pub async fn playlists_id_relationships_owners_get(configuration: &configuration::Configuration, id: &str, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::PlaylistsMultiRelationshipDataDocument, Error<PlaylistsIdRelationshipsOwnersGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!("{}/playlists/{id}/relationships/owners", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(&param_value.into_iter().map(|p| ("include".to_owned(), p.to_string())).collect::<Vec<(std::string::String, std::string::String)>>()),
@@ -666,15 +659,14 @@ pub async fn playlists_id_relationships_owners_get(configuration: &configuration
 }
 
 /// Creates a new playlist.
-pub async fn playlists_post(configuration: &configuration::Configuration, country_code: &str, playlist_create_operation_payload: Option<models::PlaylistCreateOperationPayload>) -> Result<models::PlaylistsSingleResourceDataDocument, Error<PlaylistsPostError>> {
+pub async fn playlists_post(configuration: &configuration::Configuration, playlist_create_operation_payload: Option<models::PlaylistCreateOperationPayload>) -> Result<models::PlaylistsSingleResourceDataDocument, Error<PlaylistsPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
-    let p_country_code = country_code;
     let p_playlist_create_operation_payload = playlist_create_operation_payload;
 
     let uri_str = format!("{}/playlists", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }

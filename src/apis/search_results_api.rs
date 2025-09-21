@@ -115,17 +115,16 @@ pub enum SearchResultsIdRelationshipsVideosGetError {
 
 
 /// Retrieves single searchResult by id.
-pub async fn search_results_id_get(configuration: &configuration::Configuration, id: &str, country_code: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>) -> Result<models::SearchResultsSingleResourceDataDocument, Error<SearchResultsIdGetError>> {
+pub async fn search_results_id_get(configuration: &configuration::Configuration, id: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>) -> Result<models::SearchResultsSingleResourceDataDocument, Error<SearchResultsIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_explicit_filter = explicit_filter;
     let p_include = include;
 
     let uri_str = format!("{}/searchResults/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -171,10 +170,9 @@ pub async fn search_results_id_get(configuration: &configuration::Configuration,
 }
 
 /// Retrieves albums relationship.
-pub async fn search_results_id_relationships_albums_get(configuration: &configuration::Configuration, id: &str, country_code: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsAlbumsGetError>> {
+pub async fn search_results_id_relationships_albums_get(configuration: &configuration::Configuration, id: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsAlbumsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_explicit_filter = explicit_filter;
     let p_include = include;
     let p_page_cursor = page_cursor;
@@ -182,7 +180,7 @@ pub async fn search_results_id_relationships_albums_get(configuration: &configur
     let uri_str = format!("{}/searchResults/{id}/relationships/albums", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -231,10 +229,9 @@ pub async fn search_results_id_relationships_albums_get(configuration: &configur
 }
 
 /// Retrieves artists relationship.
-pub async fn search_results_id_relationships_artists_get(configuration: &configuration::Configuration, id: &str, country_code: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsArtistsGetError>> {
+pub async fn search_results_id_relationships_artists_get(configuration: &configuration::Configuration, id: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsArtistsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_explicit_filter = explicit_filter;
     let p_include = include;
     let p_page_cursor = page_cursor;
@@ -242,7 +239,7 @@ pub async fn search_results_id_relationships_artists_get(configuration: &configu
     let uri_str = format!("{}/searchResults/{id}/relationships/artists", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -291,10 +288,9 @@ pub async fn search_results_id_relationships_artists_get(configuration: &configu
 }
 
 /// Retrieves playlists relationship.
-pub async fn search_results_id_relationships_playlists_get(configuration: &configuration::Configuration, id: &str, country_code: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsPlaylistsGetError>> {
+pub async fn search_results_id_relationships_playlists_get(configuration: &configuration::Configuration, id: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsPlaylistsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_explicit_filter = explicit_filter;
     let p_include = include;
     let p_page_cursor = page_cursor;
@@ -302,7 +298,7 @@ pub async fn search_results_id_relationships_playlists_get(configuration: &confi
     let uri_str = format!("{}/searchResults/{id}/relationships/playlists", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -351,10 +347,9 @@ pub async fn search_results_id_relationships_playlists_get(configuration: &confi
 }
 
 /// Retrieves topHits relationship.
-pub async fn search_results_id_relationships_top_hits_get(configuration: &configuration::Configuration, id: &str, country_code: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsTopHitsGetError>> {
+pub async fn search_results_id_relationships_top_hits_get(configuration: &configuration::Configuration, id: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsTopHitsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_explicit_filter = explicit_filter;
     let p_include = include;
     let p_page_cursor = page_cursor;
@@ -362,7 +357,7 @@ pub async fn search_results_id_relationships_top_hits_get(configuration: &config
     let uri_str = format!("{}/searchResults/{id}/relationships/topHits", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -411,10 +406,9 @@ pub async fn search_results_id_relationships_top_hits_get(configuration: &config
 }
 
 /// Retrieves tracks relationship.
-pub async fn search_results_id_relationships_tracks_get(configuration: &configuration::Configuration, id: &str, country_code: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsTracksGetError>> {
+pub async fn search_results_id_relationships_tracks_get(configuration: &configuration::Configuration, id: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsTracksGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_explicit_filter = explicit_filter;
     let p_include = include;
     let p_page_cursor = page_cursor;
@@ -422,7 +416,7 @@ pub async fn search_results_id_relationships_tracks_get(configuration: &configur
     let uri_str = format!("{}/searchResults/{id}/relationships/tracks", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -471,10 +465,9 @@ pub async fn search_results_id_relationships_tracks_get(configuration: &configur
 }
 
 /// Retrieves videos relationship.
-pub async fn search_results_id_relationships_videos_get(configuration: &configuration::Configuration, id: &str, country_code: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsVideosGetError>> {
+pub async fn search_results_id_relationships_videos_get(configuration: &configuration::Configuration, id: &str, explicit_filter: Option<&str>, include: Option<Vec<String>>, page_cursor: Option<&str>) -> Result<models::SearchResultsMultiRelationshipDataDocument, Error<SearchResultsIdRelationshipsVideosGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_country_code = country_code;
     let p_explicit_filter = explicit_filter;
     let p_include = include;
     let p_page_cursor = page_cursor;
@@ -482,7 +475,7 @@ pub async fn search_results_id_relationships_videos_get(configuration: &configur
     let uri_str = format!("{}/searchResults/{id}/relationships/videos", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &p_country_code.to_string())]);
+    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
