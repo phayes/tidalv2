@@ -19,7 +19,7 @@ pub struct ErrorObjectSource {
     /// string indicating which URI query parameter caused the error.
     #[serde(rename = "parameter", skip_serializing_if = "Option::is_none")]
     pub parameter: Option<String>,
-    /// a JSON Pointer [RFC6901] to the value in the request document that caused the error
+    /// a JSON Pointer (RFC6901) to the value in the request document that caused the error
     #[serde(rename = "pointer", skip_serializing_if = "Option::is_none")]
     pub pointer: Option<String>,
 }
