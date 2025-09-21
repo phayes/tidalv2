@@ -123,7 +123,7 @@ pub async fn playlists_id_delete(configuration: &configuration::Configuration, i
     let p_id = id;
 
     let uri_str = format!("{}/playlists/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
-    let mut req_builder = configuration.client.request(reqwest::Method::DELETE, &uri_str);
+    let req_builder = configuration.client.request(reqwest::Method::DELETE, &uri_str);
 
 
     let resp = configuration.execute_request(req_builder).await?;

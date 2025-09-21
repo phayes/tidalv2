@@ -71,7 +71,7 @@ pub async fn genres_id_get(configuration: &configuration::Configuration, id: &st
     let p_id = id;
 
     let uri_str = format!("{}/genres/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+    let req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
 
     let resp = configuration.execute_request(req_builder).await?;

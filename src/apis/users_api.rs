@@ -23,7 +23,7 @@ pub type UsersMeGetError = StandardApiError;
 pub async fn users_me_get(configuration: &configuration::Configuration, ) -> Result<models::UsersSingleResourceDataDocument, Error<UsersMeGetError>> {
 
     let uri_str = format!("{}/users/me", configuration.base_path);
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+    let req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
 
     let resp = configuration.execute_request(req_builder).await?;

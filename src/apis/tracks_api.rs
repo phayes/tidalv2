@@ -132,7 +132,7 @@ pub async fn tracks_id_delete(configuration: &configuration::Configuration, id: 
     let p_id = id;
 
     let uri_str = format!("{}/tracks/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
-    let mut req_builder = configuration.client.request(reqwest::Method::DELETE, &uri_str);
+    let req_builder = configuration.client.request(reqwest::Method::DELETE, &uri_str);
 
 
     let resp = configuration.execute_request(req_builder).await?;
