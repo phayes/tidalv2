@@ -37,15 +37,6 @@ pub async fn track_manifests_id_get(configuration: &configuration::Configuration
     req_builder = req_builder.query(&[("uriScheme", &p_uri_scheme.to_string())]);
     req_builder = req_builder.query(&[("usage", &p_usage.to_string())]);
     req_builder = req_builder.query(&[("adaptive", &p_adaptive.to_string())]);
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 

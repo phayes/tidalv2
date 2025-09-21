@@ -52,12 +52,6 @@ pub async fn artist_claims_id_get(configuration: &configuration::Configuration, 
             _ => req_builder.query(&[("include", &param_value.into_iter().map(|p| p.to_string()).collect::<Vec<String>>().join(",").to_string())]),
         };
     }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 
@@ -92,12 +86,6 @@ pub async fn artist_claims_id_patch(configuration: &configuration::Configuration
     let uri_str = format!("{}/artistClaims/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::PATCH, &uri_str);
 
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
     req_builder = req_builder.json(&p_artist_claims_update_operation_payload);
 
     let resp = configuration.execute_request(req_builder).await?;
@@ -132,12 +120,6 @@ pub async fn artist_claims_id_relationships_accepted_artists_get(configuration: 
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 
@@ -172,12 +154,6 @@ pub async fn artist_claims_id_relationships_accepted_artists_patch(configuration
     let uri_str = format!("{}/artistClaims/{id}/relationships/acceptedArtists", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::PATCH, &uri_str);
 
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
     req_builder = req_builder.json(&p_artist_claim_accepted_artists_relationship_update_operation_payload);
 
     let resp = configuration.execute_request(req_builder).await?;
@@ -212,12 +188,6 @@ pub async fn artist_claims_id_relationships_owners_get(configuration: &configura
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 
@@ -262,12 +232,6 @@ pub async fn artist_claims_id_relationships_recommended_artists_get(configuratio
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 
@@ -302,12 +266,6 @@ pub async fn artist_claims_post(configuration: &configuration::Configuration, ar
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
     req_builder = req_builder.json(&p_artist_claims_create_operation_payload);
 
     let resp = configuration.execute_request(req_builder).await?;

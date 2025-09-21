@@ -92,15 +92,6 @@ pub async fn playlists_get(configuration: &configuration::Configuration, page_cu
             _ => req_builder.query(&[("filter[id]", &param_value.into_iter().map(|p| p.to_string()).collect::<Vec<String>>().join(",").to_string())]),
         };
     }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 
@@ -134,12 +125,6 @@ pub async fn playlists_id_delete(configuration: &configuration::Configuration, i
     let uri_str = format!("{}/playlists/{id}", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::DELETE, &uri_str);
 
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 
@@ -170,15 +155,6 @@ pub async fn playlists_id_get(configuration: &configuration::Configuration, id: 
             _ => req_builder.query(&[("include", &param_value.into_iter().map(|p| p.to_string()).collect::<Vec<String>>().join(",").to_string())]),
         };
     }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 
@@ -214,12 +190,6 @@ pub async fn playlists_id_patch(configuration: &configuration::Configuration, id
     let mut req_builder = configuration.client.request(reqwest::Method::PATCH, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
     req_builder = req_builder.json(&p_playlist_update_operation_payload);
 
     let resp = configuration.execute_request(req_builder).await?;
@@ -255,15 +225,6 @@ pub async fn playlists_id_relationships_cover_art_get(configuration: &configurat
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 
@@ -298,12 +259,6 @@ pub async fn playlists_id_relationships_cover_art_patch(configuration: &configur
     let uri_str = format!("{}/playlists/{id}/relationships/coverArt", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::PATCH, &uri_str);
 
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
     req_builder = req_builder.json(&p_playlist_cover_art_relationship_update_operation_payload);
 
     let resp = configuration.execute_request(req_builder).await?;
@@ -328,12 +283,6 @@ pub async fn playlists_id_relationships_items_delete(configuration: &configurati
     let uri_str = format!("{}/playlists/{id}/relationships/items", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::DELETE, &uri_str);
 
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
     req_builder = req_builder.json(&p_playlist_items_relationship_remove_operation_payload);
 
     let resp = configuration.execute_request(req_builder).await?;
@@ -369,15 +318,6 @@ pub async fn playlists_id_relationships_items_get(configuration: &configuration:
             _ => req_builder.query(&[("include", &param_value.into_iter().map(|p| p.to_string()).collect::<Vec<String>>().join(",").to_string())]),
         };
     }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 
@@ -412,12 +352,6 @@ pub async fn playlists_id_relationships_items_patch(configuration: &configuratio
     let uri_str = format!("{}/playlists/{id}/relationships/items", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::PATCH, &uri_str);
 
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
     req_builder = req_builder.json(&p_playlist_items_relationship_reorder_operation_payload);
 
     let resp = configuration.execute_request(req_builder).await?;
@@ -443,12 +377,6 @@ pub async fn playlists_id_relationships_items_post(configuration: &configuration
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
     req_builder = req_builder.json(&p_playlist_items_relationship_add_operation_payload);
 
     let resp = configuration.execute_request(req_builder).await?;
@@ -484,12 +412,6 @@ pub async fn playlists_id_relationships_owners_get(configuration: &configuration
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
 
     let resp = configuration.execute_request(req_builder).await?;
 
@@ -524,12 +446,6 @@ pub async fn playlists_post(configuration: &configuration::Configuration, playli
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
     req_builder = req_builder.json(&p_playlist_create_operation_payload);
 
     let resp = configuration.execute_request(req_builder).await?;

@@ -21,13 +21,20 @@ Put the package under your project folder in a directory named `tidalv2` and add
 tidalv2 = { path = "./tidalv2" }
 ```
 
-## HTTP Request Logging
+## HTTP Request Logging & Authentication
 
-This crate includes comprehensive HTTP request and response logging to help with debugging and monitoring API interactions. All HTTP requests made through the TIDAL API client can be logged with detailed information including:
+This crate includes comprehensive HTTP request and response logging to help with debugging and monitoring API interactions. All HTTP requests made through the TIDAL API client are automatically handled with:
 
+**Automatic Authentication:**
+- Bearer token authentication (`bearer_access_token` or `oauth_access_token`)
+- Basic authentication support
+- API key authentication
+- User-Agent headers
+
+**Comprehensive Logging:**
 - HTTP method (GET, POST, PATCH, DELETE, etc.)
 - Request URL
-- Request headers
+- Request headers (with sensitive data protected)
 - Response status code
 - Response headers
 
@@ -50,6 +57,34 @@ fn main() {
     // ...
 }
 ```
+
+#### Authentication Configuration
+
+The client automatically handles authentication when you configure tokens:
+
+```rust
+use tidalv2::apis::configuration::Configuration;
+
+let mut config = Configuration::default();
+
+// Option 1: Bearer token (recommended)
+config.bearer_access_token = Some("your-bearer-token".to_string());
+
+// Option 2: OAuth token (fallback)
+config.oauth_access_token = Some("your-oauth-token".to_string());
+
+// Option 3: Basic authentication
+config.basic_auth = Some(("username".to_string(), Some("password".to_string())));
+
+// Use the configured client
+// All requests will automatically include the appropriate authentication headers
+```
+
+**Authentication Priority:**
+1. Bearer token (`bearer_access_token`) - highest priority
+2. OAuth token (`oauth_access_token`) - fallback if no bearer token
+3. Basic auth (`basic_auth`) - used alongside tokens if configured
+4. API key (`api_key`) - for API key based authentication
 
 #### Environment Variables
 
@@ -79,10 +114,12 @@ cargo run --example logging_demo
 This will show detailed output like:
 ```
 [2024-01-01T12:00:00Z DEBUG tidalv2::apis::configuration] HTTP Request - Method: GET, URL: https://openapi.tidal.com/v2/genres
-[2024-01-01T12:00:00Z DEBUG tidalv2::apis::configuration] HTTP Request Headers: {"user-agent": "OpenAPI-Generator/0.1.76/rust", "accept": "application/json"}
+[2024-01-01T12:00:00Z DEBUG tidalv2::apis::configuration] HTTP Request Headers: {"user-agent": "OpenAPI-Generator/0.1.76/rust", "authorization": Sensitive}
 [2024-01-01T12:00:00Z INFO  tidalv2::apis::configuration] HTTP Response - Method: GET, URL: https://openapi.tidal.com/v2/genres, Status: 200 OK
 [2024-01-01T12:00:00Z DEBUG tidalv2::apis::configuration] HTTP Response Headers: {"content-type": "application/json", "content-length": "1234"}
 ```
+
+Note: The `"authorization": Sensitive` indicates that authentication headers are being sent but the actual token values are protected from being logged for security.
 
 ##### Trace Level (Maximum Detail)
 Shows the most verbose output including all internal operations:

@@ -9,11 +9,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("TIDAL API Logging Demo");
     println!("======================");
     println!("Set RUST_LOG=info to see basic request/response logging");
-    println!("Set RUST_LOG=debug to see detailed headers");
+    println!("Set RUST_LOG=debug to see detailed headers including bearer token");
     println!();
     
-    // Create a basic configuration
-    let config = Configuration::default();
+    // Create a configuration with a bearer token for testing
+    let mut config = Configuration::default();
+    config.bearer_access_token = Some("test-bearer-token-12345".to_string());
     
     // Make a simple API call - this will demonstrate the logging
     println!("Making API call to get genres...");
@@ -25,12 +26,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("- Method: GET");
             println!("- URL: https://openapi.tidal.com/v2/genres");
             println!("- Response code should be visible in logs");
-            println!("- Headers should be visible with debug logging");
+            println!("- Bearer token should be visible in Authorization header with debug logging");
         }
         Err(e) => {
             println!("❌ API call failed: {}", e);
             println!("This is expected if you don't have proper authentication,");
             println!("but you should still see the logging output above!");
+            println!();
+            println!("🔍 Look for 'authorization': Sensitive in the debug headers above.");
+            println!("This indicates the bearer token is being sent correctly!");
         }
     }
     

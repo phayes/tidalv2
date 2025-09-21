@@ -27,12 +27,6 @@ pub async fn user_reports_post(configuration: &configuration::Configuration, use
     let uri_str = format!("{}/userReports", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
     req_builder = req_builder.json(&p_user_report_create_operation_payload);
 
     let resp = configuration.execute_request(req_builder).await?;

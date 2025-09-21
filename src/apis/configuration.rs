@@ -38,9 +38,29 @@ impl Configuration {
         Configuration::default()
     }
 
-    /// Execute HTTP request with comprehensive logging
+    /// Execute HTTP request with comprehensive logging and authentication
     /// This centralizes all request execution and adds logging for headers, url, method, and response code
-    pub async fn execute_request(&self, req_builder: reqwest::RequestBuilder) -> Result<reqwest::Response, reqwest::Error> {
+    /// Also applies authentication headers (bearer token, user agent, etc.) automatically
+    pub async fn execute_request(&self, mut req_builder: reqwest::RequestBuilder) -> Result<reqwest::Response, reqwest::Error> {
+        // Apply authentication and headers before building the request
+        if let Some(ref user_agent) = self.user_agent {
+            req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+        }
+        
+        // Apply bearer token authentication (prioritize bearer_access_token over oauth_access_token)
+        if let Some(ref token) = self.bearer_access_token {
+            req_builder = req_builder.bearer_auth(token.to_owned());
+        } else if let Some(ref token) = self.oauth_access_token {
+            req_builder = req_builder.bearer_auth(token.to_owned());
+        }
+        
+        // Apply basic auth if configured
+        if let Some(ref basic_auth) = self.basic_auth {
+            req_builder = req_builder.basic_auth(&basic_auth.0, basic_auth.1.as_ref());
+        }
+        
+        // TODO: Apply api-key auth if configured
+        
         let req = req_builder.build()?;
         
         let method = req.method().clone();
