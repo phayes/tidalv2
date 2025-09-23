@@ -18,11 +18,13 @@ use log::trace;
 ///
 /// # Parameters
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos (e.g. "albums")
+/// * `collapse_by` - Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based entry fingerprints while collapsing by ID always returns all available items. (e.g. "FINGERPRINT")
 /// * `filter_handle` - Artist handle (e.g. "jayz")
 /// * `filter_id` - Artist id (e.g. "1566")
 pub async fn artists_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
+    collapse_by: Option<String>,
     filter_handle: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
 ) -> Result<models::MultiResource<models::Artist>, Error<ApiError>> {
@@ -30,11 +32,15 @@ pub async fn artists_get(
     let p_include = include;
     let p_filter_handle = filter_handle;
     let p_filter_id = filter_id;
+    let p_collapse_by = collapse_by;
 
     let uri_str = format!("{}/artists", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(ref param_value) = p_collapse_by {
+        req_builder = req_builder.query(&[("collapseBy", &param_value.to_string())]);
+    }
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(
@@ -128,14 +134,17 @@ pub async fn artists_get(
 /// # Parameters
 /// * `id` - Artist id (e.g. "1566")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos (e.g. "albums")
+/// * `collapse_by` - Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based entry fingerprints while collapsing by ID always returns all available items. (e.g. "FINGERPRINT")
 pub async fn artists_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
+    collapse_by: Option<String>,
 ) -> Result<models::Resource<models::Artist>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
+    let p_collapse_by = collapse_by;
 
     let uri_str = format!(
         "{}/artists/{id}",
@@ -145,6 +154,9 @@ pub async fn artists_id_get(
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(ref param_value) = p_collapse_by {
+        req_builder = req_builder.query(&[("collapseBy", &param_value.to_string())]);
+    }
     if let Some(ref param_value) = p_include {
         req_builder = match "multi" {
             "multi" => req_builder.query(
