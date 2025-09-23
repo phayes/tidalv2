@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct PlaylistsResourceObject {
+pub struct Playlist {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
     pub attributes: Option<models::PlaylistsAttributes>,
     /// Resource id
@@ -25,9 +25,9 @@ pub struct PlaylistsResourceObject {
     pub r#type: String,
 }
 
-impl PlaylistsResourceObject {
-    pub fn new(id: String, r#type: String) -> PlaylistsResourceObject {
-        PlaylistsResourceObject {
+impl Playlist {
+    pub fn new(id: String, r#type: String) -> Playlist {
+        Playlist {
             attributes: None,
             id,
             relationships: None,

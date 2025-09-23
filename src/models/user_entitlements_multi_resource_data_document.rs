@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserEntitlementsMultiResourceDataDocument {
     #[serde(rename = "data")]
-    pub data: Vec<models::UserEntitlementsResourceObject>,
+    pub data: Vec<models::UserEntitlement>,
     #[serde(rename = "included", skip_serializing_if = "Option::is_none")]
     pub included: Option<Vec<models::IncludedInner>>,
     #[serde(rename = "links")]
@@ -23,7 +23,7 @@ pub struct UserEntitlementsMultiResourceDataDocument {
 
 impl UserEntitlementsMultiResourceDataDocument {
     pub fn new(
-        data: Vec<models::UserEntitlementsResourceObject>,
+        data: Vec<models::UserEntitlement>,
         links: models::Links,
     ) -> UserEntitlementsMultiResourceDataDocument {
         UserEntitlementsMultiResourceDataDocument {

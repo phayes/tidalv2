@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SearchResultsResourceObject {
+pub struct SearchResult {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
     pub attributes: Option<models::SearchResultsAttributes>,
     /// Resource id
@@ -25,9 +25,9 @@ pub struct SearchResultsResourceObject {
     pub r#type: String,
 }
 
-impl SearchResultsResourceObject {
-    pub fn new(id: String, r#type: String) -> SearchResultsResourceObject {
-        SearchResultsResourceObject {
+impl SearchResult {
+    pub fn new(id: String, r#type: String) -> SearchResult {
+        SearchResult {
             attributes: None,
             id,
             relationships: None,

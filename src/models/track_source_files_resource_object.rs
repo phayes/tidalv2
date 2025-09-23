@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct TrackSourceFilesResourceObject {
+pub struct TrackSourceFile {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
     pub attributes: Option<models::TrackSourceFilesAttributes>,
     /// Resource id
@@ -25,9 +25,9 @@ pub struct TrackSourceFilesResourceObject {
     pub r#type: String,
 }
 
-impl TrackSourceFilesResourceObject {
-    pub fn new(id: String, r#type: String) -> TrackSourceFilesResourceObject {
-        TrackSourceFilesResourceObject {
+impl TrackSourceFile {
+    pub fn new(id: String, r#type: String) -> TrackSourceFile {
+        TrackSourceFile {
             attributes: None,
             id,
             relationships: None,

@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlaylistsSingleResourceDataDocument {
     #[serde(rename = "data")]
-    pub data: models::PlaylistsResourceObject,
+    pub data: models::Playlist,
     #[serde(rename = "included", skip_serializing_if = "Option::is_none")]
     pub included: Option<Vec<models::IncludedInner>>,
     #[serde(rename = "links")]
@@ -23,7 +23,7 @@ pub struct PlaylistsSingleResourceDataDocument {
 
 impl PlaylistsSingleResourceDataDocument {
     pub fn new(
-        data: models::PlaylistsResourceObject,
+        data: models::Playlist,
         links: models::Links,
     ) -> PlaylistsSingleResourceDataDocument {
         PlaylistsSingleResourceDataDocument {

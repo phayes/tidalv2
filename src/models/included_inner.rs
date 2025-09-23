@@ -15,55 +15,55 @@ use serde::{Deserialize, Serialize};
 #[serde(tag = "type")]
 pub enum IncludedInner {
     #[serde(rename = "albums")]
-    Albums(models::AlbumsResourceObject),
+    Albums(models::Album),
     #[serde(rename = "appreciations")]
-    Appreciations(models::AppreciationsResourceObject),
+    Appreciations(models::Appreciation),
     #[serde(rename = "artistBiographies")]
-    ArtistBiographies(models::ArtistBiographiesResourceObject),
+    ArtistBiographies(models::ArtistBiography),
     #[serde(rename = "artistClaims")]
-    ArtistClaims(models::ArtistClaimsResourceObject),
+    ArtistClaims(models::ArtistClaim),
     #[serde(rename = "artistRoles")]
-    ArtistRoles(models::ArtistRolesResourceObject),
+    ArtistRoles(models::ArtistRole),
     #[serde(rename = "artists")]
-    Artists(models::ArtistsResourceObject),
+    Artists(models::Artist),
     #[serde(rename = "artworks")]
-    Artworks(models::ArtworksResourceObject),
+    Artworks(models::Artwork),
     #[serde(rename = "genres")]
-    Genres(models::GenresResourceObject),
+    Genres(models::Genre),
     #[serde(rename = "lyrics")]
-    Lyrics(models::LyricsResourceObject),
+    Lyrics(models::Lyric),
     #[serde(rename = "playlists")]
-    Playlists(models::PlaylistsResourceObject),
+    Playlists(models::Playlist),
     #[serde(rename = "providers")]
-    Providers(models::ProvidersResourceObject),
+    Providers(models::Provider),
     #[serde(rename = "searchResults")]
-    SearchResults(models::SearchResultsResourceObject),
+    SearchResults(models::SearchResult),
     #[serde(rename = "searchSuggestions")]
-    SearchSuggestions(models::SearchSuggestionsResourceObject),
+    SearchSuggestions(models::SearchSuggestion),
     #[serde(rename = "trackFiles")]
-    TrackFiles(models::TrackFilesResourceObject),
+    TrackFiles(models::TrackFile),
     #[serde(rename = "trackManifests")]
-    TrackManifests(models::TrackManifestsResourceObject),
+    TrackManifests(models::TrackManifest),
     #[serde(rename = "trackSourceFiles")]
-    TrackSourceFiles(models::TrackSourceFilesResourceObject),
+    TrackSourceFiles(models::TrackSourceFile),
     #[serde(rename = "trackStatistics")]
-    TrackStatistics(models::TrackStatisticsResourceObject),
+    TrackStatistics(models::TrackStatistic),
     #[serde(rename = "tracks")]
-    Tracks(models::TracksResourceObject),
+    Tracks(models::Track),
     #[serde(rename = "userCollections")]
-    UserCollections(models::UserCollectionsResourceObject),
+    UserCollections(models::UserCollection),
     #[serde(rename = "userEntitlements")]
-    UserEntitlements(models::UserEntitlementsResourceObject),
+    UserEntitlements(models::UserEntitlement),
     #[serde(rename = "userRecommendations")]
-    UserRecommendations(models::UserRecommendationsResourceObject),
+    UserRecommendations(models::UserRecommendation),
     #[serde(rename = "userReports")]
-    UserReports(models::UserReportsResourceObject),
+    UserReports(models::UserReport),
     #[serde(rename = "userShares")]
-    UserShares(models::UserSharesResourceObject),
+    UserShares(models::UserShare),
     #[serde(rename = "users")]
-    Users(models::UsersResourceObject),
+    Users(models::User),
     #[serde(rename = "videos")]
-    Videos(models::VideosResourceObject),
+    Videos(models::Video),
 }
 
 impl Default for IncludedInner {
