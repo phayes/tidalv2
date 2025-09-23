@@ -16,7 +16,7 @@ pub struct ArtistsRelationships {
     #[serde(rename = "albums")]
     pub albums: models::MultiRelationshipDataDocument,
     #[serde(rename = "biography")]
-    pub biography: models::SingleRelationshipDataDocument,
+    pub biography: models::Relationship,
     #[serde(rename = "followers")]
     pub followers: models::ArtistsFollowersMultiRelationshipDataDocument,
     #[serde(rename = "following")]
@@ -42,7 +42,7 @@ pub struct ArtistsRelationships {
 impl ArtistsRelationships {
     pub fn new(
         albums: models::MultiRelationshipDataDocument,
-        biography: models::SingleRelationshipDataDocument,
+        biography: models::Relationship,
         followers: models::ArtistsFollowersMultiRelationshipDataDocument,
         following: models::ArtistsFollowingMultiRelationshipDataDocument,
         owners: models::MultiRelationshipDataDocument,

@@ -30,9 +30,9 @@ pub struct TracksRelationships {
     #[serde(rename = "similarTracks")]
     pub similar_tracks: models::MultiRelationshipDataDocument,
     #[serde(rename = "sourceFile")]
-    pub source_file: models::SingleRelationshipDataDocument,
+    pub source_file: models::Relationship,
     #[serde(rename = "trackStatistics")]
-    pub track_statistics: models::SingleRelationshipDataDocument,
+    pub track_statistics: models::Relationship,
 }
 
 impl TracksRelationships {
@@ -45,8 +45,8 @@ impl TracksRelationships {
         providers: models::MultiRelationshipDataDocument,
         radio: models::MultiRelationshipDataDocument,
         similar_tracks: models::MultiRelationshipDataDocument,
-        source_file: models::SingleRelationshipDataDocument,
-        track_statistics: models::SingleRelationshipDataDocument,
+        source_file: models::Relationship,
+        track_statistics: models::Relationship,
     ) -> TracksRelationships {
         TracksRelationships {
             albums,

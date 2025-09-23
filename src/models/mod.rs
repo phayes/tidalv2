@@ -152,8 +152,6 @@ pub mod artists_relationships;
 pub use self::artists_relationships::ArtistsRelationships;
 pub mod artists_resource_object;
 pub use self::artists_resource_object::Artist;
-pub mod artists_single_relationship_data_document;
-pub use self::artists_single_relationship_data_document::ArtistsSingleRelationshipDataDocument;
 pub mod artists_track_providers_multi_relationship_data_document;
 pub use self::artists_track_providers_multi_relationship_data_document::ArtistsTrackProvidersMultiRelationshipDataDocument;
 pub mod artists_track_providers_resource_identifier;
@@ -240,8 +238,6 @@ pub mod lyrics_relationships;
 pub use self::lyrics_relationships::LyricsRelationships;
 pub mod lyrics_resource_object;
 pub use self::lyrics_resource_object::Lyric;
-pub mod lyrics_single_relationship_data_document;
-pub use self::lyrics_single_relationship_data_document::LyricsSingleRelationshipDataDocument;
 pub mod lyrics_update_operation_payload;
 pub use self::lyrics_update_operation_payload::LyricsUpdateOperationPayload;
 pub mod lyrics_update_operation_payload_data;
@@ -330,8 +326,6 @@ pub mod search_suggestions_resource_object;
 pub use self::search_suggestions_resource_object::SearchSuggestion;
 pub mod search_suggestions_suggestions;
 pub use self::search_suggestions_suggestions::SearchSuggestionsSuggestions;
-pub mod single_relationship_data_document;
-pub use self::single_relationship_data_document::SingleRelationshipDataDocument;
 pub mod track_create_operation_payload;
 pub use self::track_create_operation_payload::TrackCreateOperationPayload;
 pub mod track_create_operation_payload_data;
@@ -404,8 +398,6 @@ pub mod tracks_relationships;
 pub use self::tracks_relationships::TracksRelationships;
 pub mod tracks_resource_object;
 pub use self::tracks_resource_object::Track;
-pub mod tracks_single_relationship_data_document;
-pub use self::tracks_single_relationship_data_document::TracksSingleRelationshipDataDocument;
 pub mod user_collection_albums_relationship_add_operation_payload;
 pub use self::user_collection_albums_relationship_add_operation_payload::UserCollectionAlbumsRelationshipAddOperationPayload;
 pub mod user_collection_albums_relationship_add_operation_payload_data;
@@ -573,6 +565,27 @@ impl<T> MultiResource<T> {
     pub fn new(data: Vec<T>, links: Links) -> MultiResource<T> {
         MultiResource {
             data,
+            included: None,
+            links,
+        }
+    }
+}
+
+// Consolidated Relationship struct for all single relationship data documents
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Relationship {
+    #[serde(rename = "data", skip_serializing_if = "Option::is_none")]
+    pub data: Option<ResourceIdentifier>,
+    #[serde(rename = "included", skip_serializing_if = "Option::is_none")]
+    pub included: Option<Vec<IncludedInner>>,
+    #[serde(rename = "links")]
+    pub links: Links,
+}
+
+impl Relationship {
+    pub fn new(links: Links) -> Relationship {
+        Relationship {
+            data: None,
             included: None,
             links,
         }

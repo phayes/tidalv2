@@ -16,13 +16,13 @@ pub struct LyricsRelationships {
     #[serde(rename = "owners")]
     pub owners: models::MultiRelationshipDataDocument,
     #[serde(rename = "track")]
-    pub track: models::SingleRelationshipDataDocument,
+    pub track: models::Relationship,
 }
 
 impl LyricsRelationships {
     pub fn new(
         owners: models::MultiRelationshipDataDocument,
-        track: models::SingleRelationshipDataDocument,
+        track: models::Relationship,
     ) -> LyricsRelationships {
         LyricsRelationships { owners, track }
     }
