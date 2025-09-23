@@ -72,7 +72,6 @@ impl Configuration {
 
         let method = req.method().clone();
         let url = req.url().clone();
-        let headers = req.headers().clone();
 
         debug!("HTTP Request - Method: {}, URL: {}", method, url);
 

@@ -1,0 +1,218 @@
+{
+    "attributes": {
+      "contributionsEnabled": true,
+      "contributionsSalesPitch": "Help me be a full time artist",
+      "externalLinks": [
+        {
+          "href": "string",
+          "meta": {
+            "type": "TIDAL_SHARING"
+          }
+        }
+      ],
+      "handle": "jayz",
+      "name": "JAY Z",
+      "popularity": 0.56,
+      "spotlighted": true
+    },
+    "id": "12345",
+    "relationships": {
+      "albums": {
+        "data": [
+          {
+            "id": "12345",
+            "type": "tracks"
+          }
+        ],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "biography": {
+        "data": {
+          "id": "12345",
+          "type": "tracks"
+        },
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "followers": {
+        "data": [
+          {
+            "id": "12345",
+            "meta": {
+              "viewer": {
+                "followsMyArtist": false,
+                "myArtistFollows": false
+              }
+            },
+            "type": "tracks"
+          }
+        ],
+        "included": [],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "following": {
+        "data": [
+          {
+            "id": "12345",
+            "meta": {
+              "viewer": {
+                "followsMyArtist": false,
+                "myArtistFollows": false
+              }
+            },
+            "type": "tracks"
+          }
+        ],
+        "included": [],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "owners": {
+        "data": [
+          {
+            "id": "12345",
+            "type": "tracks"
+          }
+        ],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "profileArt": {
+        "data": [
+          {
+            "id": "12345",
+            "type": "tracks"
+          }
+        ],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "radio": {
+        "data": [
+          {
+            "id": "12345",
+            "type": "tracks"
+          }
+        ],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "roles": {
+        "data": [
+          {
+            "id": "12345",
+            "type": "tracks"
+          }
+        ],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "similarArtists": {
+        "data": [
+          {
+            "id": "12345",
+            "type": "tracks"
+          }
+        ],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "trackProviders": {
+        "data": [
+          {
+            "id": "12345",
+            "meta": {
+              "numberOfTracks": 14
+            },
+            "type": "tracks"
+          }
+        ],
+        "included": [],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "tracks": {
+        "data": [
+          {
+            "id": "12345",
+            "type": "tracks"
+          }
+        ],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      },
+      "videos": {
+        "data": [
+          {
+            "id": "12345",
+            "type": "tracks"
+          }
+        ],
+        "links": {
+          "meta": {
+            "nextCursor": "zyx"
+          },
+          "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+          "self": "/artists/xyz/relationships/tracks"
+        }
+      }
+    },
+    "type": "artists"
+  }

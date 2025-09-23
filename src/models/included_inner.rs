@@ -9,65 +9,126 @@
  */
 
 use crate::models;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer, Deserializer};
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(tag = "type")]
+#[derive(Clone, Debug, PartialEq)]
 pub enum IncludedInner {
-    #[serde(rename = "albums")]
     Albums(models::Album),
-    #[serde(rename = "appreciations")]
     Appreciations(models::Appreciation),
-    #[serde(rename = "artistBiographies")]
     ArtistBiographies(models::ArtistBiography),
-    #[serde(rename = "artistClaims")]
     ArtistClaims(models::ArtistClaim),
-    #[serde(rename = "artistRoles")]
     ArtistRoles(models::ArtistRole),
-    #[serde(rename = "artists")]
     Artists(models::Artist),
-    #[serde(rename = "artworks")]
     Artworks(models::Artwork),
-    #[serde(rename = "genres")]
     Genres(models::Genre),
-    #[serde(rename = "lyrics")]
     Lyrics(models::Lyrics),
-    #[serde(rename = "playlists")]
     Playlists(models::Playlist),
-    #[serde(rename = "providers")]
     Providers(models::Provider),
-    #[serde(rename = "searchResults")]
     SearchResults(models::SearchResult),
-    #[serde(rename = "searchSuggestions")]
     SearchSuggestions(models::SearchSuggestion),
-    #[serde(rename = "trackFiles")]
     TrackFiles(models::TrackFile),
-    #[serde(rename = "trackManifests")]
     TrackManifests(models::TrackManifest),
-    #[serde(rename = "trackSourceFiles")]
     TrackSourceFiles(models::TrackSourceFile),
-    #[serde(rename = "trackStatistics")]
     TrackStatistics(models::TrackStatistics),
-    #[serde(rename = "tracks")]
     Tracks(models::Track),
-    #[serde(rename = "userCollections")]
     UserCollections(models::UserCollection),
-    #[serde(rename = "userEntitlements")]
     UserEntitlements(models::UserEntitlement),
-    #[serde(rename = "userRecommendations")]
     UserRecommendations(models::UserRecommendation),
-    #[serde(rename = "userReports")]
     UserReports(models::UserReport),
-    #[serde(rename = "userShares")]
     UserShares(models::UserShare),
-    #[serde(rename = "users")]
     Users(models::User),
-    #[serde(rename = "videos")]
     Videos(models::Video),
 }
 
 impl Default for IncludedInner {
     fn default() -> Self {
         Self::Albums(Default::default())
+    }
+}
+
+impl<'de> Deserialize<'de> for IncludedInner {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        // First grab the whole object as a serde_json::Value
+        let v = serde_json::Value::deserialize(deserializer)?;
+
+        // We expect an object with a "type" field alongside other fields (id, attributes, etc.)
+        let type_str = v
+            .get("type")
+            .and_then(|t| t.as_str())
+            .ok_or_else(|| serde::de::Error::custom("missing or non-string `type` field"))?;
+
+        // Helper to map the value into the typed inner struct
+        fn from_value<T: for<'a> Deserialize<'a>, E: serde::de::Error>(v: serde_json::Value) -> Result<T, E> {
+            serde_json::from_value(v).map_err(E::custom)
+        }
+
+        match type_str {
+            "albums" => Ok(IncludedInner::Albums(from_value(v)?)),
+            "appreciations" => Ok(IncludedInner::Appreciations(from_value(v)?)),
+            "artistBiographies" => Ok(IncludedInner::ArtistBiographies(from_value(v)?)),
+            "artistClaims" => Ok(IncludedInner::ArtistClaims(from_value(v)?)),
+            "artistRoles" => Ok(IncludedInner::ArtistRoles(from_value(v)?)),
+            "artists" => Ok(IncludedInner::Artists(from_value(v)?)),
+            "artworks" => Ok(IncludedInner::Artworks(from_value(v)?)),
+            "genres" => Ok(IncludedInner::Genres(from_value(v)?)),
+            "lyrics" => Ok(IncludedInner::Lyrics(from_value(v)?)),
+            "playlists" => Ok(IncludedInner::Playlists(from_value(v)?)),
+            "providers" => Ok(IncludedInner::Providers(from_value(v)?)),
+            "searchResults" => Ok(IncludedInner::SearchResults(from_value(v)?)),
+            "searchSuggestions" => Ok(IncludedInner::SearchSuggestions(from_value(v)?)),
+            "trackFiles" => Ok(IncludedInner::TrackFiles(from_value(v)?)),
+            "trackManifests" => Ok(IncludedInner::TrackManifests(from_value(v)?)),
+            "trackSourceFiles" => Ok(IncludedInner::TrackSourceFiles(from_value(v)?)),
+            "trackStatistics" => Ok(IncludedInner::TrackStatistics(from_value(v)?)),
+            "tracks" => Ok(IncludedInner::Tracks(from_value(v)?)),
+            "userCollections" => Ok(IncludedInner::UserCollections(from_value(v)?)),
+            "userEntitlements" => Ok(IncludedInner::UserEntitlements(from_value(v)?)),
+            "userRecommendations" => Ok(IncludedInner::UserRecommendations(from_value(v)?)),
+            "userReports" => Ok(IncludedInner::UserReports(from_value(v)?)),
+            "userShares" => Ok(IncludedInner::UserShares(from_value(v)?)),
+            "users" => Ok(IncludedInner::Users(from_value(v)?)),
+            "videos" => Ok(IncludedInner::Videos(from_value(v)?)),
+            other => Err(serde::de::Error::custom(format!(
+                "unknown `type` discriminator: {other}"
+            ))),
+        }
+    }
+}
+
+impl Serialize for IncludedInner {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match self {
+            IncludedInner::Albums(v) => v.serialize(serializer),
+            IncludedInner::Appreciations(v) => v.serialize(serializer),
+            IncludedInner::ArtistBiographies(v) => v.serialize(serializer),
+            IncludedInner::ArtistClaims(v) => v.serialize(serializer),
+            IncludedInner::ArtistRoles(v) => v.serialize(serializer),
+            IncludedInner::Artists(v) => v.serialize(serializer),
+            IncludedInner::Artworks(v) => v.serialize(serializer),
+            IncludedInner::Genres(v) => v.serialize(serializer),
+            IncludedInner::Lyrics(v) => v.serialize(serializer),
+            IncludedInner::Playlists(v) => v.serialize(serializer),
+            IncludedInner::Providers(v) => v.serialize(serializer),
+            IncludedInner::SearchResults(v) => v.serialize(serializer),
+            IncludedInner::SearchSuggestions(v) => v.serialize(serializer),
+            IncludedInner::TrackFiles(v) => v.serialize(serializer),
+            IncludedInner::TrackManifests(v) => v.serialize(serializer),
+            IncludedInner::TrackSourceFiles(v) => v.serialize(serializer),
+            IncludedInner::TrackStatistics(v) => v.serialize(serializer),
+            IncludedInner::Tracks(v) => v.serialize(serializer),
+            IncludedInner::UserCollections(v) => v.serialize(serializer),
+            IncludedInner::UserEntitlements(v) => v.serialize(serializer),
+            IncludedInner::UserRecommendations(v) => v.serialize(serializer),
+            IncludedInner::UserReports(v) => v.serialize(serializer),
+            IncludedInner::UserShares(v) => v.serialize(serializer),
+            IncludedInner::Users(v) => v.serialize(serializer),
+            IncludedInner::Videos(v) => v.serialize(serializer),
+        }
     }
 }

@@ -1,0 +1,145 @@
+{
+    "attributes": {
+        "availability": [
+            "STREAM"
+        ],
+        "barcodeId": "00854242007552",
+        "copyright": {
+            "text": "string"
+        },
+        "duration": "PT46M17S",
+        "explicit": true,
+        "externalLinks": [
+            {
+                "href": "string",
+                "meta": {
+                    "type": "TIDAL_SHARING"
+                }
+            }
+        ],
+        "mediaTags": [
+            "HIRES_LOSSLESS, LOSSLESS"
+        ],
+        "numberOfItems": 13,
+        "numberOfVolumes": 1,
+        "popularity": 0.56,
+        "releaseDate": "2017-06-30",
+        "title": "4:44",
+        "type": "ALBUM",
+        "version": "remix"
+    },
+    "id": "12345",
+    "relationships": {
+        "artists": {
+            "data": [
+                {
+                    "id": "12345",
+                    "type": "tracks"
+                }
+            ],
+            "links": {
+                "meta": {
+                    "nextCursor": "zyx"
+                },
+                "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+                "self": "/artists/xyz/relationships/tracks"
+            }
+        },
+        "coverArt": {
+            "data": [
+                {
+                    "id": "12345",
+                    "type": "tracks"
+                }
+            ],
+            "links": {
+                "meta": {
+                    "nextCursor": "zyx"
+                },
+                "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+                "self": "/artists/xyz/relationships/tracks"
+            }
+        },
+        "genres": {
+            "data": [
+                {
+                    "id": "12345",
+                    "type": "tracks"
+                }
+            ],
+            "links": {
+                "meta": {
+                    "nextCursor": "zyx"
+                },
+                "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+                "self": "/artists/xyz/relationships/tracks"
+            }
+        },
+        "items": {
+            "data": [
+                {
+                    "id": "12345",
+                    "meta": {
+                        "trackNumber": 4,
+                        "volumeNumber": 1
+                    },
+                    "type": "tracks"
+                }
+            ],
+            "included": [],
+            "links": {
+                "meta": {
+                    "nextCursor": "zyx"
+                },
+                "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+                "self": "/artists/xyz/relationships/tracks"
+            }
+        },
+        "owners": {
+            "data": [
+                {
+                    "id": "12345",
+                    "type": "tracks"
+                }
+            ],
+            "links": {
+                "meta": {
+                    "nextCursor": "zyx"
+                },
+                "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+                "self": "/artists/xyz/relationships/tracks"
+            }
+        },
+        "providers": {
+            "data": [
+                {
+                    "id": "12345",
+                    "type": "tracks"
+                }
+            ],
+            "links": {
+                "meta": {
+                    "nextCursor": "zyx"
+                },
+                "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+                "self": "/artists/xyz/relationships/tracks"
+            }
+        },
+        "similarAlbums": {
+            "data": [
+                {
+                    "id": "12345",
+                    "type": "tracks"
+                }
+            ],
+            "links": {
+                "meta": {
+                    "nextCursor": "zyx"
+                },
+                "next": "/artists/xyz/relationships/tracks?page[cursor]=zyx",
+                "self": "/artists/xyz/relationships/tracks"
+            }
+        }
+    },
+    "type": "albums"
+}
