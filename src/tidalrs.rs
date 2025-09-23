@@ -1,9 +1,8 @@
-use tidalrs::TidalClient;
 use crate::apis::configuration::Configuration;
+use tidalrs::TidalClient;
 
 const TIDALV2_BASE_URL: &str = "https://openapi.tidal.com/v2";
 const USER_AGENT: &str = "Mozilla/5.0 (Linux; Android 12; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.114 Safari/537.36";
-
 
 pub trait Configurator {
     fn tidalv2_config(&self) -> Configuration;

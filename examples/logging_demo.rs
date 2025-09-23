@@ -1,24 +1,24 @@
-use tidalv2::{init_logging, apis::configuration::Configuration, apis::genres_api};
+use tidalv2::{apis::configuration::Configuration, apis::genres_api, init_logging};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize logging - set RUST_LOG=debug to see detailed headers
     // or RUST_LOG=info to see basic request/response info
     init_logging();
-    
+
     println!("TIDAL API Logging Demo");
     println!("======================");
     println!("Set RUST_LOG=info to see basic request/response logging");
     println!("Set RUST_LOG=debug to see detailed headers including bearer token");
     println!();
-    
+
     // Create a configuration with a bearer token for testing
     let mut config = Configuration::default();
     config.bearer_access_token = Some("test-bearer-token-12345".to_string());
-    
+
     // Make a simple API call - this will demonstrate the logging
     println!("Making API call to get genres...");
-    
+
     match genres_api::genres_get(&config, None, None).await {
         Ok(_response) => {
             println!("✅ API call successful!");
@@ -37,6 +37,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("This indicates the bearer token is being sent correctly!");
         }
     }
-    
+
     Ok(())
 }
