@@ -13,16 +13,13 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`track_files_id_get`]
-pub type TrackFilesIdGetError = ApiError;
-
 /// Retrieves single trackFile by id.
 pub async fn track_files_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     formats: &str,
     usage: &str,
-) -> Result<models::Resource<models::TrackFile>, Error<TrackFilesIdGetError>> {
+) -> Result<models::Resource<models::TrackFile>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_formats = formats;
@@ -57,7 +54,7 @@ pub async fn track_files_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<TrackFilesIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

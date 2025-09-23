@@ -13,14 +13,11 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`user_entitlements_id_get`]
-pub type UserEntitlementsIdGetError = ApiError;
-
 /// Retrieves single userEntitlement by id.
 pub async fn user_entitlements_id_get(
     configuration: &configuration::Configuration,
     id: &str,
-) -> Result<models::Resource<models::UserEntitlement>, Error<UserEntitlementsIdGetError>> {
+) -> Result<models::Resource<models::UserEntitlement>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 
@@ -50,7 +47,7 @@ pub async fn user_entitlements_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserEntitlementsIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

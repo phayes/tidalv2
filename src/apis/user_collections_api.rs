@@ -13,64 +13,13 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`user_collections_id_get`]
-pub type UserCollectionsIdGetError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_albums_delete`]
-pub type UserCollectionsIdRelationshipsAlbumsDeleteError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_albums_get`]
-pub type UserCollectionsIdRelationshipsAlbumsGetError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_albums_post`]
-pub type UserCollectionsIdRelationshipsAlbumsPostError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_artists_delete`]
-pub type UserCollectionsIdRelationshipsArtistsDeleteError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_artists_get`]
-pub type UserCollectionsIdRelationshipsArtistsGetError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_artists_post`]
-pub type UserCollectionsIdRelationshipsArtistsPostError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_owners_get`]
-pub type UserCollectionsIdRelationshipsOwnersGetError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_playlists_delete`]
-pub type UserCollectionsIdRelationshipsPlaylistsDeleteError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_playlists_get`]
-pub type UserCollectionsIdRelationshipsPlaylistsGetError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_playlists_post`]
-pub type UserCollectionsIdRelationshipsPlaylistsPostError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_tracks_delete`]
-pub type UserCollectionsIdRelationshipsTracksDeleteError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_tracks_get`]
-pub type UserCollectionsIdRelationshipsTracksGetError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_tracks_post`]
-pub type UserCollectionsIdRelationshipsTracksPostError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_videos_delete`]
-pub type UserCollectionsIdRelationshipsVideosDeleteError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_videos_get`]
-pub type UserCollectionsIdRelationshipsVideosGetError = ApiError;
-
-/// struct for typed errors of method [`user_collections_id_relationships_videos_post`]
-pub type UserCollectionsIdRelationshipsVideosPostError = ApiError;
-
 /// Retrieves single userCollection by id.
 pub async fn user_collections_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::UserCollection>, Error<UserCollectionsIdGetError>> {
+) -> Result<models::Resource<models::UserCollection>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
@@ -124,7 +73,7 @@ pub async fn user_collections_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -140,7 +89,7 @@ pub async fn user_collections_id_relationships_albums_delete(
     user_collection_albums_relationship_remove_operation_payload: Option<
         models::UserCollectionAlbumsRelationshipRemoveOperationPayload,
     >,
-) -> Result<(), Error<UserCollectionsIdRelationshipsAlbumsDeleteError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_user_collection_albums_relationship_remove_operation_payload =
@@ -165,7 +114,7 @@ pub async fn user_collections_id_relationships_albums_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsAlbumsDeleteError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -185,7 +134,7 @@ pub async fn user_collections_id_relationships_albums_get(
     include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::UserCollectionsAlbumsResourceIdentifier>,
-    Error<UserCollectionsIdRelationshipsAlbumsGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -264,7 +213,7 @@ pub async fn user_collections_id_relationships_albums_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsAlbumsGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -281,7 +230,7 @@ pub async fn user_collections_id_relationships_albums_post(
     user_collection_albums_relationship_add_operation_payload: Option<
         models::UserCollectionAlbumsRelationshipAddOperationPayload,
     >,
-) -> Result<(), Error<UserCollectionsIdRelationshipsAlbumsPostError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_user_collection_albums_relationship_add_operation_payload =
@@ -307,7 +256,7 @@ pub async fn user_collections_id_relationships_albums_post(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsAlbumsPostError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -324,7 +273,7 @@ pub async fn user_collections_id_relationships_artists_delete(
     user_collection_artists_relationship_remove_operation_payload: Option<
         models::UserCollectionArtistsRelationshipRemoveOperationPayload,
     >,
-) -> Result<(), Error<UserCollectionsIdRelationshipsArtistsDeleteError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_user_collection_artists_relationship_remove_operation_payload =
@@ -350,7 +299,7 @@ pub async fn user_collections_id_relationships_artists_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsArtistsDeleteError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -370,7 +319,7 @@ pub async fn user_collections_id_relationships_artists_get(
     include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::UserCollectionsArtistsResourceIdentifier>,
-    Error<UserCollectionsIdRelationshipsArtistsGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -449,7 +398,7 @@ pub async fn user_collections_id_relationships_artists_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsArtistsGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -466,7 +415,7 @@ pub async fn user_collections_id_relationships_artists_post(
     user_collection_artists_relationship_add_operation_payload: Option<
         models::UserCollectionArtistsRelationshipAddOperationPayload,
     >,
-) -> Result<(), Error<UserCollectionsIdRelationshipsArtistsPostError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_user_collection_artists_relationship_add_operation_payload =
@@ -492,7 +441,7 @@ pub async fn user_collections_id_relationships_artists_post(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsArtistsPostError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -510,7 +459,7 @@ pub async fn user_collections_id_relationships_owners_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<UserCollectionsIdRelationshipsOwnersGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -566,7 +515,7 @@ pub async fn user_collections_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsOwnersGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -583,7 +532,7 @@ pub async fn user_collections_id_relationships_playlists_delete(
     user_collection_playlists_relationship_remove_operation_payload: Option<
         models::UserCollectionPlaylistsRelationshipRemoveOperationPayload,
     >,
-) -> Result<(), Error<UserCollectionsIdRelationshipsPlaylistsDeleteError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_user_collection_playlists_relationship_remove_operation_payload =
@@ -609,7 +558,7 @@ pub async fn user_collections_id_relationships_playlists_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsPlaylistsDeleteError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -628,7 +577,7 @@ pub async fn user_collections_id_relationships_playlists_get(
     include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::UserCollectionsPlaylistsResourceIdentifier>,
-    Error<UserCollectionsIdRelationshipsPlaylistsGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -704,7 +653,7 @@ pub async fn user_collections_id_relationships_playlists_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsPlaylistsGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -721,7 +670,7 @@ pub async fn user_collections_id_relationships_playlists_post(
     user_collection_playlists_relationship_remove_operation_payload: Option<
         models::UserCollectionPlaylistsRelationshipRemoveOperationPayload,
     >,
-) -> Result<(), Error<UserCollectionsIdRelationshipsPlaylistsPostError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_user_collection_playlists_relationship_remove_operation_payload =
@@ -747,7 +696,7 @@ pub async fn user_collections_id_relationships_playlists_post(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsPlaylistsPostError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -764,7 +713,7 @@ pub async fn user_collections_id_relationships_tracks_delete(
     user_collection_tracks_relationship_remove_operation_payload: Option<
         models::UserCollectionTracksRelationshipRemoveOperationPayload,
     >,
-) -> Result<(), Error<UserCollectionsIdRelationshipsTracksDeleteError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_user_collection_tracks_relationship_remove_operation_payload =
@@ -789,7 +738,7 @@ pub async fn user_collections_id_relationships_tracks_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsTracksDeleteError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -809,7 +758,7 @@ pub async fn user_collections_id_relationships_tracks_get(
     include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::UserCollectionsTracksResourceIdentifier>,
-    Error<UserCollectionsIdRelationshipsTracksGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -888,7 +837,7 @@ pub async fn user_collections_id_relationships_tracks_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsTracksGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -905,7 +854,7 @@ pub async fn user_collections_id_relationships_tracks_post(
     user_collection_tracks_relationship_add_operation_payload: Option<
         models::UserCollectionTracksRelationshipAddOperationPayload,
     >,
-) -> Result<(), Error<UserCollectionsIdRelationshipsTracksPostError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_user_collection_tracks_relationship_add_operation_payload =
@@ -931,7 +880,7 @@ pub async fn user_collections_id_relationships_tracks_post(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsTracksPostError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -948,7 +897,7 @@ pub async fn user_collections_id_relationships_videos_delete(
     user_collection_videos_relationship_remove_operation_payload: Option<
         models::UserCollectionVideosRelationshipRemoveOperationPayload,
     >,
-) -> Result<(), Error<UserCollectionsIdRelationshipsVideosDeleteError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_user_collection_videos_relationship_remove_operation_payload =
@@ -973,7 +922,7 @@ pub async fn user_collections_id_relationships_videos_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsVideosDeleteError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -993,7 +942,7 @@ pub async fn user_collections_id_relationships_videos_get(
     include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::UserCollectionsVideosResourceIdentifier>,
-    Error<UserCollectionsIdRelationshipsVideosGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -1072,7 +1021,7 @@ pub async fn user_collections_id_relationships_videos_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsVideosGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -1089,7 +1038,7 @@ pub async fn user_collections_id_relationships_videos_post(
     user_collection_videos_relationship_add_operation_payload: Option<
         models::UserCollectionVideosRelationshipAddOperationPayload,
     >,
-) -> Result<(), Error<UserCollectionsIdRelationshipsVideosPostError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_user_collection_videos_relationship_add_operation_payload =
@@ -1115,7 +1064,7 @@ pub async fn user_collections_id_relationships_videos_post(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserCollectionsIdRelationshipsVideosPostError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

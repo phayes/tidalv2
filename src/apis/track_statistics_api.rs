@@ -13,21 +13,12 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`track_statistics_get`]
-pub type TrackStatisticsGetError = ApiError;
-
-/// struct for typed errors of method [`track_statistics_id_get`]
-pub type TrackStatisticsIdGetError = ApiError;
-
-/// struct for typed errors of method [`track_statistics_id_relationships_owners_get`]
-pub type TrackStatisticsIdRelationshipsOwnersGetError = ApiError;
-
 /// Retrieves multiple trackStatistics by available filters, or without if applicable.
 pub async fn track_statistics_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::TrackStatistic>, Error<TrackStatisticsGetError>> {
+) -> Result<models::MultiResource<models::TrackStatistic>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_id = filter_id;
@@ -93,7 +84,7 @@ pub async fn track_statistics_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<TrackStatisticsGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -107,7 +98,7 @@ pub async fn track_statistics_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::TrackStatistic>, Error<TrackStatisticsIdGetError>> {
+) -> Result<models::Resource<models::TrackStatistic>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -158,7 +149,7 @@ pub async fn track_statistics_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<TrackStatisticsIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -175,7 +166,7 @@ pub async fn track_statistics_id_relationships_owners_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<TrackStatisticsIdRelationshipsOwnersGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -231,7 +222,7 @@ pub async fn track_statistics_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<TrackStatisticsIdRelationshipsOwnersGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

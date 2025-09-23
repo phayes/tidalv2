@@ -13,14 +13,11 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`user_reports_post`]
-pub type UserReportsPostError = ApiError;
-
 /// Creates a new userReport.
 pub async fn user_reports_post(
     configuration: &configuration::Configuration,
     user_report_create_operation_payload: Option<models::UserReportCreateOperationPayload>,
-) -> Result<models::Resource<models::UserReport>, Error<UserReportsPostError>> {
+) -> Result<models::Resource<models::UserReport>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_user_report_create_operation_payload = user_report_create_operation_payload;
 
@@ -50,7 +47,7 @@ pub async fn user_reports_post(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserReportsPostError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

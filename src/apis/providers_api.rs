@@ -13,17 +13,11 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`providers_get`]
-pub type ProvidersGetError = ApiError;
-
-/// struct for typed errors of method [`providers_id_get`]
-pub type ProvidersIdGetError = ApiError;
-
 /// Retrieves multiple providers by available filters, or without if applicable.
 pub async fn providers_get(
     configuration: &configuration::Configuration,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::Provider>, Error<ProvidersGetError>> {
+) -> Result<models::MultiResource<models::Provider>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_filter_id = filter_id;
 
@@ -69,7 +63,7 @@ pub async fn providers_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ProvidersGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -82,7 +76,7 @@ pub async fn providers_get(
 pub async fn providers_id_get(
     configuration: &configuration::Configuration,
     id: &str,
-) -> Result<models::Resource<models::Provider>, Error<ProvidersIdGetError>> {
+) -> Result<models::Resource<models::Provider>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 
@@ -112,7 +106,7 @@ pub async fn providers_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ProvidersIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

@@ -13,18 +13,12 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`genres_get`]
-pub type GenresGetError = ApiError;
-
-/// struct for typed errors of method [`genres_id_get`]
-pub type GenresIdGetError = ApiError;
-
 /// Retrieves multiple genres by available filters, or without if applicable.
 pub async fn genres_get(
     configuration: &configuration::Configuration,
     page_cursor: Option<&str>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::Genre>, Error<GenresGetError>> {
+) -> Result<models::MultiResource<models::Genre>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_page_cursor = page_cursor;
     let p_filter_id = filter_id;
@@ -74,7 +68,7 @@ pub async fn genres_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<GenresGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -87,7 +81,7 @@ pub async fn genres_get(
 pub async fn genres_id_get(
     configuration: &configuration::Configuration,
     id: &str,
-) -> Result<models::Resource<models::Genre>, Error<GenresIdGetError>> {
+) -> Result<models::Resource<models::Genre>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 
@@ -117,7 +111,7 @@ pub async fn genres_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<GenresIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

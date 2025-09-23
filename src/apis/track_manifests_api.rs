@@ -13,9 +13,6 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`track_manifests_id_get`]
-pub type TrackManifestsIdGetError = ApiError;
-
 /// Retrieves single trackManifest by id.
 pub async fn track_manifests_id_get(
     configuration: &configuration::Configuration,
@@ -25,7 +22,7 @@ pub async fn track_manifests_id_get(
     uri_scheme: &str,
     usage: &str,
     adaptive: &str,
-) -> Result<models::Resource<models::TrackManifest>, Error<TrackManifestsIdGetError>> {
+) -> Result<models::Resource<models::TrackManifest>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_manifest_type = manifest_type;
@@ -66,7 +63,7 @@ pub async fn track_manifests_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<TrackManifestsIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

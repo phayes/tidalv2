@@ -13,19 +13,13 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`search_suggestions_id_get`]
-pub type SearchSuggestionsIdGetError = ApiError;
-
-/// struct for typed errors of method [`search_suggestions_id_relationships_direct_hits_get`]
-pub type SearchSuggestionsIdRelationshipsDirectHitsGetError = ApiError;
-
 /// Retrieves single searchSuggestion by id.
 pub async fn search_suggestions_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::SearchSuggestion>, Error<SearchSuggestionsIdGetError>> {
+) -> Result<models::Resource<models::SearchSuggestion>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -81,7 +75,7 @@ pub async fn search_suggestions_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<SearchSuggestionsIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -99,7 +93,7 @@ pub async fn search_suggestions_id_relationships_direct_hits_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<SearchSuggestionsIdRelationshipsDirectHitsGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -160,7 +154,7 @@ pub async fn search_suggestions_id_relationships_direct_hits_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<SearchSuggestionsIdRelationshipsDirectHitsGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

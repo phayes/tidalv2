@@ -13,17 +13,11 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`artist_roles_get`]
-pub type ArtistRolesGetError = ApiError;
-
-/// struct for typed errors of method [`artist_roles_id_get`]
-pub type ArtistRolesIdGetError = ApiError;
-
 /// Retrieves multiple artistRoles by available filters, or without if applicable.
 pub async fn artist_roles_get(
     configuration: &configuration::Configuration,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::ArtistRole>, Error<ArtistRolesGetError>> {
+) -> Result<models::MultiResource<models::ArtistRole>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_filter_id = filter_id;
 
@@ -69,7 +63,7 @@ pub async fn artist_roles_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ArtistRolesGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -82,7 +76,7 @@ pub async fn artist_roles_get(
 pub async fn artist_roles_id_get(
     configuration: &configuration::Configuration,
     id: &str,
-) -> Result<models::Resource<models::ArtistRole>, Error<ArtistRolesIdGetError>> {
+) -> Result<models::Resource<models::ArtistRole>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 
@@ -112,7 +106,7 @@ pub async fn artist_roles_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ArtistRolesIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

@@ -13,24 +13,13 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`artworks_get`]
-pub type ArtworksGetError = ApiError;
-
-/// struct for typed errors of method [`artworks_id_get`]
-pub type ArtworksIdGetError = ApiError;
-
-/// struct for typed errors of method [`artworks_id_relationships_owners_get`]
-pub type ArtworksIdRelationshipsOwnersGetError = ApiError;
-
-/// struct for typed errors of method [`artworks_post`]
-pub type ArtworksPostError = ApiError;
 
 /// Retrieves multiple artworks by available filters, or without if applicable.
 pub async fn artworks_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::Artwork>, Error<ArtworksGetError>> {
+) -> Result<models::MultiResource<models::Artwork>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_id = filter_id;
@@ -97,7 +86,7 @@ pub async fn artworks_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ArtworksGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -111,7 +100,7 @@ pub async fn artworks_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::Artwork>, Error<ArtworksIdGetError>> {
+) -> Result<models::Resource<models::Artwork>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -163,7 +152,7 @@ pub async fn artworks_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ArtworksIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -180,7 +169,7 @@ pub async fn artworks_id_relationships_owners_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ArtworksIdRelationshipsOwnersGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -236,7 +225,7 @@ pub async fn artworks_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ArtworksIdRelationshipsOwnersGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -250,7 +239,7 @@ pub async fn artworks_id_relationships_owners_get(
 pub async fn artworks_post(
     configuration: &configuration::Configuration,
     artwork_create_operation_payload: Option<models::ArtworkCreateOperationPayload>,
-) -> Result<models::Resource<models::Artwork>, Error<ArtworksPostError>> {
+) -> Result<models::Resource<models::Artwork>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_artwork_create_operation_payload = artwork_create_operation_payload;
 
@@ -280,7 +269,7 @@ pub async fn artworks_post(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ArtworksPostError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

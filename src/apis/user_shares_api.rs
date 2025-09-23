@@ -13,28 +13,13 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`user_shares_get`]
-pub type UserSharesGetError = ApiError;
-
-/// struct for typed errors of method [`user_shares_id_get`]
-pub type UserSharesIdGetError = ApiError;
-
-/// struct for typed errors of method [`user_shares_id_relationships_owners_get`]
-pub type UserSharesIdRelationshipsOwnersGetError = ApiError;
-
-/// struct for typed errors of method [`user_shares_id_relationships_shared_resources_get`]
-pub type UserSharesIdRelationshipsSharedResourcesGetError = ApiError;
-
-/// struct for typed errors of method [`user_shares_post`]
-pub type UserSharesPostError = ApiError;
-
 /// Retrieves multiple userShares by available filters, or without if applicable.
 pub async fn user_shares_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     filter_code: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::UserShare>, Error<UserSharesGetError>> {
+) -> Result<models::MultiResource<models::UserShare>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_code = filter_code;
@@ -120,7 +105,7 @@ pub async fn user_shares_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserSharesGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -134,7 +119,7 @@ pub async fn user_shares_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::UserShare>, Error<UserSharesIdGetError>> {
+) -> Result<models::Resource<models::UserShare>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -185,7 +170,7 @@ pub async fn user_shares_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserSharesIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -202,7 +187,7 @@ pub async fn user_shares_id_relationships_owners_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<UserSharesIdRelationshipsOwnersGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -258,7 +243,7 @@ pub async fn user_shares_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserSharesIdRelationshipsOwnersGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -276,7 +261,7 @@ pub async fn user_shares_id_relationships_shared_resources_get(
     include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<UserSharesIdRelationshipsSharedResourcesGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -332,7 +317,7 @@ pub async fn user_shares_id_relationships_shared_resources_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserSharesIdRelationshipsSharedResourcesGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -346,7 +331,7 @@ pub async fn user_shares_id_relationships_shared_resources_get(
 pub async fn user_shares_post(
     configuration: &configuration::Configuration,
     user_shares_create_operation_payload: Option<models::UserSharesCreateOperationPayload>,
-) -> Result<models::Resource<models::UserShare>, Error<UserSharesPostError>> {
+) -> Result<models::Resource<models::UserShare>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_user_shares_create_operation_payload = user_shares_create_operation_payload;
 
@@ -376,7 +361,7 @@ pub async fn user_shares_post(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserSharesPostError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

@@ -13,13 +13,10 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`users_me_get`]
-pub type UsersMeGetError = ApiError;
-
 /// Retrieves current user's user(s).
 pub async fn users_me_get(
     configuration: &configuration::Configuration,
-) -> Result<models::Resource<models::User>, Error<UsersMeGetError>> {
+) -> Result<models::Resource<models::User>, Error<ApiError>> {
     let uri_str = format!("{}/users/me", configuration.base_path);
     let req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
@@ -42,7 +39,7 @@ pub async fn users_me_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UsersMeGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

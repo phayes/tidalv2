@@ -13,14 +13,11 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`appreciations_post`]
-pub type AppreciationsPostError = ApiError;
-
 /// Creates a new appreciation.
 pub async fn appreciations_post(
     configuration: &configuration::Configuration,
     appreciations_create_operation_payload: Option<models::AppreciationsCreateOperationPayload>,
-) -> Result<models::Resource<models::Appreciation>, Error<AppreciationsPostError>> {
+) -> Result<models::Resource<models::Appreciation>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_appreciations_create_operation_payload = appreciations_create_operation_payload;
 
@@ -50,7 +47,7 @@ pub async fn appreciations_post(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<AppreciationsPostError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

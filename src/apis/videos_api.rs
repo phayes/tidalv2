@@ -13,31 +13,13 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`videos_get`]
-pub type VideosGetError = ApiError;
-
-/// struct for typed errors of method [`videos_id_get`]
-pub type VideosIdGetError = ApiError;
-
-/// struct for typed errors of method [`videos_id_relationships_albums_get`]
-pub type VideosIdRelationshipsAlbumsGetError = ApiError;
-
-/// struct for typed errors of method [`videos_id_relationships_artists_get`]
-pub type VideosIdRelationshipsArtistsGetError = ApiError;
-
-/// struct for typed errors of method [`videos_id_relationships_providers_get`]
-pub type VideosIdRelationshipsProvidersGetError = ApiError;
-
-/// struct for typed errors of method [`videos_id_relationships_thumbnail_art_get`]
-pub type VideosIdRelationshipsThumbnailArtGetError = ApiError;
-
 /// Retrieves multiple videos by available filters, or without if applicable.
 pub async fn videos_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     filter_isrc: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::Video>, Error<VideosGetError>> {
+) -> Result<models::MultiResource<models::Video>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_isrc = filter_isrc;
@@ -124,7 +106,7 @@ pub async fn videos_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<VideosGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -138,7 +120,7 @@ pub async fn videos_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::Video>, Error<VideosIdGetError>> {
+) -> Result<models::Resource<models::Video>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -190,7 +172,7 @@ pub async fn videos_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<VideosIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -207,7 +189,7 @@ pub async fn videos_id_relationships_albums_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<VideosIdRelationshipsAlbumsGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -264,7 +246,7 @@ pub async fn videos_id_relationships_albums_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<VideosIdRelationshipsAlbumsGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -282,7 +264,7 @@ pub async fn videos_id_relationships_artists_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<VideosIdRelationshipsArtistsGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -339,7 +321,7 @@ pub async fn videos_id_relationships_artists_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<VideosIdRelationshipsArtistsGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -357,7 +339,7 @@ pub async fn videos_id_relationships_providers_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<VideosIdRelationshipsProvidersGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -414,7 +396,7 @@ pub async fn videos_id_relationships_providers_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<VideosIdRelationshipsProvidersGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -432,7 +414,7 @@ pub async fn videos_id_relationships_thumbnail_art_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<VideosIdRelationshipsThumbnailArtGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -489,7 +471,7 @@ pub async fn videos_id_relationships_thumbnail_art_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<VideosIdRelationshipsThumbnailArtGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

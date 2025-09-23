@@ -13,25 +13,13 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`user_recommendations_id_get`]
-pub type UserRecommendationsIdGetError = ApiError;
-
-/// struct for typed errors of method [`user_recommendations_id_relationships_discovery_mixes_get`]
-pub type UserRecommendationsIdRelationshipsDiscoveryMixesGetError = ApiError;
-
-/// struct for typed errors of method [`user_recommendations_id_relationships_my_mixes_get`]
-pub type UserRecommendationsIdRelationshipsMyMixesGetError = ApiError;
-
-/// struct for typed errors of method [`user_recommendations_id_relationships_new_arrival_mixes_get`]
-pub type UserRecommendationsIdRelationshipsNewArrivalMixesGetError = ApiError;
-
 /// Retrieves single userRecommendation by id.
 pub async fn user_recommendations_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::UserRecommendation>, Error<UserRecommendationsIdGetError>> {
+) -> Result<models::Resource<models::UserRecommendation>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
@@ -85,7 +73,7 @@ pub async fn user_recommendations_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserRecommendationsIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -103,7 +91,7 @@ pub async fn user_recommendations_id_relationships_discovery_mixes_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<UserRecommendationsIdRelationshipsDiscoveryMixesGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -162,7 +150,7 @@ pub async fn user_recommendations_id_relationships_discovery_mixes_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserRecommendationsIdRelationshipsDiscoveryMixesGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -181,7 +169,7 @@ pub async fn user_recommendations_id_relationships_my_mixes_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<UserRecommendationsIdRelationshipsMyMixesGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -240,7 +228,7 @@ pub async fn user_recommendations_id_relationships_my_mixes_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserRecommendationsIdRelationshipsMyMixesGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -259,7 +247,7 @@ pub async fn user_recommendations_id_relationships_new_arrival_mixes_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<UserRecommendationsIdRelationshipsNewArrivalMixesGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -318,7 +306,7 @@ pub async fn user_recommendations_id_relationships_new_arrival_mixes_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<UserRecommendationsIdRelationshipsNewArrivalMixesGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

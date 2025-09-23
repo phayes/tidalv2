@@ -13,30 +13,12 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`lyrics_get`]
-pub type LyricsGetError = ApiError;
-
-/// struct for typed errors of method [`lyrics_id_get`]
-pub type LyricsIdGetError = ApiError;
-
-/// struct for typed errors of method [`lyrics_id_patch`]
-pub type LyricsIdPatchError = ApiError;
-
-/// struct for typed errors of method [`lyrics_id_relationships_owners_get`]
-pub type LyricsIdRelationshipsOwnersGetError = ApiError;
-
-/// struct for typed errors of method [`lyrics_id_relationships_track_get`]
-pub type LyricsIdRelationshipsTrackGetError = ApiError;
-
-/// struct for typed errors of method [`lyrics_post`]
-pub type LyricsPostError = ApiError;
-
 /// Retrieves multiple lyrics by available filters, or without if applicable.
 pub async fn lyrics_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::Lyric>, Error<LyricsGetError>> {
+) -> Result<models::MultiResource<models::Lyric>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_id = filter_id;
@@ -102,7 +84,7 @@ pub async fn lyrics_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<LyricsGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -116,7 +98,7 @@ pub async fn lyrics_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::Lyric>, Error<LyricsIdGetError>> {
+) -> Result<models::Resource<models::Lyric>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -167,7 +149,7 @@ pub async fn lyrics_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<LyricsIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -181,7 +163,7 @@ pub async fn lyrics_id_patch(
     configuration: &configuration::Configuration,
     id: &str,
     lyrics_update_operation_payload: Option<models::LyricsUpdateOperationPayload>,
-) -> Result<(), Error<LyricsIdPatchError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_lyrics_update_operation_payload = lyrics_update_operation_payload;
@@ -205,7 +187,7 @@ pub async fn lyrics_id_patch(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<LyricsIdPatchError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -222,7 +204,7 @@ pub async fn lyrics_id_relationships_owners_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<LyricsIdRelationshipsOwnersGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -279,7 +261,7 @@ pub async fn lyrics_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<LyricsIdRelationshipsOwnersGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -294,7 +276,7 @@ pub async fn lyrics_id_relationships_track_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Relationship, Error<LyricsIdRelationshipsTrackGetError>> {
+) -> Result<models::Relationship, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -346,7 +328,7 @@ pub async fn lyrics_id_relationships_track_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<LyricsIdRelationshipsTrackGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -360,7 +342,7 @@ pub async fn lyrics_id_relationships_track_get(
 pub async fn lyrics_post(
     configuration: &configuration::Configuration,
     lyrics_create_operation_payload: Option<models::LyricsCreateOperationPayload>,
-) -> Result<models::Resource<models::Lyric>, Error<LyricsPostError>> {
+) -> Result<models::Resource<models::Lyric>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_lyrics_create_operation_payload = lyrics_create_operation_payload;
 
@@ -390,7 +372,7 @@ pub async fn lyrics_post(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<LyricsPostError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

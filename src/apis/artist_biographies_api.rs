@@ -13,24 +13,12 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`artist_biographies_get`]
-pub type ArtistBiographiesGetError = ApiError;
-
-/// struct for typed errors of method [`artist_biographies_id_get`]
-pub type ArtistBiographiesIdGetError = ApiError;
-
-/// struct for typed errors of method [`artist_biographies_id_patch`]
-pub type ArtistBiographiesIdPatchError = ApiError;
-
-/// struct for typed errors of method [`artist_biographies_id_relationships_owners_get`]
-pub type ArtistBiographiesIdRelationshipsOwnersGetError = ApiError;
-
 /// Retrieves multiple artistBiographies by available filters, or without if applicable.
 pub async fn artist_biographies_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::ArtistBiography>, Error<ArtistBiographiesGetError>> {
+) -> Result<models::MultiResource<models::ArtistBiography>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_id = filter_id;
@@ -97,7 +85,7 @@ pub async fn artist_biographies_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ArtistBiographiesGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -111,7 +99,7 @@ pub async fn artist_biographies_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::ArtistBiography>, Error<ArtistBiographiesIdGetError>> {
+) -> Result<models::Resource<models::ArtistBiography>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -163,7 +151,7 @@ pub async fn artist_biographies_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ArtistBiographiesIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -177,7 +165,7 @@ pub async fn artist_biographies_id_patch(
     configuration: &configuration::Configuration,
     id: &str,
     artist_biography_update_body: Option<models::ArtistBiographyUpdateBody>,
-) -> Result<(), Error<ArtistBiographiesIdPatchError>> {
+) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_artist_biography_update_body = artist_biography_update_body;
@@ -201,7 +189,7 @@ pub async fn artist_biographies_id_patch(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ArtistBiographiesIdPatchError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -218,7 +206,7 @@ pub async fn artist_biographies_id_relationships_owners_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ArtistBiographiesIdRelationshipsOwnersGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -274,7 +262,7 @@ pub async fn artist_biographies_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ArtistBiographiesIdRelationshipsOwnersGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

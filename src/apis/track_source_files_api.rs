@@ -13,24 +13,12 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`track_source_files_get`]
-pub type TrackSourceFilesGetError = ApiError;
-
-/// struct for typed errors of method [`track_source_files_id_get`]
-pub type TrackSourceFilesIdGetError = ApiError;
-
-/// struct for typed errors of method [`track_source_files_id_relationships_owners_get`]
-pub type TrackSourceFilesIdRelationshipsOwnersGetError = ApiError;
-
-/// struct for typed errors of method [`track_source_files_post`]
-pub type TrackSourceFilesPostError = ApiError;
-
 /// Retrieves multiple trackSourceFiles by available filters, or without if applicable.
 pub async fn track_source_files_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::TrackSourceFile>, Error<TrackSourceFilesGetError>> {
+) -> Result<models::MultiResource<models::TrackSourceFile>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_id = filter_id;
@@ -96,7 +84,7 @@ pub async fn track_source_files_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<TrackSourceFilesGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -110,7 +98,7 @@ pub async fn track_source_files_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::TrackSourceFile>, Error<TrackSourceFilesIdGetError>> {
+) -> Result<models::Resource<models::TrackSourceFile>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -161,7 +149,7 @@ pub async fn track_source_files_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<TrackSourceFilesIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -178,7 +166,7 @@ pub async fn track_source_files_id_relationships_owners_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<TrackSourceFilesIdRelationshipsOwnersGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -234,7 +222,7 @@ pub async fn track_source_files_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<TrackSourceFilesIdRelationshipsOwnersGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -250,7 +238,7 @@ pub async fn track_source_files_post(
     track_source_file_create_operation_payload: Option<
         models::TrackSourceFileCreateOperationPayload,
     >,
-) -> Result<models::Resource<models::TrackSourceFile>, Error<TrackSourceFilesPostError>> {
+) -> Result<models::Resource<models::TrackSourceFile>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_track_source_file_create_operation_payload = track_source_file_create_operation_payload;
 
@@ -280,7 +268,7 @@ pub async fn track_source_files_post(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<TrackSourceFilesPostError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

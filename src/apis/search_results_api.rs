@@ -13,34 +13,13 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for typed errors of method [`search_results_id_get`]
-pub type SearchResultsIdGetError = ApiError;
-
-/// struct for typed errors of method [`search_results_id_relationships_albums_get`]
-pub type SearchResultsIdRelationshipsAlbumsGetError = ApiError;
-
-/// struct for typed errors of method [`search_results_id_relationships_artists_get`]
-pub type SearchResultsIdRelationshipsArtistsGetError = ApiError;
-
-/// struct for typed errors of method [`search_results_id_relationships_playlists_get`]
-pub type SearchResultsIdRelationshipsPlaylistsGetError = ApiError;
-
-/// struct for typed errors of method [`search_results_id_relationships_top_hits_get`]
-pub type SearchResultsIdRelationshipsTopHitsGetError = ApiError;
-
-/// struct for typed errors of method [`search_results_id_relationships_tracks_get`]
-pub type SearchResultsIdRelationshipsTracksGetError = ApiError;
-
-/// struct for typed errors of method [`search_results_id_relationships_videos_get`]
-pub type SearchResultsIdRelationshipsVideosGetError = ApiError;
-
 /// Retrieves single searchResult by id.
 pub async fn search_results_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::SearchResult>, Error<SearchResultsIdGetError>> {
+) -> Result<models::Resource<models::SearchResult>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -96,7 +75,7 @@ pub async fn search_results_id_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<SearchResultsIdGetError> = serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -114,7 +93,7 @@ pub async fn search_results_id_relationships_albums_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<SearchResultsIdRelationshipsAlbumsGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -175,7 +154,7 @@ pub async fn search_results_id_relationships_albums_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<SearchResultsIdRelationshipsAlbumsGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -194,7 +173,7 @@ pub async fn search_results_id_relationships_artists_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<SearchResultsIdRelationshipsArtistsGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -255,7 +234,7 @@ pub async fn search_results_id_relationships_artists_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<SearchResultsIdRelationshipsArtistsGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -274,7 +253,7 @@ pub async fn search_results_id_relationships_playlists_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<SearchResultsIdRelationshipsPlaylistsGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -335,7 +314,7 @@ pub async fn search_results_id_relationships_playlists_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<SearchResultsIdRelationshipsPlaylistsGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -354,7 +333,7 @@ pub async fn search_results_id_relationships_top_hits_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<SearchResultsIdRelationshipsTopHitsGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -415,7 +394,7 @@ pub async fn search_results_id_relationships_top_hits_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<SearchResultsIdRelationshipsTopHitsGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -434,7 +413,7 @@ pub async fn search_results_id_relationships_tracks_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<SearchResultsIdRelationshipsTracksGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -495,7 +474,7 @@ pub async fn search_results_id_relationships_tracks_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<SearchResultsIdRelationshipsTracksGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -514,7 +493,7 @@ pub async fn search_results_id_relationships_videos_get(
     page_cursor: Option<&str>,
 ) -> Result<
     models::MultiRelationship<models::ResourceIdentifier>,
-    Error<SearchResultsIdRelationshipsVideosGetError>,
+    Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -575,7 +554,7 @@ pub async fn search_results_id_relationships_videos_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<SearchResultsIdRelationshipsVideosGetError> =
+        let entity: Option<ApiError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
