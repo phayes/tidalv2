@@ -14,18 +14,18 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserRecommendationsRelationships {
     #[serde(rename = "discoveryMixes")]
-    pub discovery_mixes: models::MultiRelationshipDataDocument,
+    pub discovery_mixes: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "myMixes")]
-    pub my_mixes: models::MultiRelationshipDataDocument,
+    pub my_mixes: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "newArrivalMixes")]
-    pub new_arrival_mixes: models::MultiRelationshipDataDocument,
+    pub new_arrival_mixes: models::MultiRelationship<models::ResourceIdentifier>,
 }
 
 impl UserRecommendationsRelationships {
     pub fn new(
-        discovery_mixes: models::MultiRelationshipDataDocument,
-        my_mixes: models::MultiRelationshipDataDocument,
-        new_arrival_mixes: models::MultiRelationshipDataDocument,
+        discovery_mixes: models::MultiRelationship<models::ResourceIdentifier>,
+        my_mixes: models::MultiRelationship<models::ResourceIdentifier>,
+        new_arrival_mixes: models::MultiRelationship<models::ResourceIdentifier>,
     ) -> UserRecommendationsRelationships {
         UserRecommendationsRelationships {
             discovery_mixes,

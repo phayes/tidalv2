@@ -14,15 +14,15 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserSharesRelationships {
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationshipDataDocument,
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "sharedResources")]
-    pub shared_resources: models::MultiRelationshipDataDocument,
+    pub shared_resources: models::MultiRelationship<models::ResourceIdentifier>,
 }
 
 impl UserSharesRelationships {
     pub fn new(
-        owners: models::MultiRelationshipDataDocument,
-        shared_resources: models::MultiRelationshipDataDocument,
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+        shared_resources: models::MultiRelationship<models::ResourceIdentifier>,
     ) -> UserSharesRelationships {
         UserSharesRelationships {
             owners,

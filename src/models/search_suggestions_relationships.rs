@@ -14,12 +14,12 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SearchSuggestionsRelationships {
     #[serde(rename = "directHits")]
-    pub direct_hits: models::MultiRelationshipDataDocument,
+    pub direct_hits: models::MultiRelationship<models::ResourceIdentifier>,
 }
 
 impl SearchSuggestionsRelationships {
     pub fn new(
-        direct_hits: models::MultiRelationshipDataDocument,
+        direct_hits: models::MultiRelationship<models::ResourceIdentifier>,
     ) -> SearchSuggestionsRelationships {
         SearchSuggestionsRelationships { direct_hits }
     }

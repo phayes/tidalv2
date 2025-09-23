@@ -144,7 +144,7 @@ pub async fn artist_claims_id_relationships_accepted_artists_get(
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<
-    models::ArtistClaimsMultiRelationshipDataDocument,
+    models::MultiRelationship<models::ResourceIdentifier>,
     Error<ArtistClaimsIdRelationshipsAcceptedArtistsGetError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -196,8 +196,8 @@ pub async fn artist_claims_id_relationships_accepted_artists_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ArtistClaimsMultiRelationshipDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ArtistClaimsMultiRelationshipDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -261,7 +261,7 @@ pub async fn artist_claims_id_relationships_owners_get(
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<
-    models::ArtistClaimsMultiRelationshipDataDocument,
+    models::MultiRelationship<models::ResourceIdentifier>,
     Error<ArtistClaimsIdRelationshipsOwnersGetError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -313,8 +313,8 @@ pub async fn artist_claims_id_relationships_owners_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ArtistClaimsMultiRelationshipDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ArtistClaimsMultiRelationshipDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -335,7 +335,7 @@ pub async fn artist_claims_id_relationships_recommended_artists_get(
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<
-    models::ArtistClaimsMultiRelationshipDataDocument,
+    models::MultiRelationship<models::ResourceIdentifier>,
     Error<ArtistClaimsIdRelationshipsRecommendedArtistsGetError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -387,8 +387,8 @@ pub async fn artist_claims_id_relationships_recommended_artists_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ArtistClaimsMultiRelationshipDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ArtistClaimsMultiRelationshipDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`")))),
         }
     } else {
         let content = resp.text().await?;

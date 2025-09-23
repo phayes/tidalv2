@@ -14,45 +14,45 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArtistsRelationships {
     #[serde(rename = "albums")]
-    pub albums: models::MultiRelationshipDataDocument,
+    pub albums: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "biography")]
     pub biography: models::Relationship,
     #[serde(rename = "followers")]
-    pub followers: models::ArtistsFollowersMultiRelationshipDataDocument,
+    pub followers: models::MultiRelationship<models::ArtistsFollowersResourceIdentifier>,
     #[serde(rename = "following")]
-    pub following: models::ArtistsFollowingMultiRelationshipDataDocument,
+    pub following: models::MultiRelationship<models::ArtistsFollowingResourceIdentifier>,
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationshipDataDocument,
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "profileArt")]
-    pub profile_art: models::MultiRelationshipDataDocument,
+    pub profile_art: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "radio")]
-    pub radio: models::MultiRelationshipDataDocument,
+    pub radio: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "roles")]
-    pub roles: models::MultiRelationshipDataDocument,
+    pub roles: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "similarArtists")]
-    pub similar_artists: models::MultiRelationshipDataDocument,
+    pub similar_artists: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "trackProviders")]
-    pub track_providers: models::ArtistsTrackProvidersMultiRelationshipDataDocument,
+    pub track_providers: models::MultiRelationship<models::ArtistsTrackProvidersResourceIdentifier>,
     #[serde(rename = "tracks")]
-    pub tracks: models::MultiRelationshipDataDocument,
+    pub tracks: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "videos")]
-    pub videos: models::MultiRelationshipDataDocument,
+    pub videos: models::MultiRelationship<models::ResourceIdentifier>,
 }
 
 impl ArtistsRelationships {
     pub fn new(
-        albums: models::MultiRelationshipDataDocument,
+        albums: models::MultiRelationship<models::ResourceIdentifier>,
         biography: models::Relationship,
-        followers: models::ArtistsFollowersMultiRelationshipDataDocument,
-        following: models::ArtistsFollowingMultiRelationshipDataDocument,
-        owners: models::MultiRelationshipDataDocument,
-        profile_art: models::MultiRelationshipDataDocument,
-        radio: models::MultiRelationshipDataDocument,
-        roles: models::MultiRelationshipDataDocument,
-        similar_artists: models::MultiRelationshipDataDocument,
-        track_providers: models::ArtistsTrackProvidersMultiRelationshipDataDocument,
-        tracks: models::MultiRelationshipDataDocument,
-        videos: models::MultiRelationshipDataDocument,
+        followers: models::MultiRelationship<models::ArtistsFollowersResourceIdentifier>,
+        following: models::MultiRelationship<models::ArtistsFollowingResourceIdentifier>,
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+        profile_art: models::MultiRelationship<models::ResourceIdentifier>,
+        radio: models::MultiRelationship<models::ResourceIdentifier>,
+        roles: models::MultiRelationship<models::ResourceIdentifier>,
+        similar_artists: models::MultiRelationship<models::ResourceIdentifier>,
+        track_providers: models::MultiRelationship<models::ArtistsTrackProvidersResourceIdentifier>,
+        tracks: models::MultiRelationship<models::ResourceIdentifier>,
+        videos: models::MultiRelationship<models::ResourceIdentifier>,
     ) -> ArtistsRelationships {
         ArtistsRelationships {
             albums,

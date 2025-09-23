@@ -14,21 +14,21 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TracksRelationships {
     #[serde(rename = "albums")]
-    pub albums: models::MultiRelationshipDataDocument,
+    pub albums: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "artists")]
-    pub artists: models::MultiRelationshipDataDocument,
+    pub artists: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "genres")]
-    pub genres: models::MultiRelationshipDataDocument,
+    pub genres: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "lyrics")]
-    pub lyrics: models::MultiRelationshipDataDocument,
+    pub lyrics: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationshipDataDocument,
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "providers")]
-    pub providers: models::MultiRelationshipDataDocument,
+    pub providers: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "radio")]
-    pub radio: models::MultiRelationshipDataDocument,
+    pub radio: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "similarTracks")]
-    pub similar_tracks: models::MultiRelationshipDataDocument,
+    pub similar_tracks: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "sourceFile")]
     pub source_file: models::Relationship,
     #[serde(rename = "trackStatistics")]
@@ -37,14 +37,14 @@ pub struct TracksRelationships {
 
 impl TracksRelationships {
     pub fn new(
-        albums: models::MultiRelationshipDataDocument,
-        artists: models::MultiRelationshipDataDocument,
-        genres: models::MultiRelationshipDataDocument,
-        lyrics: models::MultiRelationshipDataDocument,
-        owners: models::MultiRelationshipDataDocument,
-        providers: models::MultiRelationshipDataDocument,
-        radio: models::MultiRelationshipDataDocument,
-        similar_tracks: models::MultiRelationshipDataDocument,
+        albums: models::MultiRelationship<models::ResourceIdentifier>,
+        artists: models::MultiRelationship<models::ResourceIdentifier>,
+        genres: models::MultiRelationship<models::ResourceIdentifier>,
+        lyrics: models::MultiRelationship<models::ResourceIdentifier>,
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+        providers: models::MultiRelationship<models::ResourceIdentifier>,
+        radio: models::MultiRelationship<models::ResourceIdentifier>,
+        similar_tracks: models::MultiRelationship<models::ResourceIdentifier>,
         source_file: models::Relationship,
         track_statistics: models::Relationship,
     ) -> TracksRelationships {

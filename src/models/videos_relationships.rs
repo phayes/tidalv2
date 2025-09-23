@@ -14,21 +14,21 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct VideosRelationships {
     #[serde(rename = "albums")]
-    pub albums: models::MultiRelationshipDataDocument,
+    pub albums: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "artists")]
-    pub artists: models::MultiRelationshipDataDocument,
+    pub artists: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "providers")]
-    pub providers: models::MultiRelationshipDataDocument,
+    pub providers: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "thumbnailArt")]
-    pub thumbnail_art: models::MultiRelationshipDataDocument,
+    pub thumbnail_art: models::MultiRelationship<models::ResourceIdentifier>,
 }
 
 impl VideosRelationships {
     pub fn new(
-        albums: models::MultiRelationshipDataDocument,
-        artists: models::MultiRelationshipDataDocument,
-        providers: models::MultiRelationshipDataDocument,
-        thumbnail_art: models::MultiRelationshipDataDocument,
+        albums: models::MultiRelationship<models::ResourceIdentifier>,
+        artists: models::MultiRelationship<models::ResourceIdentifier>,
+        providers: models::MultiRelationship<models::ResourceIdentifier>,
+        thumbnail_art: models::MultiRelationship<models::ResourceIdentifier>,
     ) -> VideosRelationships {
         VideosRelationships {
             albums,

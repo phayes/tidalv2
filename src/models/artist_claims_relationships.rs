@@ -14,18 +14,18 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArtistClaimsRelationships {
     #[serde(rename = "acceptedArtists")]
-    pub accepted_artists: models::MultiRelationshipDataDocument,
+    pub accepted_artists: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationshipDataDocument,
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "recommendedArtists")]
-    pub recommended_artists: models::MultiRelationshipDataDocument,
+    pub recommended_artists: models::MultiRelationship<models::ResourceIdentifier>,
 }
 
 impl ArtistClaimsRelationships {
     pub fn new(
-        accepted_artists: models::MultiRelationshipDataDocument,
-        owners: models::MultiRelationshipDataDocument,
-        recommended_artists: models::MultiRelationshipDataDocument,
+        accepted_artists: models::MultiRelationship<models::ResourceIdentifier>,
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+        recommended_artists: models::MultiRelationship<models::ResourceIdentifier>,
     ) -> ArtistClaimsRelationships {
         ArtistClaimsRelationships {
             accepted_artists,

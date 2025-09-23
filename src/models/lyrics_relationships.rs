@@ -14,14 +14,14 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LyricsRelationships {
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationshipDataDocument,
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "track")]
     pub track: models::Relationship,
 }
 
 impl LyricsRelationships {
     pub fn new(
-        owners: models::MultiRelationshipDataDocument,
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
         track: models::Relationship,
     ) -> LyricsRelationships {
         LyricsRelationships { owners, track }

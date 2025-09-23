@@ -14,27 +14,27 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserCollectionsRelationships {
     #[serde(rename = "albums")]
-    pub albums: models::UserCollectionsAlbumsMultiRelationshipDataDocument,
+    pub albums: models::MultiRelationship<models::UserCollectionsAlbumsResourceIdentifier>,
     #[serde(rename = "artists")]
-    pub artists: models::UserCollectionsArtistsMultiRelationshipDataDocument,
+    pub artists: models::MultiRelationship<models::UserCollectionsArtistsResourceIdentifier>,
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationshipDataDocument,
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "playlists")]
-    pub playlists: models::UserCollectionsPlaylistsMultiRelationshipDataDocument,
+    pub playlists: models::MultiRelationship<models::UserCollectionsPlaylistsResourceIdentifier>,
     #[serde(rename = "tracks")]
-    pub tracks: models::UserCollectionsTracksMultiRelationshipDataDocument,
+    pub tracks: models::MultiRelationship<models::UserCollectionsTracksResourceIdentifier>,
     #[serde(rename = "videos")]
-    pub videos: models::UserCollectionsVideosMultiRelationshipDataDocument,
+    pub videos: models::MultiRelationship<models::UserCollectionsVideosResourceIdentifier>,
 }
 
 impl UserCollectionsRelationships {
     pub fn new(
-        albums: models::UserCollectionsAlbumsMultiRelationshipDataDocument,
-        artists: models::UserCollectionsArtistsMultiRelationshipDataDocument,
-        owners: models::MultiRelationshipDataDocument,
-        playlists: models::UserCollectionsPlaylistsMultiRelationshipDataDocument,
-        tracks: models::UserCollectionsTracksMultiRelationshipDataDocument,
-        videos: models::UserCollectionsVideosMultiRelationshipDataDocument,
+        albums: models::MultiRelationship<models::UserCollectionsAlbumsResourceIdentifier>,
+        artists: models::MultiRelationship<models::UserCollectionsArtistsResourceIdentifier>,
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+        playlists: models::MultiRelationship<models::UserCollectionsPlaylistsResourceIdentifier>,
+        tracks: models::MultiRelationship<models::UserCollectionsTracksResourceIdentifier>,
+        videos: models::MultiRelationship<models::UserCollectionsVideosResourceIdentifier>,
     ) -> UserCollectionsRelationships {
         UserCollectionsRelationships {
             albums,

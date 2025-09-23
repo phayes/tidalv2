@@ -14,11 +14,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TrackStatisticsRelationships {
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationshipDataDocument,
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
 }
 
 impl TrackStatisticsRelationships {
-    pub fn new(owners: models::MultiRelationshipDataDocument) -> TrackStatisticsRelationships {
+    pub fn new(owners: models::MultiRelationship<models::ResourceIdentifier>) -> TrackStatisticsRelationships {
         TrackStatisticsRelationships { owners }
     }
 }

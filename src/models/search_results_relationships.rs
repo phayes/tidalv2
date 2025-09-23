@@ -14,27 +14,27 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SearchResultsRelationships {
     #[serde(rename = "albums")]
-    pub albums: models::MultiRelationshipDataDocument,
+    pub albums: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "artists")]
-    pub artists: models::MultiRelationshipDataDocument,
+    pub artists: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "playlists")]
-    pub playlists: models::MultiRelationshipDataDocument,
+    pub playlists: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "topHits")]
-    pub top_hits: models::MultiRelationshipDataDocument,
+    pub top_hits: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "tracks")]
-    pub tracks: models::MultiRelationshipDataDocument,
+    pub tracks: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "videos")]
-    pub videos: models::MultiRelationshipDataDocument,
+    pub videos: models::MultiRelationship<models::ResourceIdentifier>,
 }
 
 impl SearchResultsRelationships {
     pub fn new(
-        albums: models::MultiRelationshipDataDocument,
-        artists: models::MultiRelationshipDataDocument,
-        playlists: models::MultiRelationshipDataDocument,
-        top_hits: models::MultiRelationshipDataDocument,
-        tracks: models::MultiRelationshipDataDocument,
-        videos: models::MultiRelationshipDataDocument,
+        albums: models::MultiRelationship<models::ResourceIdentifier>,
+        artists: models::MultiRelationship<models::ResourceIdentifier>,
+        playlists: models::MultiRelationship<models::ResourceIdentifier>,
+        top_hits: models::MultiRelationship<models::ResourceIdentifier>,
+        tracks: models::MultiRelationship<models::ResourceIdentifier>,
+        videos: models::MultiRelationship<models::ResourceIdentifier>,
     ) -> SearchResultsRelationships {
         SearchResultsRelationships {
             albums,

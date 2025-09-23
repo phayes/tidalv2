@@ -14,30 +14,30 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AlbumsRelationships {
     #[serde(rename = "artists")]
-    pub artists: models::MultiRelationshipDataDocument,
+    pub artists: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "coverArt")]
-    pub cover_art: models::MultiRelationshipDataDocument,
+    pub cover_art: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "genres")]
-    pub genres: models::MultiRelationshipDataDocument,
+    pub genres: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "items")]
-    pub items: models::AlbumsItemsMultiRelationshipDataDocument,
+    pub items: models::MultiRelationship<models::AlbumsItemsResourceIdentifier>,
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationshipDataDocument,
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "providers")]
-    pub providers: models::MultiRelationshipDataDocument,
+    pub providers: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "similarAlbums")]
-    pub similar_albums: models::MultiRelationshipDataDocument,
+    pub similar_albums: models::MultiRelationship<models::ResourceIdentifier>,
 }
 
 impl AlbumsRelationships {
     pub fn new(
-        artists: models::MultiRelationshipDataDocument,
-        cover_art: models::MultiRelationshipDataDocument,
-        genres: models::MultiRelationshipDataDocument,
-        items: models::AlbumsItemsMultiRelationshipDataDocument,
-        owners: models::MultiRelationshipDataDocument,
-        providers: models::MultiRelationshipDataDocument,
-        similar_albums: models::MultiRelationshipDataDocument,
+        artists: models::MultiRelationship<models::ResourceIdentifier>,
+        cover_art: models::MultiRelationship<models::ResourceIdentifier>,
+        genres: models::MultiRelationship<models::ResourceIdentifier>,
+        items: models::MultiRelationship<models::AlbumsItemsResourceIdentifier>,
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+        providers: models::MultiRelationship<models::ResourceIdentifier>,
+        similar_albums: models::MultiRelationship<models::ResourceIdentifier>,
     ) -> AlbumsRelationships {
         AlbumsRelationships {
             artists,
