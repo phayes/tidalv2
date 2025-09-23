@@ -22,10 +22,7 @@ pub struct LyricsMultiResourceDataDocument {
 }
 
 impl LyricsMultiResourceDataDocument {
-    pub fn new(
-        data: Vec<models::Lyric>,
-        links: models::Links,
-    ) -> LyricsMultiResourceDataDocument {
+    pub fn new(data: Vec<models::Lyric>, links: models::Links) -> LyricsMultiResourceDataDocument {
         LyricsMultiResourceDataDocument {
             data,
             included: None,

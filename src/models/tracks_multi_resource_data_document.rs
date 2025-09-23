@@ -22,10 +22,7 @@ pub struct TracksMultiResourceDataDocument {
 }
 
 impl TracksMultiResourceDataDocument {
-    pub fn new(
-        data: Vec<models::Track>,
-        links: models::Links,
-    ) -> TracksMultiResourceDataDocument {
+    pub fn new(data: Vec<models::Track>, links: models::Links) -> TracksMultiResourceDataDocument {
         TracksMultiResourceDataDocument {
             data,
             included: None,

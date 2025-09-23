@@ -22,10 +22,7 @@ pub struct VideosMultiResourceDataDocument {
 }
 
 impl VideosMultiResourceDataDocument {
-    pub fn new(
-        data: Vec<models::Video>,
-        links: models::Links,
-    ) -> VideosMultiResourceDataDocument {
+    pub fn new(data: Vec<models::Video>, links: models::Links) -> VideosMultiResourceDataDocument {
         VideosMultiResourceDataDocument {
             data,
             included: None,

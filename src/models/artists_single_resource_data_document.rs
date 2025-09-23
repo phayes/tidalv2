@@ -22,10 +22,7 @@ pub struct ArtistsSingleResourceDataDocument {
 }
 
 impl ArtistsSingleResourceDataDocument {
-    pub fn new(
-        data: models::Artist,
-        links: models::Links,
-    ) -> ArtistsSingleResourceDataDocument {
+    pub fn new(data: models::Artist, links: models::Links) -> ArtistsSingleResourceDataDocument {
         ArtistsSingleResourceDataDocument {
             data,
             included: None,

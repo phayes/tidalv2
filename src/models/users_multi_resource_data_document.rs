@@ -22,10 +22,7 @@ pub struct UsersMultiResourceDataDocument {
 }
 
 impl UsersMultiResourceDataDocument {
-    pub fn new(
-        data: Vec<models::User>,
-        links: models::Links,
-    ) -> UsersMultiResourceDataDocument {
+    pub fn new(data: Vec<models::User>, links: models::Links) -> UsersMultiResourceDataDocument {
         UsersMultiResourceDataDocument {
             data,
             included: None,

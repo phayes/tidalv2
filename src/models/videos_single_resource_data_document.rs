@@ -22,10 +22,7 @@ pub struct VideosSingleResourceDataDocument {
 }
 
 impl VideosSingleResourceDataDocument {
-    pub fn new(
-        data: models::Video,
-        links: models::Links,
-    ) -> VideosSingleResourceDataDocument {
+    pub fn new(data: models::Video, links: models::Links) -> VideosSingleResourceDataDocument {
         VideosSingleResourceDataDocument {
             data,
             included: None,

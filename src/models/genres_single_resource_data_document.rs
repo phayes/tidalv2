@@ -22,10 +22,7 @@ pub struct GenresSingleResourceDataDocument {
 }
 
 impl GenresSingleResourceDataDocument {
-    pub fn new(
-        data: models::Genre,
-        links: models::Links,
-    ) -> GenresSingleResourceDataDocument {
+    pub fn new(data: models::Genre, links: models::Links) -> GenresSingleResourceDataDocument {
         GenresSingleResourceDataDocument {
             data,
             included: None,

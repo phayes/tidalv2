@@ -22,10 +22,7 @@ pub struct TracksSingleResourceDataDocument {
 }
 
 impl TracksSingleResourceDataDocument {
-    pub fn new(
-        data: models::Track,
-        links: models::Links,
-    ) -> TracksSingleResourceDataDocument {
+    pub fn new(data: models::Track, links: models::Links) -> TracksSingleResourceDataDocument {
         TracksSingleResourceDataDocument {
             data,
             included: None,

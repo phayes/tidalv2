@@ -22,10 +22,7 @@ pub struct UsersSingleResourceDataDocument {
 }
 
 impl UsersSingleResourceDataDocument {
-    pub fn new(
-        data: models::User,
-        links: models::Links,
-    ) -> UsersSingleResourceDataDocument {
+    pub fn new(data: models::User, links: models::Links) -> UsersSingleResourceDataDocument {
         UsersSingleResourceDataDocument {
             data,
             included: None,

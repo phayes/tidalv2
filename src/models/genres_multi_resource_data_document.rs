@@ -22,10 +22,7 @@ pub struct GenresMultiResourceDataDocument {
 }
 
 impl GenresMultiResourceDataDocument {
-    pub fn new(
-        data: Vec<models::Genre>,
-        links: models::Links,
-    ) -> GenresMultiResourceDataDocument {
+    pub fn new(data: Vec<models::Genre>, links: models::Links) -> GenresMultiResourceDataDocument {
         GenresMultiResourceDataDocument {
             data,
             included: None,

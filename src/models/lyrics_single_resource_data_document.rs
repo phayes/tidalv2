@@ -22,10 +22,7 @@ pub struct LyricsSingleResourceDataDocument {
 }
 
 impl LyricsSingleResourceDataDocument {
-    pub fn new(
-        data: models::Lyric,
-        links: models::Links,
-    ) -> LyricsSingleResourceDataDocument {
+    pub fn new(data: models::Lyric, links: models::Links) -> LyricsSingleResourceDataDocument {
         LyricsSingleResourceDataDocument {
             data,
             included: None,
