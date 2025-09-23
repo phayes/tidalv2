@@ -63,17 +63,20 @@ pub async fn user_recommendations_id_get(
 }
 
 /// Retrieves discoveryMixes relationship.
+///
+/// # Parameters
+/// * `id` - User id (e.g. "123456")
+/// * `locale` - BCP47 locale code (e.g. "en-US")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn user_recommendations_id_relationships_discovery_mixes_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
-    include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
-    let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!(
@@ -85,25 +88,7 @@ pub async fn user_recommendations_id_relationships_discovery_mixes_get(
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "discoveryMixes")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -112,17 +97,20 @@ pub async fn user_recommendations_id_relationships_discovery_mixes_get(
 }
 
 /// Retrieves myMixes relationship.
+///
+/// # Parameters
+/// * `id` - User id (e.g. "123456")
+/// * `locale` - BCP47 locale code (e.g. "en-US")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn user_recommendations_id_relationships_my_mixes_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
-    include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
-    let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!(
@@ -134,25 +122,7 @@ pub async fn user_recommendations_id_relationships_my_mixes_get(
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "myMixes")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -161,17 +131,20 @@ pub async fn user_recommendations_id_relationships_my_mixes_get(
 }
 
 /// Retrieves newArrivalMixes relationship.
+///
+/// # Parameters
+/// * `id` - User id (e.g. "123456")
+/// * `locale` - BCP47 locale code (e.g. "en-US")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn user_recommendations_id_relationships_new_arrival_mixes_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
-    include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
-    let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!(
@@ -183,25 +156,7 @@ pub async fn user_recommendations_id_relationships_new_arrival_mixes_get(
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "newArrivalMixes")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }

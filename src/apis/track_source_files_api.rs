@@ -109,15 +109,17 @@ pub async fn track_source_files_id_get(
 }
 
 /// Retrieves owners relationship.
+///
+/// # Parameters
+/// * `id` - Track source file id (e.g. "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn track_source_files_id_relationships_owners_get(
     configuration: &configuration::Configuration,
     id: &str,
-    include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!(
@@ -127,25 +129,7 @@ pub async fn track_source_files_id_relationships_owners_get(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "owners")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }

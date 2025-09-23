@@ -90,13 +90,18 @@ pub async fn user_collections_id_relationships_albums_delete(
 }
 
 /// Retrieves albums relationship.
+///
+/// # Parameters
+/// * `id` - User id (e.g. "123456")
+/// * `locale` - BCP 47 locale (e.g. "en-US")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+/// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
 pub async fn user_collections_id_relationships_albums_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
-    include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::UserCollectionsAlbumsResourceIdentifier>,
     Error<ApiError>,
@@ -106,7 +111,6 @@ pub async fn user_collections_id_relationships_albums_get(
     let p_locale = locale;
     let p_page_cursor = page_cursor;
     let p_sort = sort;
-    let p_include = include;
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/albums",
@@ -139,25 +143,7 @@ pub async fn user_collections_id_relationships_albums_get(
             )]),
         };
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "albums")]);
 
     configuration.execute_request(req_builder).await
 }
@@ -219,13 +205,18 @@ pub async fn user_collections_id_relationships_artists_delete(
 }
 
 /// Retrieves artists relationship.
+///
+/// # Parameters
+/// * `id` - User id (e.g. "123456")
+/// * `locale` - BCP 47 locale (e.g. "en-US")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+/// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
 pub async fn user_collections_id_relationships_artists_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
-    include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::UserCollectionsArtistsResourceIdentifier>,
     Error<ApiError>,
@@ -235,7 +226,6 @@ pub async fn user_collections_id_relationships_artists_get(
     let p_locale = locale;
     let p_page_cursor = page_cursor;
     let p_sort = sort;
-    let p_include = include;
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/artists",
@@ -268,25 +258,7 @@ pub async fn user_collections_id_relationships_artists_get(
             )]),
         };
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "artists")]);
 
     configuration.execute_request(req_builder).await
 }
@@ -320,15 +292,17 @@ pub async fn user_collections_id_relationships_artists_post(
 }
 
 /// Retrieves owners relationship.
+///
+/// # Parameters
+/// * `id` - User id (e.g. "123456")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn user_collections_id_relationships_owners_get(
     configuration: &configuration::Configuration,
     id: &str,
-    include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!(
@@ -338,25 +312,7 @@ pub async fn user_collections_id_relationships_owners_get(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "owners")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -393,12 +349,16 @@ pub async fn user_collections_id_relationships_playlists_delete(
 }
 
 /// Retrieves playlists relationship.
+///
+/// # Parameters
+/// * `id` - User id (e.g. "123456")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+/// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
 pub async fn user_collections_id_relationships_playlists_get(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
-    include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::UserCollectionsPlaylistsResourceIdentifier>,
     Error<ApiError>,
@@ -407,7 +367,6 @@ pub async fn user_collections_id_relationships_playlists_get(
     let p_id = id;
     let p_page_cursor = page_cursor;
     let p_sort = sort;
-    let p_include = include;
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/playlists",
@@ -438,25 +397,7 @@ pub async fn user_collections_id_relationships_playlists_get(
             )]),
         };
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "playlists")]);
 
     configuration.execute_request(req_builder).await
 }
@@ -517,13 +458,18 @@ pub async fn user_collections_id_relationships_tracks_delete(
 }
 
 /// Retrieves tracks relationship.
+///
+/// # Parameters
+/// * `id` - User id (e.g. "123456")
+/// * `locale` - BCP 47 locale (e.g. "en-US")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+/// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
 pub async fn user_collections_id_relationships_tracks_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
-    include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::UserCollectionsTracksResourceIdentifier>,
     Error<ApiError>,
@@ -533,7 +479,6 @@ pub async fn user_collections_id_relationships_tracks_get(
     let p_locale = locale;
     let p_page_cursor = page_cursor;
     let p_sort = sort;
-    let p_include = include;
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/tracks",
@@ -566,25 +511,7 @@ pub async fn user_collections_id_relationships_tracks_get(
             )]),
         };
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "tracks")]);
 
     configuration.execute_request(req_builder).await
 }
@@ -645,13 +572,18 @@ pub async fn user_collections_id_relationships_videos_delete(
 }
 
 /// Retrieves videos relationship.
+///
+/// # Parameters
+/// * `id` - User id (e.g. "123456")
+/// * `locale` - BCP 47 locale (e.g. "en-US")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+/// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
 pub async fn user_collections_id_relationships_videos_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
-    include: Option<Vec<String>>,
 ) -> Result<
     models::MultiRelationship<models::UserCollectionsVideosResourceIdentifier>,
     Error<ApiError>,
@@ -661,7 +593,6 @@ pub async fn user_collections_id_relationships_videos_get(
     let p_locale = locale;
     let p_page_cursor = page_cursor;
     let p_sort = sort;
-    let p_include = include;
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/videos",
@@ -694,25 +625,7 @@ pub async fn user_collections_id_relationships_videos_get(
             )]),
         };
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "videos")]);
 
     configuration.execute_request(req_builder).await
 }

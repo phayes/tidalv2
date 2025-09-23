@@ -223,17 +223,14 @@ pub async fn albums_id_patch(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: artists (e.g. "artists")
 pub async fn albums_id_relationships_artists_get(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
-    let p_include = include;
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/artists",
@@ -246,25 +243,7 @@ pub async fn albums_id_relationships_artists_get(
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "artists")]);
 
     configuration.execute_request(req_builder).await
 }
@@ -274,17 +253,14 @@ pub async fn albums_id_relationships_artists_get(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: coverArt (e.g. "coverArt")
 pub async fn albums_id_relationships_cover_art_get(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
-    let p_include = include;
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/coverArt",
@@ -297,25 +273,7 @@ pub async fn albums_id_relationships_cover_art_get(
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "coverArt")]);
 
     configuration.execute_request(req_builder).await
 }
@@ -355,17 +313,14 @@ pub async fn albums_id_relationships_cover_art_patch(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: genres (e.g. "genres")
 pub async fn albums_id_relationships_genres_get(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
-    let p_include = include;
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/genres",
@@ -378,25 +333,7 @@ pub async fn albums_id_relationships_genres_get(
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "genres")]);
 
     configuration.execute_request(req_builder).await
 }
@@ -406,17 +343,14 @@ pub async fn albums_id_relationships_genres_get(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: items (e.g. "items")
 pub async fn albums_id_relationships_items_get(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
 ) -> Result<models::MultiRelationship<models::AlbumsItemsResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
-    let p_include = include;
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/items",
@@ -429,25 +363,7 @@ pub async fn albums_id_relationships_items_get(
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "items")]);
 
     configuration.execute_request(req_builder).await
 }
@@ -456,17 +372,14 @@ pub async fn albums_id_relationships_items_get(
 ///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn albums_id_relationships_owners_get(
     configuration: &configuration::Configuration,
     id: &str,
-    include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!(
@@ -476,25 +389,7 @@ pub async fn albums_id_relationships_owners_get(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "owners")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -506,17 +401,14 @@ pub async fn albums_id_relationships_owners_get(
 ///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: providers (e.g. "providers")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn albums_id_relationships_providers_get(
     configuration: &configuration::Configuration,
     id: &str,
-    include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!(
@@ -527,25 +419,7 @@ pub async fn albums_id_relationships_providers_get(
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "providers")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -558,17 +432,14 @@ pub async fn albums_id_relationships_providers_get(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: similarAlbums (e.g. "similarAlbums")
 pub async fn albums_id_relationships_similar_albums_get(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
-    let p_include = include;
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/similarAlbums",
@@ -581,25 +452,7 @@ pub async fn albums_id_relationships_similar_albums_get(
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "similarAlbums")]);
 
     configuration.execute_request(req_builder).await
 }

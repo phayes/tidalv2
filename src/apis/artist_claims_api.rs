@@ -88,17 +88,14 @@ pub async fn artist_claims_id_patch(
 ///
 /// # Parameters
 /// * `id` - Artist claim id (e.g. "f47ac10b-58cc-4372-a567-0e02b2c3d479")
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: acceptedArtists (e.g. "acceptedArtists")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn artist_claims_id_relationships_accepted_artists_get(
     configuration: &configuration::Configuration,
     id: &str,
-    include: Option<Vec<String>>,
     page_cursor: Option<&str>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_include = include;
     let p_page_cursor = page_cursor;
 
     let uri_str = format!(
@@ -108,25 +105,7 @@ pub async fn artist_claims_id_relationships_accepted_artists_get(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
+    req_builder = req_builder.query(&[("include", "acceptedArtists")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
