@@ -31,7 +31,7 @@ pub enum IncludedInner {
     #[serde(rename = "genres")]
     Genres(models::Genre),
     #[serde(rename = "lyrics")]
-    Lyrics(models::Lyric),
+    Lyrics(models::Lyrics),
     #[serde(rename = "playlists")]
     Playlists(models::Playlist),
     #[serde(rename = "providers")]
@@ -47,7 +47,7 @@ pub enum IncludedInner {
     #[serde(rename = "trackSourceFiles")]
     TrackSourceFiles(models::TrackSourceFile),
     #[serde(rename = "trackStatistics")]
-    TrackStatistics(models::TrackStatistic),
+    TrackStatistics(models::TrackStatistics),
     #[serde(rename = "tracks")]
     Tracks(models::Track),
     #[serde(rename = "userCollections")]

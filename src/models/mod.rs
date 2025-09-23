@@ -217,7 +217,7 @@ pub use self::lyrics_create_operation_payload_meta::LyricsCreateOperationPayload
 pub mod lyrics_relationships;
 pub use self::lyrics_relationships::LyricsRelationships;
 pub mod lyrics_resource_object;
-pub use self::lyrics_resource_object::Lyric;
+pub use self::lyrics_resource_object::Lyrics;
 pub mod lyrics_update_operation_payload;
 pub use self::lyrics_update_operation_payload::LyricsUpdateOperationPayload;
 pub mod lyrics_update_operation_payload_data;
@@ -343,7 +343,7 @@ pub use self::track_statistics_attributes::TrackStatisticsAttributes;
 pub mod track_statistics_relationships;
 pub use self::track_statistics_relationships::TrackStatisticsRelationships;
 pub mod track_statistics_resource_object;
-pub use self::track_statistics_resource_object::TrackStatistic;
+pub use self::track_statistics_resource_object::TrackStatistics;
 pub mod track_update_operation_payload;
 pub use self::track_update_operation_payload::TrackUpdateOperationPayload;
 pub mod track_update_operation_payload_data;

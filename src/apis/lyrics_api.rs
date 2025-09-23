@@ -22,7 +22,7 @@ pub async fn lyrics_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::Lyric>, Error<ApiError>> {
+) -> Result<models::MultiResource<models::Lyrics>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_id = filter_id;
@@ -83,8 +83,8 @@ pub async fn lyrics_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiResource<models::Lyric>`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiResource<models::Lyric>`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiResource<models::Lyrics>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiResource<models::Lyrics>`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -106,7 +106,7 @@ pub async fn lyrics_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::Lyric>, Error<ApiError>> {
+) -> Result<models::Resource<models::Lyrics>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -152,8 +152,8 @@ pub async fn lyrics_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Lyric>`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Lyric>`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Lyrics>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Lyrics>`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -348,7 +348,7 @@ pub async fn lyrics_id_relationships_track_get(
 pub async fn lyrics_post(
     configuration: &configuration::Configuration,
     lyrics_create_operation_payload: Option<models::LyricsCreateOperationPayload>,
-) -> Result<models::Resource<models::Lyric>, Error<ApiError>> {
+) -> Result<models::Resource<models::Lyrics>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_lyrics_create_operation_payload = lyrics_create_operation_payload;
 
@@ -373,8 +373,8 @@ pub async fn lyrics_post(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Lyric>`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Lyric>`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Lyrics>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Lyrics>`")))),
         }
     } else {
         let content = resp.text().await?;

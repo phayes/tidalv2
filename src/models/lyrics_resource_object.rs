@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Lyric {
+pub struct Lyrics {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
     pub attributes: Option<models::LyricsAttributes>,
     /// Resource id
@@ -25,9 +25,9 @@ pub struct Lyric {
     pub r#type: String,
 }
 
-impl Lyric {
-    pub fn new(id: String, r#type: String) -> Lyric {
-        Lyric {
+impl Lyrics {
+    pub fn new(id: String, r#type: String) -> Lyrics {
+        Lyrics {
             attributes: None,
             id,
             relationships: None,
