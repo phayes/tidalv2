@@ -14,6 +14,10 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple artistBiographies by available filters, or without if applicable.
+/// 
+/// # Parameters
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
+/// * `filter_id` - Artist id (e.g. "1566")
 pub async fn artist_biographies_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
@@ -95,6 +99,10 @@ pub async fn artist_biographies_get(
 }
 
 /// Retrieves single artistBiographie by id.
+/// 
+/// # Parameters
+/// * `id` - Artist id (e.g. "1566")
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
 pub async fn artist_biographies_id_get(
     configuration: &configuration::Configuration,
     id: &str,
@@ -161,6 +169,9 @@ pub async fn artist_biographies_id_get(
 }
 
 /// Updates existing artistBiographie.
+/// 
+/// # Parameters
+/// * `id` - Artist id (e.g. "1566")
 pub async fn artist_biographies_id_patch(
     configuration: &configuration::Configuration,
     id: &str,
@@ -199,6 +210,11 @@ pub async fn artist_biographies_id_patch(
 }
 
 /// Retrieves owners relationship.
+/// 
+/// # Parameters
+/// * `id` - Artist id (e.g. "1566")
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn artist_biographies_id_relationships_owners_get(
     configuration: &configuration::Configuration,
     id: &str,

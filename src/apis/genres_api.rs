@@ -14,6 +14,10 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple genres by available filters, or without if applicable.
+/// 
+/// # Parameters
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+/// * `filter_id` - Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. "'1,2,3' or 'USER_SELECTABLE'")
 pub async fn genres_get(
     configuration: &configuration::Configuration,
     page_cursor: Option<&str>,
@@ -78,6 +82,9 @@ pub async fn genres_get(
 }
 
 /// Retrieves single genre by id.
+/// 
+/// # Parameters
+/// * `id` - Genre id (e.g. "'1,2,3' or 'USER_SELECTABLE'")
 pub async fn genres_id_get(
     configuration: &configuration::Configuration,
     id: &str,

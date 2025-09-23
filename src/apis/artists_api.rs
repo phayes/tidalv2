@@ -14,6 +14,11 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple artists by available filters, or without if applicable.
+/// 
+/// # Parameters
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos (e.g. "albums")
+/// * `filter_handle` - Artist handle (e.g. "jayz")
+/// * `filter_id` - Artist id (e.g. "1566")
 pub async fn artists_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
@@ -116,6 +121,10 @@ pub async fn artists_get(
 }
 
 /// Retrieves single artist by id.
+/// 
+/// # Parameters
+/// * `id` - Artist id (e.g. "1566")
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos (e.g. "albums")
 pub async fn artists_id_get(
     configuration: &configuration::Configuration,
     id: &str,
@@ -182,6 +191,9 @@ pub async fn artists_id_get(
 }
 
 /// Updates existing artist.
+/// 
+/// # Parameters
+/// * `id` - Artist id (e.g. "1566")
 pub async fn artists_id_patch(
     configuration: &configuration::Configuration,
     id: &str,
@@ -220,6 +232,11 @@ pub async fn artists_id_patch(
 }
 
 /// Retrieves albums relationship.
+/// 
+/// # Parameters
+/// * `id` - Artist id (e.g. "1566")
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: albums (e.g. "albums")
 pub async fn artists_id_relationships_albums_get(
     configuration: &configuration::Configuration,
     id: &str,
@@ -291,6 +308,10 @@ pub async fn artists_id_relationships_albums_get(
 }
 
 /// Retrieves biography relationship.
+/// 
+/// # Parameters
+/// * `id` - Artist id (e.g. "1566")
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: biography (e.g. "biography")
 pub async fn artists_id_relationships_biography_get(
     configuration: &configuration::Configuration,
     id: &str,

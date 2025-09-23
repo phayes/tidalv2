@@ -14,6 +14,13 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple playlists by available filters, or without if applicable.
+/// 
+/// # Parameters
+/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+/// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending (e.g. "createdAt")
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners (e.g. "coverArt")
+/// * `filter_owners_period_id` - User id (e.g. "123456")
+/// * `filter_id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
 pub async fn playlists_get(
     configuration: &configuration::Configuration,
     page_cursor: Option<&str>,

@@ -14,6 +14,10 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple lyrics by available filters, or without if applicable.
+/// 
+/// # Parameters
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: owners, track (e.g. "owners")
+/// * `filter_id` - Lyrics Id (e.g. "nejMcAhh5N8S3EQ4LaqysVdI0cZZ")
 pub async fn lyrics_get(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
@@ -94,6 +98,10 @@ pub async fn lyrics_get(
 }
 
 /// Retrieves single lyric by id.
+/// 
+/// # Parameters
+/// * `id` - Lyrics Id (e.g. "nejMcAhh5N8S3EQ4LaqysVdI0cZZ")
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: owners, track (e.g. "owners")
 pub async fn lyrics_id_get(
     configuration: &configuration::Configuration,
     id: &str,
@@ -334,6 +342,9 @@ pub async fn lyrics_id_relationships_track_get(
 }
 
 /// Creates a new lyric.
+/// 
+/// # Parameters
+/// * `lyrics_create_operation_payload` - Request body payload for creating a new lyric
 pub async fn lyrics_post(
     configuration: &configuration::Configuration,
     lyrics_create_operation_payload: Option<models::LyricsCreateOperationPayload>,

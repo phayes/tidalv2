@@ -14,6 +14,9 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Creates a new userReport.
+/// 
+/// # Parameters
+/// * `user_report_create_operation_payload` - Request body payload for creating a new user report
 pub async fn user_reports_post(
     configuration: &configuration::Configuration,
     user_report_create_operation_payload: Option<models::UserReportCreateOperationPayload>,

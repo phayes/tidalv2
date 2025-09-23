@@ -14,6 +14,9 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves current user's user(s).
+/// 
+/// # Parameters
+/// This endpoint takes no parameters.
 pub async fn users_me_get(
     configuration: &configuration::Configuration,
 ) -> Result<models::Resource<models::User>, Error<ApiError>> {

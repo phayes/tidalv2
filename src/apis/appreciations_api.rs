@@ -14,6 +14,9 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Creates a new appreciation.
+/// 
+/// # Parameters
+/// * `appreciations_create_operation_payload` - Request body payload for creating a new appreciation
 pub async fn appreciations_post(
     configuration: &configuration::Configuration,
     appreciations_create_operation_payload: Option<models::AppreciationsCreateOperationPayload>,

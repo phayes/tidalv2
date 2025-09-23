@@ -14,6 +14,11 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves single userRecommendation by id.
+/// 
+/// # Parameters
+/// * `id` - User id (e.g. "123456")
+/// * `locale` - BCP47 locale code (e.g. "en-US")
+/// * `include` - Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes (e.g. "discoveryMixes")
 pub async fn user_recommendations_id_get(
     configuration: &configuration::Configuration,
     id: &str,
