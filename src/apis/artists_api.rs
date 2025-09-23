@@ -152,7 +152,6 @@ pub async fn artists_id_get(
     configuration.execute_request(req_builder).await
 }
 
-
 /// Retrieves albums relationship.
 ///
 /// # Parameters
@@ -206,10 +205,6 @@ pub async fn artists_id_relationships_biography_get(
 
     configuration.execute_request(req_builder).await
 }
-
-
-
-
 
 /// Retrieves owners relationship.
 pub async fn artists_id_relationships_owners_get(
@@ -301,7 +296,6 @@ pub async fn artists_id_relationships_profile_art_get(
 
     configuration.execute_request(req_builder).await
 }
-
 
 /// Retrieves radio relationship.
 pub async fn artists_id_relationships_radio_get(
@@ -582,4 +576,3 @@ pub async fn artists_id_relationships_videos_get(
 
     configuration.execute_request(req_builder).await
 }
-

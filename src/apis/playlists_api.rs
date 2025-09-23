@@ -239,7 +239,6 @@ pub async fn playlists_id_relationships_cover_art_get(
     configuration.execute_request(req_builder).await
 }
 
-
 /// Deletes item(s) from items relationship.
 pub async fn playlists_id_relationships_items_delete(
     configuration: &configuration::Configuration,

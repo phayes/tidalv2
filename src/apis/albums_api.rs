@@ -123,7 +123,6 @@ pub async fn albums_get(
     configuration.execute_request(req_builder).await
 }
 
-
 /// Retrieves single album by id.
 ///
 /// # Parameters
@@ -168,7 +167,6 @@ pub async fn albums_id_get(
 
     configuration.execute_request(req_builder).await
 }
-
 
 /// Retrieves artists relationship.
 ///
@@ -229,8 +227,6 @@ pub async fn albums_id_relationships_cover_art_get(
 
     configuration.execute_request(req_builder).await
 }
-
-
 
 /// Retrieves items relationship.
 ///
@@ -350,4 +346,3 @@ pub async fn albums_id_relationships_similar_albums_get(
 
     configuration.execute_request(req_builder).await
 }
-

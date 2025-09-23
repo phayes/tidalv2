@@ -123,7 +123,6 @@ pub async fn tracks_get(
     configuration.execute_request(req_builder).await
 }
 
-
 /// Retrieves single track by id.
 ///
 /// # Parameters
@@ -168,7 +167,6 @@ pub async fn tracks_id_get(
 
     configuration.execute_request(req_builder).await
 }
-
 
 /// Retrieves albums relationship.
 ///
@@ -229,7 +227,6 @@ pub async fn tracks_id_relationships_artists_get(
 
     configuration.execute_request(req_builder).await
 }
-
 
 /// Retrieves lyrics relationship.
 ///
@@ -423,4 +420,3 @@ pub async fn tracks_id_relationships_track_statistics_get(
 
     configuration.execute_request(req_builder).await
 }
-

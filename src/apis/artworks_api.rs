@@ -138,4 +138,3 @@ pub async fn artworks_id_relationships_owners_get(
 
     configuration.execute_request(req_builder).await
 }
-
