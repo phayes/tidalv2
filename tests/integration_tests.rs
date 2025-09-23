@@ -478,3 +478,4 @@ impl ResourceWalker {
         }
     }
 }
+
