@@ -91,10 +91,7 @@ pub async fn search_results_id_relationships_albums_get(
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -154,8 +151,7 @@ pub async fn search_results_id_relationships_albums_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -171,10 +167,7 @@ pub async fn search_results_id_relationships_artists_get(
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -234,8 +227,7 @@ pub async fn search_results_id_relationships_artists_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -251,10 +243,7 @@ pub async fn search_results_id_relationships_playlists_get(
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -314,8 +303,7 @@ pub async fn search_results_id_relationships_playlists_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -331,10 +319,7 @@ pub async fn search_results_id_relationships_top_hits_get(
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -394,8 +379,7 @@ pub async fn search_results_id_relationships_top_hits_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -411,10 +395,7 @@ pub async fn search_results_id_relationships_tracks_get(
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -474,8 +455,7 @@ pub async fn search_results_id_relationships_tracks_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -491,10 +471,7 @@ pub async fn search_results_id_relationships_videos_get(
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -554,8 +531,7 @@ pub async fn search_results_id_relationships_videos_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

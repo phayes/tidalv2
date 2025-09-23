@@ -285,10 +285,7 @@ pub async fn tracks_id_relationships_albums_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -344,8 +341,7 @@ pub async fn tracks_id_relationships_albums_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -360,10 +356,7 @@ pub async fn tracks_id_relationships_artists_get(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -419,8 +412,7 @@ pub async fn tracks_id_relationships_artists_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -435,10 +427,7 @@ pub async fn tracks_id_relationships_genres_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -494,8 +483,7 @@ pub async fn tracks_id_relationships_genres_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -510,10 +498,7 @@ pub async fn tracks_id_relationships_lyrics_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -568,8 +553,7 @@ pub async fn tracks_id_relationships_lyrics_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -584,10 +568,7 @@ pub async fn tracks_id_relationships_owners_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -642,8 +623,7 @@ pub async fn tracks_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -658,10 +638,7 @@ pub async fn tracks_id_relationships_providers_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -717,8 +694,7 @@ pub async fn tracks_id_relationships_providers_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -733,10 +709,7 @@ pub async fn tracks_id_relationships_radio_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -791,8 +764,7 @@ pub async fn tracks_id_relationships_radio_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -807,10 +779,7 @@ pub async fn tracks_id_relationships_similar_tracks_get(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -866,8 +835,7 @@ pub async fn tracks_id_relationships_similar_tracks_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -932,8 +900,7 @@ pub async fn tracks_id_relationships_source_file_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -998,8 +965,7 @@ pub async fn tracks_id_relationships_track_statistics_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

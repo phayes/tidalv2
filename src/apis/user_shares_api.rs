@@ -185,10 +185,7 @@ pub async fn user_shares_id_relationships_owners_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -243,8 +240,7 @@ pub async fn user_shares_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -259,10 +255,7 @@ pub async fn user_shares_id_relationships_shared_resources_get(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -317,8 +310,7 @@ pub async fn user_shares_id_relationships_shared_resources_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

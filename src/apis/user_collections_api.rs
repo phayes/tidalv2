@@ -114,8 +114,7 @@ pub async fn user_collections_id_relationships_albums_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -213,8 +212,7 @@ pub async fn user_collections_id_relationships_albums_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -256,8 +254,7 @@ pub async fn user_collections_id_relationships_albums_post(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -299,8 +296,7 @@ pub async fn user_collections_id_relationships_artists_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -398,8 +394,7 @@ pub async fn user_collections_id_relationships_artists_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -441,8 +436,7 @@ pub async fn user_collections_id_relationships_artists_post(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -457,10 +451,7 @@ pub async fn user_collections_id_relationships_owners_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -515,8 +506,7 @@ pub async fn user_collections_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -558,8 +548,7 @@ pub async fn user_collections_id_relationships_playlists_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -653,8 +642,7 @@ pub async fn user_collections_id_relationships_playlists_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -696,8 +684,7 @@ pub async fn user_collections_id_relationships_playlists_post(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -738,8 +725,7 @@ pub async fn user_collections_id_relationships_tracks_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -837,8 +823,7 @@ pub async fn user_collections_id_relationships_tracks_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -880,8 +865,7 @@ pub async fn user_collections_id_relationships_tracks_post(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -922,8 +906,7 @@ pub async fn user_collections_id_relationships_videos_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -1021,8 +1004,7 @@ pub async fn user_collections_id_relationships_videos_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -1064,8 +1046,7 @@ pub async fn user_collections_id_relationships_videos_post(
         Ok(())
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

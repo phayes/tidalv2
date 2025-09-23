@@ -89,10 +89,7 @@ pub async fn user_recommendations_id_relationships_discovery_mixes_get(
     locale: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
@@ -150,8 +147,7 @@ pub async fn user_recommendations_id_relationships_discovery_mixes_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -167,10 +163,7 @@ pub async fn user_recommendations_id_relationships_my_mixes_get(
     locale: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
@@ -228,8 +221,7 @@ pub async fn user_recommendations_id_relationships_my_mixes_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -245,10 +237,7 @@ pub async fn user_recommendations_id_relationships_new_arrival_mixes_get(
     locale: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier>,
-    Error<ApiError>,
-> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
@@ -306,8 +295,7 @@ pub async fn user_recommendations_id_relationships_new_arrival_mixes_get(
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ApiError> =
-            serde_json::from_str(&content).ok();
+        let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
