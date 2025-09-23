@@ -37,7 +37,7 @@ pub async fn videos_get(
     include: Option<Vec<String>>,
     filter_isrc: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::VideosMultiResourceDataDocument, Error<VideosGetError>> {
+) -> Result<models::MultiResource<models::Video>, Error<VideosGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_isrc = filter_isrc;
@@ -119,8 +119,8 @@ pub async fn videos_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::VideosMultiResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::VideosMultiResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiResource<models::Video>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiResource<models::Video>`")))),
         }
     } else {
         let content = resp.text().await?;

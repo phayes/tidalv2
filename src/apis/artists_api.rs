@@ -76,7 +76,7 @@ pub async fn artists_get(
     include: Option<Vec<String>>,
     filter_handle: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::ArtistsMultiResourceDataDocument, Error<ArtistsGetError>> {
+) -> Result<models::MultiResource<models::Artist>, Error<ArtistsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_handle = filter_handle;
@@ -158,8 +158,8 @@ pub async fn artists_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ArtistsMultiResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ArtistsMultiResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiResource<models::Artist>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiResource<models::Artist>`")))),
         }
     } else {
         let content = resp.text().await?;

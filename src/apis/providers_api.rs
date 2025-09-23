@@ -23,7 +23,7 @@ pub type ProvidersIdGetError = ApiError;
 pub async fn providers_get(
     configuration: &configuration::Configuration,
     filter_id: Option<Vec<String>>,
-) -> Result<models::ProvidersMultiResourceDataDocument, Error<ProvidersGetError>> {
+) -> Result<models::MultiResource<models::Provider>, Error<ProvidersGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_filter_id = filter_id;
 
@@ -64,8 +64,8 @@ pub async fn providers_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ProvidersMultiResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ProvidersMultiResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiResource<models::Provider>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiResource<models::Provider>`")))),
         }
     } else {
         let content = resp.text().await?;

@@ -40,8 +40,6 @@ pub mod albums_items_resource_identifier_meta;
 pub use self::albums_items_resource_identifier_meta::AlbumsItemsResourceIdentifierMeta;
 pub mod albums_multi_relationship_data_document;
 pub use self::albums_multi_relationship_data_document::AlbumsMultiRelationshipDataDocument;
-pub mod albums_multi_resource_data_document;
-pub use self::albums_multi_resource_data_document::AlbumsMultiResourceDataDocument;
 pub mod albums_relationships;
 pub use self::albums_relationships::AlbumsRelationships;
 pub mod albums_resource_object;
@@ -60,16 +58,12 @@ pub mod appreciations_create_operation_payload_data_relationships_appreciated_it
 pub use self::appreciations_create_operation_payload_data_relationships_appreciated_item::AppreciationsCreateOperationPayloadDataRelationshipsAppreciatedItem;
 pub mod appreciations_create_operation_payload_data_relationships_appreciated_item_data;
 pub use self::appreciations_create_operation_payload_data_relationships_appreciated_item_data::AppreciationsCreateOperationPayloadDataRelationshipsAppreciatedItemData;
-pub mod appreciations_multi_resource_data_document;
-pub use self::appreciations_multi_resource_data_document::AppreciationsMultiResourceDataDocument;
 pub mod appreciations_resource_object;
 pub use self::appreciations_resource_object::Appreciation;
 pub mod artist_biographies_attributes;
 pub use self::artist_biographies_attributes::ArtistBiographiesAttributes;
 pub mod artist_biographies_multi_relationship_data_document;
 pub use self::artist_biographies_multi_relationship_data_document::ArtistBiographiesMultiRelationshipDataDocument;
-pub mod artist_biographies_multi_resource_data_document;
-pub use self::artist_biographies_multi_resource_data_document::ArtistBiographiesMultiResourceDataDocument;
 pub mod artist_biographies_relationships;
 pub use self::artist_biographies_relationships::ArtistBiographiesRelationships;
 pub mod artist_biographies_resource_object;
@@ -94,8 +88,6 @@ pub mod artist_claims_create_operation_payload_data_attributes;
 pub use self::artist_claims_create_operation_payload_data_attributes::ArtistClaimsCreateOperationPayloadDataAttributes;
 pub mod artist_claims_multi_relationship_data_document;
 pub use self::artist_claims_multi_relationship_data_document::ArtistClaimsMultiRelationshipDataDocument;
-pub mod artist_claims_multi_resource_data_document;
-pub use self::artist_claims_multi_resource_data_document::ArtistClaimsMultiResourceDataDocument;
 pub mod artist_claims_relationships;
 pub use self::artist_claims_relationships::ArtistClaimsRelationships;
 pub mod artist_claims_resource_object;
@@ -128,8 +120,6 @@ pub mod artist_profile_art_relationship_update_operation_payload_data;
 pub use self::artist_profile_art_relationship_update_operation_payload_data::ArtistProfileArtRelationshipUpdateOperationPayloadData;
 pub mod artist_roles_attributes;
 pub use self::artist_roles_attributes::ArtistRolesAttributes;
-pub mod artist_roles_multi_resource_data_document;
-pub use self::artist_roles_multi_resource_data_document::ArtistRolesMultiResourceDataDocument;
 pub mod artist_roles_resource_object;
 pub use self::artist_roles_resource_object::ArtistRole;
 pub mod artist_update_body;
@@ -158,8 +148,6 @@ pub mod artists_following_resource_identifier_meta;
 pub use self::artists_following_resource_identifier_meta::ArtistsFollowingResourceIdentifierMeta;
 pub mod artists_multi_relationship_data_document;
 pub use self::artists_multi_relationship_data_document::ArtistsMultiRelationshipDataDocument;
-pub mod artists_multi_resource_data_document;
-pub use self::artists_multi_resource_data_document::ArtistsMultiResourceDataDocument;
 pub mod artists_relationships;
 pub use self::artists_relationships::ArtistsRelationships;
 pub mod artists_resource_object;
@@ -190,8 +178,6 @@ pub mod artworks_attributes;
 pub use self::artworks_attributes::ArtworksAttributes;
 pub mod artworks_multi_relationship_data_document;
 pub use self::artworks_multi_relationship_data_document::ArtworksMultiRelationshipDataDocument;
-pub mod artworks_multi_resource_data_document;
-pub use self::artworks_multi_resource_data_document::ArtworksMultiResourceDataDocument;
 pub mod artworks_relationships;
 pub use self::artworks_relationships::ArtworksRelationships;
 pub mod artworks_resource_object;
@@ -226,8 +212,6 @@ pub mod file_upload_link_meta;
 pub use self::file_upload_link_meta::FileUploadLinkMeta;
 pub mod genres_attributes;
 pub use self::genres_attributes::GenresAttributes;
-pub mod genres_multi_resource_data_document;
-pub use self::genres_multi_resource_data_document::GenresMultiResourceDataDocument;
 pub mod genres_resource_object;
 pub use self::genres_resource_object::Genre;
 pub mod included_inner;
@@ -252,8 +236,6 @@ pub mod lyrics_create_operation_payload_meta;
 pub use self::lyrics_create_operation_payload_meta::LyricsCreateOperationPayloadMeta;
 pub mod lyrics_multi_relationship_data_document;
 pub use self::lyrics_multi_relationship_data_document::LyricsMultiRelationshipDataDocument;
-pub mod lyrics_multi_resource_data_document;
-pub use self::lyrics_multi_resource_data_document::LyricsMultiResourceDataDocument;
 pub mod lyrics_relationships;
 pub use self::lyrics_relationships::LyricsRelationships;
 pub mod lyrics_resource_object;
@@ -314,16 +296,12 @@ pub mod playlists_items_resource_identifier_meta;
 pub use self::playlists_items_resource_identifier_meta::PlaylistsItemsResourceIdentifierMeta;
 pub mod playlists_multi_relationship_data_document;
 pub use self::playlists_multi_relationship_data_document::PlaylistsMultiRelationshipDataDocument;
-pub mod playlists_multi_resource_data_document;
-pub use self::playlists_multi_resource_data_document::PlaylistsMultiResourceDataDocument;
 pub mod playlists_relationships;
 pub use self::playlists_relationships::PlaylistsRelationships;
 pub mod playlists_resource_object;
 pub use self::playlists_resource_object::Playlist;
 pub mod providers_attributes;
 pub use self::providers_attributes::ProvidersAttributes;
-pub mod providers_multi_resource_data_document;
-pub use self::providers_multi_resource_data_document::ProvidersMultiResourceDataDocument;
 pub mod providers_resource_object;
 pub use self::providers_resource_object::Provider;
 pub mod resource_identifier;
@@ -334,8 +312,6 @@ pub mod search_results_attributes;
 pub use self::search_results_attributes::SearchResultsAttributes;
 pub mod search_results_multi_relationship_data_document;
 pub use self::search_results_multi_relationship_data_document::SearchResultsMultiRelationshipDataDocument;
-pub mod search_results_multi_resource_data_document;
-pub use self::search_results_multi_resource_data_document::SearchResultsMultiResourceDataDocument;
 pub mod search_results_relationships;
 pub use self::search_results_relationships::SearchResultsRelationships;
 pub mod search_results_resource_object;
@@ -348,8 +324,6 @@ pub mod search_suggestions_history;
 pub use self::search_suggestions_history::SearchSuggestionsHistory;
 pub mod search_suggestions_multi_relationship_data_document;
 pub use self::search_suggestions_multi_relationship_data_document::SearchSuggestionsMultiRelationshipDataDocument;
-pub mod search_suggestions_multi_resource_data_document;
-pub use self::search_suggestions_multi_resource_data_document::SearchSuggestionsMultiResourceDataDocument;
 pub mod search_suggestions_relationships;
 pub use self::search_suggestions_relationships::SearchSuggestionsRelationships;
 pub mod search_suggestions_resource_object;
@@ -380,14 +354,10 @@ pub mod track_create_operation_payload_data_relationships_genres_data;
 pub use self::track_create_operation_payload_data_relationships_genres_data::TrackCreateOperationPayloadDataRelationshipsGenresData;
 pub mod track_files_attributes;
 pub use self::track_files_attributes::TrackFilesAttributes;
-pub mod track_files_multi_resource_data_document;
-pub use self::track_files_multi_resource_data_document::TrackFilesMultiResourceDataDocument;
 pub mod track_files_resource_object;
 pub use self::track_files_resource_object::TrackFile;
 pub mod track_manifests_attributes;
 pub use self::track_manifests_attributes::TrackManifestsAttributes;
-pub mod track_manifests_multi_resource_data_document;
-pub use self::track_manifests_multi_resource_data_document::TrackManifestsMultiResourceDataDocument;
 pub mod track_manifests_resource_object;
 pub use self::track_manifests_resource_object::TrackManifest;
 pub mod track_source_file_create_operation_payload;
@@ -402,8 +372,6 @@ pub mod track_source_files_attributes;
 pub use self::track_source_files_attributes::TrackSourceFilesAttributes;
 pub mod track_source_files_multi_relationship_data_document;
 pub use self::track_source_files_multi_relationship_data_document::TrackSourceFilesMultiRelationshipDataDocument;
-pub mod track_source_files_multi_resource_data_document;
-pub use self::track_source_files_multi_resource_data_document::TrackSourceFilesMultiResourceDataDocument;
 pub mod track_source_files_relationships;
 pub use self::track_source_files_relationships::TrackSourceFilesRelationships;
 pub mod track_source_files_resource_object;
@@ -412,8 +380,6 @@ pub mod track_statistics_attributes;
 pub use self::track_statistics_attributes::TrackStatisticsAttributes;
 pub mod track_statistics_multi_relationship_data_document;
 pub use self::track_statistics_multi_relationship_data_document::TrackStatisticsMultiRelationshipDataDocument;
-pub mod track_statistics_multi_resource_data_document;
-pub use self::track_statistics_multi_resource_data_document::TrackStatisticsMultiResourceDataDocument;
 pub mod track_statistics_relationships;
 pub use self::track_statistics_relationships::TrackStatisticsRelationships;
 pub mod track_statistics_resource_object;
@@ -434,8 +400,6 @@ pub mod tracks_attributes;
 pub use self::tracks_attributes::TracksAttributes;
 pub mod tracks_multi_relationship_data_document;
 pub use self::tracks_multi_relationship_data_document::TracksMultiRelationshipDataDocument;
-pub mod tracks_multi_resource_data_document;
-pub use self::tracks_multi_resource_data_document::TracksMultiResourceDataDocument;
 pub mod tracks_relationships;
 pub use self::tracks_relationships::TracksRelationships;
 pub mod tracks_resource_object;
@@ -492,8 +456,6 @@ pub mod user_collections_artists_resource_identifier_meta;
 pub use self::user_collections_artists_resource_identifier_meta::UserCollectionsArtistsResourceIdentifierMeta;
 pub mod user_collections_multi_relationship_data_document;
 pub use self::user_collections_multi_relationship_data_document::UserCollectionsMultiRelationshipDataDocument;
-pub mod user_collections_multi_resource_data_document;
-pub use self::user_collections_multi_resource_data_document::UserCollectionsMultiResourceDataDocument;
 pub mod user_collections_playlists_multi_relationship_data_document;
 pub use self::user_collections_playlists_multi_relationship_data_document::UserCollectionsPlaylistsMultiRelationshipDataDocument;
 pub mod user_collections_playlists_resource_identifier;
@@ -518,14 +480,10 @@ pub mod user_collections_videos_resource_identifier_meta;
 pub use self::user_collections_videos_resource_identifier_meta::UserCollectionsVideosResourceIdentifierMeta;
 pub mod user_entitlements_attributes;
 pub use self::user_entitlements_attributes::UserEntitlementsAttributes;
-pub mod user_entitlements_multi_resource_data_document;
-pub use self::user_entitlements_multi_resource_data_document::UserEntitlementsMultiResourceDataDocument;
 pub mod user_entitlements_resource_object;
 pub use self::user_entitlements_resource_object::UserEntitlement;
 pub mod user_recommendations_multi_relationship_data_document;
 pub use self::user_recommendations_multi_relationship_data_document::UserRecommendationsMultiRelationshipDataDocument;
-pub mod user_recommendations_multi_resource_data_document;
-pub use self::user_recommendations_multi_resource_data_document::UserRecommendationsMultiResourceDataDocument;
 pub mod user_recommendations_relationships;
 pub use self::user_recommendations_relationships::UserRecommendationsRelationships;
 pub mod user_recommendations_resource_object;
@@ -544,8 +502,6 @@ pub mod user_reports_create_operation_payload_data_relationships_reported_resour
 pub use self::user_reports_create_operation_payload_data_relationships_reported_resources::UserReportsCreateOperationPayloadDataRelationshipsReportedResources;
 pub mod user_reports_create_operation_payload_data_relationships_reported_resources_data;
 pub use self::user_reports_create_operation_payload_data_relationships_reported_resources_data::UserReportsCreateOperationPayloadDataRelationshipsReportedResourcesData;
-pub mod user_reports_multi_resource_data_document;
-pub use self::user_reports_multi_resource_data_document::UserReportsMultiResourceDataDocument;
 pub mod user_reports_resource_object;
 pub use self::user_reports_resource_object::UserReport;
 pub mod user_shares_attributes;
@@ -562,24 +518,18 @@ pub mod user_shares_create_operation_payload_data_relationships_shared_resources
 pub use self::user_shares_create_operation_payload_data_relationships_shared_resources_data::UserSharesCreateOperationPayloadDataRelationshipsSharedResourcesData;
 pub mod user_shares_multi_relationship_data_document;
 pub use self::user_shares_multi_relationship_data_document::UserSharesMultiRelationshipDataDocument;
-pub mod user_shares_multi_resource_data_document;
-pub use self::user_shares_multi_resource_data_document::UserSharesMultiResourceDataDocument;
 pub mod user_shares_relationships;
 pub use self::user_shares_relationships::UserSharesRelationships;
 pub mod user_shares_resource_object;
 pub use self::user_shares_resource_object::UserShare;
 pub mod users_attributes;
 pub use self::users_attributes::UsersAttributes;
-pub mod users_multi_resource_data_document;
-pub use self::users_multi_resource_data_document::UsersMultiResourceDataDocument;
 pub mod users_resource_object;
 pub use self::users_resource_object::User;
 pub mod videos_attributes;
 pub use self::videos_attributes::VideosAttributes;
 pub mod videos_multi_relationship_data_document;
 pub use self::videos_multi_relationship_data_document::VideosMultiRelationshipDataDocument;
-pub mod videos_multi_resource_data_document;
-pub use self::videos_multi_resource_data_document::VideosMultiResourceDataDocument;
 pub mod videos_relationships;
 pub use self::videos_relationships::VideosRelationships;
 pub mod videos_resource_object;
@@ -601,6 +551,27 @@ pub struct Resource<T> {
 impl<T> Resource<T> {
     pub fn new(data: T, links: Links) -> Resource<T> {
         Resource {
+            data,
+            included: None,
+            links,
+        }
+    }
+}
+
+// Generic MultiResource struct for all multi resource data documents
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct MultiResource<T> {
+    #[serde(rename = "data")]
+    pub data: Vec<T>,
+    #[serde(rename = "included", skip_serializing_if = "Option::is_none")]
+    pub included: Option<Vec<IncludedInner>>,
+    #[serde(rename = "links")]
+    pub links: Links,
+}
+
+impl<T> MultiResource<T> {
+    pub fn new(data: Vec<T>, links: Links) -> MultiResource<T> {
+        MultiResource {
             data,
             included: None,
             links,

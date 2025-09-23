@@ -34,7 +34,7 @@ pub async fn user_shares_get(
     include: Option<Vec<String>>,
     filter_code: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::UserSharesMultiResourceDataDocument, Error<UserSharesGetError>> {
+) -> Result<models::MultiResource<models::UserShare>, Error<UserSharesGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_code = filter_code;
@@ -115,8 +115,8 @@ pub async fn user_shares_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::UserSharesMultiResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::UserSharesMultiResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiResource<models::UserShare>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiResource<models::UserShare>`")))),
         }
     } else {
         let content = resp.text().await?;

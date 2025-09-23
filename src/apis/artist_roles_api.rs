@@ -23,7 +23,7 @@ pub type ArtistRolesIdGetError = ApiError;
 pub async fn artist_roles_get(
     configuration: &configuration::Configuration,
     filter_id: Option<Vec<String>>,
-) -> Result<models::ArtistRolesMultiResourceDataDocument, Error<ArtistRolesGetError>> {
+) -> Result<models::MultiResource<models::ArtistRole>, Error<ArtistRolesGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_filter_id = filter_id;
 
@@ -64,8 +64,8 @@ pub async fn artist_roles_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ArtistRolesMultiResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ArtistRolesMultiResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiResource<models::ArtistRole>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiResource<models::ArtistRole>`")))),
         }
     } else {
         let content = resp.text().await?;

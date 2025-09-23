@@ -24,7 +24,7 @@ pub async fn genres_get(
     configuration: &configuration::Configuration,
     page_cursor: Option<&str>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::GenresMultiResourceDataDocument, Error<GenresGetError>> {
+) -> Result<models::MultiResource<models::Genre>, Error<GenresGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_page_cursor = page_cursor;
     let p_filter_id = filter_id;
@@ -69,8 +69,8 @@ pub async fn genres_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::GenresMultiResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::GenresMultiResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiResource<models::Genre>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiResource<models::Genre>`")))),
         }
     } else {
         let content = resp.text().await?;

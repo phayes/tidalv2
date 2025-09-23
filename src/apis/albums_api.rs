@@ -21,7 +21,7 @@ pub async fn albums_get(
     filter_owners_period_id: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
     filter_barcode_id: Option<Vec<String>>,
-) -> Result<models::AlbumsMultiResourceDataDocument, Error<ApiError>> {
+) -> Result<models::MultiResource<models::Album>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_page_cursor = page_cursor;
     let p_include = include;
@@ -127,8 +127,8 @@ pub async fn albums_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::AlbumsMultiResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::AlbumsMultiResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiResource<models::Album>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::MultiResource<models::Album>`")))),
         }
     } else {
         let content = resp.text().await?;
