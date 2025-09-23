@@ -25,8 +25,7 @@ pub async fn search_suggestions_id_get(
     id: &str,
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::SearchSuggestion>, Error<SearchSuggestionsIdGetError>>
-{
+) -> Result<models::Resource<models::SearchSuggestion>, Error<SearchSuggestionsIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;

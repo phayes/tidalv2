@@ -31,10 +31,7 @@ pub async fn user_recommendations_id_get(
     id: &str,
     locale: &str,
     include: Option<Vec<String>>,
-) -> Result<
-    models::Resource<models::UserRecommendation>,
-    Error<UserRecommendationsIdGetError>,
-> {
+) -> Result<models::Resource<models::UserRecommendation>, Error<UserRecommendationsIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;

@@ -536,7 +536,7 @@ pub mod videos_resource_object;
 pub use self::videos_resource_object::Video;
 
 // Generic Resource struct for all single resource data documents
-use serde::{Deserialize, Serialize, de::DeserializeOwned};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Resource<T> {
@@ -578,4 +578,3 @@ impl<T> MultiResource<T> {
         }
     }
 }
-

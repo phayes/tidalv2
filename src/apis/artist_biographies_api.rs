@@ -111,8 +111,7 @@ pub async fn artist_biographies_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::ArtistBiography>, Error<ArtistBiographiesIdGetError>>
-{
+) -> Result<models::Resource<models::ArtistBiography>, Error<ArtistBiographiesIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
