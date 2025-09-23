@@ -14,7 +14,7 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple trackStatistics by available filters, or without if applicable.
-/// 
+///
 /// # Parameters
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
 /// * `filter_id` - Track statistics id (e.g. "75413016")

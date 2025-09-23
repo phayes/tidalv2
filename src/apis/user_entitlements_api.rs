@@ -14,7 +14,7 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves single userEntitlement by id.
-/// 
+///
 /// # Parameters
 /// * `id` - User id (e.g. "123456")
 pub async fn user_entitlements_id_get(

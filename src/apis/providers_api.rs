@@ -14,7 +14,7 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple providers by available filters, or without if applicable.
-/// 
+///
 /// # Parameters
 /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "771")
 pub async fn providers_get(
@@ -76,7 +76,7 @@ pub async fn providers_get(
 }
 
 /// Retrieves single provider by id.
-/// 
+///
 /// # Parameters
 /// * `id` - Provider id (e.g. "771")
 pub async fn providers_id_get(

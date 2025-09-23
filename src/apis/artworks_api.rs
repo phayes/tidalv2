@@ -14,7 +14,7 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple artworks by available filters, or without if applicable.
-/// 
+///
 /// # Parameters
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
 /// * `filter_id` - Artwork id (e.g. "550e8400-e29b-41d4-a716-446655440000")

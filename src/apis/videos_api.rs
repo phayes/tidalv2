@@ -14,7 +14,7 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple videos by available filters, or without if applicable.
-/// 
+///
 /// # Parameters
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, thumbnailArt (e.g. "albums")
 /// * `filter_isrc` - Allows to filter the collection of resources based on isrc attribute value (e.g. "USSM21600755")

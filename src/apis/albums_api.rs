@@ -14,7 +14,7 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple albums by available filters, or without if applicable.
-/// 
+///
 /// # Parameters
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums (e.g. "artists")
@@ -149,7 +149,7 @@ pub async fn albums_get(
 }
 
 /// Deletes existing album.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 pub async fn albums_id_delete(
@@ -186,7 +186,7 @@ pub async fn albums_id_delete(
 }
 
 /// Retrieves single album by id.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums (e.g. "artists")
@@ -256,7 +256,7 @@ pub async fn albums_id_get(
 }
 
 /// Updates existing album.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 pub async fn albums_id_patch(
@@ -297,7 +297,7 @@ pub async fn albums_id_patch(
 }
 
 /// Retrieves artists relationship.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
@@ -373,7 +373,7 @@ pub async fn albums_id_relationships_artists_get(
 }
 
 /// Retrieves coverArt relationship.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
@@ -449,7 +449,7 @@ pub async fn albums_id_relationships_cover_art_get(
 }
 
 /// Updates coverArt relationship.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 pub async fn albums_id_relationships_cover_art_patch(
@@ -493,7 +493,7 @@ pub async fn albums_id_relationships_cover_art_patch(
 }
 
 /// Retrieves genres relationship.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
@@ -569,7 +569,7 @@ pub async fn albums_id_relationships_genres_get(
 }
 
 /// Retrieves items relationship.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
@@ -645,7 +645,7 @@ pub async fn albums_id_relationships_items_get(
 }
 
 /// Retrieves owners relationship.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
@@ -720,7 +720,7 @@ pub async fn albums_id_relationships_owners_get(
 }
 
 /// Retrieves providers relationship.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: providers (e.g. "providers")
@@ -796,7 +796,7 @@ pub async fn albums_id_relationships_providers_get(
 }
 
 /// Retrieves similarAlbums relationship.
-/// 
+///
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
@@ -872,7 +872,7 @@ pub async fn albums_id_relationships_similar_albums_get(
 }
 
 /// Creates a new album.
-/// 
+///
 /// # Parameters
 /// * `album_create_operation_payload` - Request body payload for creating a new album
 pub async fn albums_post(

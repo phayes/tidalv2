@@ -14,7 +14,7 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple playlists by available filters, or without if applicable.
-/// 
+///
 /// # Parameters
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending (e.g. "createdAt")

@@ -14,7 +14,7 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves single artistClaim by id.
-/// 
+///
 /// # Parameters
 /// * `id` - Artist claim id (e.g. "f47ac10b-58cc-4372-a567-0e02b2c3d479")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists (e.g. "acceptedArtists")
@@ -83,7 +83,7 @@ pub async fn artist_claims_id_get(
 }
 
 /// Updates existing artistClaim.
-/// 
+///
 /// # Parameters
 /// * `id` - Artist claim id (e.g. "f47ac10b-58cc-4372-a567-0e02b2c3d479")
 pub async fn artist_claims_id_patch(
@@ -124,7 +124,7 @@ pub async fn artist_claims_id_patch(
 }
 
 /// Retrieves acceptedArtists relationship.
-/// 
+///
 /// # Parameters
 /// * `id` - Artist claim id (e.g. "f47ac10b-58cc-4372-a567-0e02b2c3d479")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: acceptedArtists (e.g. "acceptedArtists")
@@ -199,7 +199,7 @@ pub async fn artist_claims_id_relationships_accepted_artists_get(
 }
 
 /// Updates acceptedArtists relationship.
-/// 
+///
 /// # Parameters
 /// * `id` - Artist claim id (e.g. "f47ac10b-58cc-4372-a567-0e02b2c3d479")
 pub async fn artist_claims_id_relationships_accepted_artists_patch(
@@ -384,7 +384,7 @@ pub async fn artist_claims_id_relationships_recommended_artists_get(
 }
 
 /// Creates a new artistClaim.
-/// 
+///
 /// # Parameters
 /// * `artist_claims_create_operation_payload` - Request body payload for creating a new artist claim
 pub async fn artist_claims_post(

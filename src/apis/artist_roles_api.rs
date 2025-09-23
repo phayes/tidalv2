@@ -14,7 +14,7 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple artistRoles by available filters, or without if applicable.
-/// 
+///
 /// # Parameters
 /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "1")
 pub async fn artist_roles_get(
@@ -76,7 +76,7 @@ pub async fn artist_roles_get(
 }
 
 /// Retrieves single artistRole by id.
-/// 
+///
 /// # Parameters
 /// * `id` - Artist role id (e.g. "1")
 pub async fn artist_roles_id_get(

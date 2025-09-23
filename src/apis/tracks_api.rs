@@ -14,7 +14,7 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// Retrieves multiple tracks by available filters, or without if applicable.
-/// 
+///
 /// # Parameters
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, sourceFile, trackStatistics (e.g. "albums")
@@ -149,7 +149,7 @@ pub async fn tracks_get(
 }
 
 /// Deletes existing track.
-/// 
+///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 pub async fn tracks_id_delete(
@@ -186,7 +186,7 @@ pub async fn tracks_id_delete(
 }
 
 /// Retrieves single track by id.
-/// 
+///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, sourceFile, trackStatistics (e.g. "albums")
