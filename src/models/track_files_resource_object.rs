@@ -12,9 +12,78 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct TrackFileAttributes {
+    #[serde(
+        rename = "albumAudioNormalizationData",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub album_audio_normalization_data: Option<models::AudioNormalizationData>,
+    /// File's audio format
+    #[serde(rename = "format", skip_serializing_if = "Option::is_none")]
+    pub format: Option<FormatFalse>,
+    #[serde(
+        rename = "trackAudioNormalizationData",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub track_audio_normalization_data: Option<models::AudioNormalizationData>,
+    /// Track presentation
+    #[serde(rename = "trackPresentation", skip_serializing_if = "Option::is_none")]
+    pub track_presentation: Option<TrackPresentationFalse>,
+    /// File URL
+    #[serde(rename = "url", skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+impl TrackFileAttributes {
+    pub fn new() -> TrackFileAttributes {
+        TrackFileAttributes {
+            album_audio_normalization_data: None,
+            format: None,
+            track_audio_normalization_data: None,
+            track_presentation: None,
+            url: None,
+        }
+    }
+}
+
+/// File's audio format
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum FormatFalse {
+    #[serde(rename = "HEAACV1")]
+    Heaacv1,
+    #[serde(rename = "AACLC")]
+    Aaclc,
+    #[serde(rename = "FLAC")]
+    Flac,
+    #[serde(rename = "FLAC_HIRES")]
+    FlacHires,
+}
+
+impl Default for FormatFalse {
+    fn default() -> FormatFalse {
+        Self::Heaacv1
+    }
+}
+
+/// Track presentation
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum TrackPresentationFalse {
+    #[serde(rename = "FULL")]
+    Full,
+    #[serde(rename = "PREVIEW")]
+    Preview,
+}
+
+impl Default for TrackPresentationFalse {
+    fn default() -> TrackPresentationFalse {
+        Self::Full
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TrackFile {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<models::TrackFileAttributes>,
+    pub attributes: Option<TrackFileAttributes>,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,

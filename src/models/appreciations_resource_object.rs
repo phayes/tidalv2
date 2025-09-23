@@ -12,9 +12,22 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct AppreciationAttributes {
+    /// Time when the appreciation was created
+    #[serde(rename = "createdAt")]
+    pub created_at: String,
+}
+
+impl AppreciationAttributes {
+    pub fn new(created_at: String) -> AppreciationAttributes {
+        AppreciationAttributes { created_at }
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Appreciation {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<models::AppreciationAttributes>,
+    pub attributes: Option<AppreciationAttributes>,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,

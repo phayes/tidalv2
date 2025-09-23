@@ -12,9 +12,101 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PlaylistAttributes {
+    /// Access type
+    #[serde(rename = "accessType")]
+    pub access_type: AccessTypeFalse,
+    /// Indicates if the playlist has a duration and set number of tracks
+    #[serde(rename = "bounded")]
+    pub bounded: bool,
+    /// Datetime of playlist creation (ISO 8601)
+    #[serde(rename = "createdAt")]
+    pub created_at: String,
+    /// Playlist description
+    #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// Duration of playlist (ISO 8601)
+    #[serde(rename = "duration", skip_serializing_if = "Option::is_none")]
+    pub duration: Option<String>,
+    #[serde(rename = "externalLinks")]
+    pub external_links: Vec<models::ExternalLink>,
+    /// Datetime of last modification of the playlist (ISO 8601)
+    #[serde(rename = "lastModifiedAt")]
+    pub last_modified_at: String,
+    /// Playlist name
+    #[serde(rename = "name")]
+    pub name: String,
+    /// Number of items in the playlist
+    #[serde(rename = "numberOfItems", skip_serializing_if = "Option::is_none")]
+    pub number_of_items: Option<i32>,
+    /// The type of the playlist
+    #[serde(rename = "playlistType")]
+    pub playlist_type: PlaylistTypeFalse,
+}
+
+impl PlaylistAttributes {
+    pub fn new(
+        access_type: AccessTypeFalse,
+        bounded: bool,
+        created_at: String,
+        external_links: Vec<models::ExternalLink>,
+        last_modified_at: String,
+        name: String,
+        playlist_type: PlaylistTypeFalse,
+    ) -> PlaylistAttributes {
+        PlaylistAttributes {
+            access_type,
+            bounded,
+            created_at,
+            description: None,
+            duration: None,
+            external_links,
+            last_modified_at,
+            name,
+            number_of_items: None,
+            playlist_type,
+        }
+    }
+}
+
+/// Access type
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum AccessTypeFalse {
+    #[serde(rename = "PUBLIC")]
+    Public,
+    #[serde(rename = "UNLISTED")]
+    Unlisted,
+}
+
+impl Default for AccessTypeFalse {
+    fn default() -> AccessTypeFalse {
+        Self::Public
+    }
+}
+
+/// The type of the playlist
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum PlaylistTypeFalse {
+    #[serde(rename = "EDITORIAL")]
+    Editorial,
+    #[serde(rename = "USER")]
+    User,
+    #[serde(rename = "MIX")]
+    Mix,
+    #[serde(rename = "ARTIST")]
+    Artist,
+}
+
+impl Default for PlaylistTypeFalse {
+    fn default() -> PlaylistTypeFalse {
+        Self::Editorial
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Playlist {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<models::PlaylistAttributes>,
+    pub attributes: Option<PlaylistAttributes>,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,

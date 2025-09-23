@@ -12,9 +12,22 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct GenreAttributes {
+    /// Genre name
+    #[serde(rename = "genreName")]
+    pub genre_name: String,
+}
+
+impl GenreAttributes {
+    pub fn new(genre_name: String) -> GenreAttributes {
+        GenreAttributes { genre_name }
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Genre {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<models::GenreAttributes>,
+    pub attributes: Option<GenreAttributes>,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,

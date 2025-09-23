@@ -12,9 +12,45 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct LyricsAttributes {
+    #[serde(rename = "technicalStatus")]
+    pub technical_status: TechnicalStatusFalse,
+    #[serde(rename = "text", skip_serializing_if = "Option::is_none")]
+    pub text: Option<String>,
+}
+
+impl LyricsAttributes {
+    pub fn new(technical_status: TechnicalStatusFalse) -> LyricsAttributes {
+        LyricsAttributes {
+            technical_status,
+            text: None,
+        }
+    }
+}
+
+///
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum TechnicalStatusFalse {
+    #[serde(rename = "PENDING")]
+    Pending,
+    #[serde(rename = "PROCESSING")]
+    Processing,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "OK")]
+    Ok,
+}
+
+impl Default for TechnicalStatusFalse {
+    fn default() -> TechnicalStatusFalse {
+        Self::Pending
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Lyrics {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<models::LyricsAttributes>,
+    pub attributes: Option<LyricsAttributes>,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,

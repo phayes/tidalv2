@@ -12,9 +12,21 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ArtistRoleAttributes {
+    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+impl ArtistRoleAttributes {
+    pub fn new() -> ArtistRoleAttributes {
+        ArtistRoleAttributes { name: None }
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArtistRole {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<models::ArtistRoleAttributes>,
+    pub attributes: Option<ArtistRoleAttributes>,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,

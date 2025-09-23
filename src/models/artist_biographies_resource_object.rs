@@ -12,9 +12,25 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ArtistBiographyAttributes {
+    /// Boolean to indicate if the biography is editable (source = tidal or artist)
+    #[serde(rename = "editable")]
+    pub editable: bool,
+    /// Artist biography
+    #[serde(rename = "text")]
+    pub text: String,
+}
+
+impl ArtistBiographyAttributes {
+    pub fn new(editable: bool, text: String) -> ArtistBiographyAttributes {
+        ArtistBiographyAttributes { editable, text }
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArtistBiography {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<models::ArtistBiographyAttributes>,
+    pub attributes: Option<ArtistBiographyAttributes>,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,
