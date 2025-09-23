@@ -231,6 +231,35 @@ pub use self::video::{Video, VideoAttributes};
 
 // Generic Resource struct for all single resource data documents
 use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize, Serializer};
+use strum::{Display, AsRefStr, IntoStaticStr};
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Display, AsRefStr, IntoStaticStr)]
+#[serde(rename_all = "camelCase")]
+pub enum ResourceType {
+    Albums,
+    Appreciations,
+    ArtistBiographies,
+    ArtistRoles,
+    Artists,
+    Artworks,
+    Genres,
+    Lyrics,
+    Playlists,
+    Providers,
+    SearchResults,
+    SearchSuggestions,
+    TrackFiles,
+    TrackManifests,
+    TrackSourceFiles,
+    TrackStatistics,
+    Tracks,
+    UserCollections,
+    UserEntitlements,
+    UserRecommendations,
+    UserShares,
+    Users,
+    Videos,
+}
 
 // AnyResource enum - a fundamental type that can represent any resource in the API
 #[derive(Clone, Debug, PartialEq)]
@@ -258,6 +287,42 @@ pub enum AnyResource {
     UserShares(UserShare),
     Users(User),
     Videos(Video),
+}
+
+impl AnyResource {
+    pub fn resource_type(&self) -> ResourceType {
+        match self {
+            AnyResource::Albums(_) => ResourceType::Albums,
+            AnyResource::Appreciations(_) => ResourceType::Appreciations,
+            AnyResource::ArtistBiographies(_) => ResourceType::ArtistBiographies,
+            AnyResource::ArtistRoles(_) => ResourceType::ArtistRoles,
+            AnyResource::Artists(_) => ResourceType::Artists,
+            AnyResource::Artworks(_) => ResourceType::Artworks,
+            AnyResource::Genres(_) => ResourceType::Genres,
+            AnyResource::Lyrics(_) => ResourceType::Lyrics,
+            AnyResource::Playlists(_) => ResourceType::Playlists,
+            AnyResource::Providers(_) => ResourceType::Providers,
+            AnyResource::SearchResults(_) => ResourceType::SearchResults,
+            AnyResource::SearchSuggestions(_) => ResourceType::SearchSuggestions,
+            AnyResource::TrackFiles(_) => ResourceType::TrackFiles,
+            AnyResource::TrackManifests(_) => ResourceType::TrackManifests,
+            AnyResource::TrackSourceFiles(_) => ResourceType::TrackSourceFiles,
+            AnyResource::TrackStatistics(_) => ResourceType::TrackStatistics,
+            AnyResource::Tracks(_) => ResourceType::Tracks,
+            AnyResource::UserCollections(_) => ResourceType::UserCollections,
+            AnyResource::UserEntitlements(_) => ResourceType::UserEntitlements,
+            AnyResource::UserRecommendations(_) => ResourceType::UserRecommendations,
+            AnyResource::UserShares(_) => ResourceType::UserShares,
+            AnyResource::Users(_) => ResourceType::Users,
+            AnyResource::Videos(_) => ResourceType::Videos,
+        }
+    }
+}
+
+impl Into<ResourceType> for AnyResource {
+    fn into(self) -> ResourceType {
+        self.resource_type()
+    }
 }
 
 impl Default for AnyResource {

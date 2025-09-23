@@ -11,38 +11,26 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlaylistUpdateOperationPayloadData {
     #[serde(rename = "attributes")]
     pub attributes: models::PlaylistUpdateOperationPayloadDataAttributes,
     #[serde(rename = "id")]
     pub id: String,
+    /// Resource type - Must be [`models::ResourceType::Playlists`]
     #[serde(rename = "type")]
-    pub r#type: TypeFalse,
+    pub r#type: models::ResourceType,
 }
 
 impl PlaylistUpdateOperationPayloadData {
     pub fn new(
         attributes: models::PlaylistUpdateOperationPayloadDataAttributes,
         id: String,
-        r#type: TypeFalse,
     ) -> PlaylistUpdateOperationPayloadData {
         PlaylistUpdateOperationPayloadData {
             attributes,
             id,
-            r#type,
+            r#type: models::ResourceType::Playlists,
         }
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TypeFalse {
-    #[serde(rename = "playlists")]
-    Playlists,
-}
-
-impl Default for TypeFalse {
-    fn default() -> TypeFalse {
-        Self::Playlists
     }
 }

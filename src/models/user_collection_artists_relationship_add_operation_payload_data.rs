@@ -11,31 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserCollectionArtistsRelationshipAddOperationPayloadData {
     #[serde(rename = "id")]
     pub id: String,
+    /// Resource type - Must be [`models::ResourceType::Artists`]
     #[serde(rename = "type")]
-    pub r#type: TypeFalse,
+    pub r#type: models::ResourceType,
 }
 
 impl UserCollectionArtistsRelationshipAddOperationPayloadData {
-    pub fn new(
-        id: String,
-        r#type: TypeFalse,
-    ) -> UserCollectionArtistsRelationshipAddOperationPayloadData {
-        UserCollectionArtistsRelationshipAddOperationPayloadData { id, r#type }
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TypeFalse {
-    #[serde(rename = "artists")]
-    Artists,
-}
-
-impl Default for TypeFalse {
-    fn default() -> TypeFalse {
-        Self::Artists
+    pub fn new(id: String) -> UserCollectionArtistsRelationshipAddOperationPayloadData {
+        UserCollectionArtistsRelationshipAddOperationPayloadData {
+            id,
+            r#type: models::ResourceType::Artists,
+        }
     }
 }

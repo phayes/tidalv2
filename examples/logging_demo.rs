@@ -1,10 +1,10 @@
-use tidalv2::{apis::configuration::Configuration, apis::genres_api, init_logging};
+use tidalv2::{apis::configuration::Configuration, apis::providers_api};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize logging - set RUST_LOG=debug to see detailed headers
     // or RUST_LOG=info to see basic request/response info
-    init_logging();
+    env_logger::init();
 
     println!("TIDAL API Logging Demo");
     println!("======================");
@@ -17,14 +17,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     config.bearer_access_token = Some("test-bearer-token-12345".to_string());
 
     // Make a simple API call - this will demonstrate the logging
-    println!("Making API call to get genres...");
+    println!("Making API call to get providers...");
 
-    match genres_api::genres_get(&config, None, None).await {
+    match providers_api::provider_list(&config, None).await {
         Ok(_response) => {
             println!("✅ API call successful!");
             println!("Check the logs above to see the HTTP request details:");
             println!("- Method: GET");
-            println!("- URL: https://openapi.tidal.com/v2/genres");
+            println!("- URL: https://openapi.tidal.com/v2/providers");
             println!("- Response code should be visible in logs");
             println!("- Bearer token should be visible in Authorization header with debug logging");
         }

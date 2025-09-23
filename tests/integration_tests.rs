@@ -11,7 +11,7 @@ static INIT_LOGGER: Once = Once::new();
 /// Initialize logging exactly once, safe to call from multiple tests
 fn init_logging_once() {
     INIT_LOGGER.call_once(|| {
-        tidalv2::init_logging();
+        env_logger::init();
     });
 }
 
@@ -84,7 +84,7 @@ async fn test_search_and_walk_resources() {
         request_count, MAX_TOTAL_REQUESTS
     );
 
-    let search_result = apis::search_results_api::search_results_id_get(
+    let search_result = apis::search_results_api::search_result_get(
         &config,
         search_query,
         None, // explicit_filter
@@ -179,7 +179,7 @@ async fn test_search_different_queries() {
             query, request_count, MAX_TOTAL_REQUESTS
         );
 
-        let search_result = apis::search_results_api::search_results_id_get(
+        let search_result = apis::search_results_api::search_result_get(
             &config,
             query,
             None,
@@ -387,7 +387,7 @@ impl ResourceWalker {
             request_count, MAX_TOTAL_REQUESTS
         );
 
-        let result = apis::albums_api::albums_id_get(
+        let result = apis::albums_api::album_get(
             &self.config,
             album_id,
             Some(vec!["artists".to_string(), "items".to_string()]), // include related
@@ -421,7 +421,7 @@ impl ResourceWalker {
             request_count, MAX_TOTAL_REQUESTS
         );
 
-        let result = apis::artists_api::artists_id_get(
+        let result = apis::artists_api::artist_get(
             &self.config,
             artist_id,
             Some(vec!["albums".to_string(), "tracks".to_string()]), // include related
@@ -455,7 +455,7 @@ impl ResourceWalker {
             request_count, MAX_TOTAL_REQUESTS
         );
 
-        let result = apis::tracks_api::tracks_id_get(
+        let result = apis::tracks_api::track_get(
             &self.config,
             track_id,
             Some(vec!["artists".to_string(), "albums".to_string()]), // include related
@@ -488,7 +488,7 @@ impl ResourceWalker {
             request_count, MAX_TOTAL_REQUESTS
         );
 
-        let result = apis::playlists_api::playlists_id_get(
+        let result = apis::playlists_api::playlist_get(
             &self.config,
             playlist_id,
             Some(vec!["items".to_string()]), // include items
@@ -520,7 +520,7 @@ impl ResourceWalker {
             request_count, MAX_TOTAL_REQUESTS
         );
 
-        let result = apis::videos_api::videos_id_get(
+        let result = apis::videos_api::video_get(
             &self.config,
             video_id,
             Some(vec!["artists".to_string(), "albums".to_string()]), // include related

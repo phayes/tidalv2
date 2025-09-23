@@ -236,21 +236,20 @@ async fn test_artist_json_deserialization() {
         info!("Found {} tracks in artist relationships", tracks_data.len());
     }
 
-    // Verify followers relationship
-    if let Some(followers_data) = &relationships.followers.data {
+    // Verify similar artists relationship
+    if let Some(similar_artists_data) = &relationships.similar_artists.data {
         assert!(
-            !followers_data.is_empty(),
-            "Followers data should not be empty"
+            !similar_artists_data.is_empty(),
+            "Similar artists data should not be empty"
         );
         info!(
-            "Found {} followers in artist relationships",
-            followers_data.len()
+            "Found {} similar artists in artist relationships",
+            similar_artists_data.len()
         );
 
-        // Verify the first follower has meta information with viewer context
-        if let Some(meta) = &followers_data[0].meta {
-            info!("First follower meta: {:?}", meta);
-        }
+        // Verify the first similar artist has basic information
+        info!("First similar artist id: {}", similar_artists_data[0].id);
+        info!("First similar artist type: {}", similar_artists_data[0].r#type);
     }
 
     // Verify track providers relationship with meta information

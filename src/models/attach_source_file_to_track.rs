@@ -11,28 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AttachSourceFileToTrack {
     #[serde(rename = "id")]
     pub id: String,
+    /// Resource type - Must be [`models::ResourceType::Tracks`]
     #[serde(rename = "type")]
-    pub r#type: TypeFalse,
+    pub r#type: models::ResourceType,
 }
 
 impl AttachSourceFileToTrack {
-    pub fn new(id: String, r#type: TypeFalse) -> AttachSourceFileToTrack {
-        AttachSourceFileToTrack { id, r#type }
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TypeFalse {
-    #[serde(rename = "tracks")]
-    Tracks,
-}
-
-impl Default for TypeFalse {
-    fn default() -> TypeFalse {
-        Self::Tracks
+    pub fn new(id: String) -> AttachSourceFileToTrack {
+        AttachSourceFileToTrack {
+            id,
+            r#type: models::ResourceType::Tracks,
+        }
     }
 }

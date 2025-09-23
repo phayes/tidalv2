@@ -11,36 +11,27 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlaylistItemsRelationshipReorderOperationPayloadData {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "meta")]
     pub meta: models::PlaylistItemsRelationshipReorderOperationPayloadDataMeta,
+    /// Resource type - Must be [`models::ResourceType::Tracks`] or [`models::ResourceType::Videos`]
     #[serde(rename = "type")]
-    pub r#type: TypeFalse,
+    pub r#type: models::ResourceType,
 }
 
 impl PlaylistItemsRelationshipReorderOperationPayloadData {
     pub fn new(
         id: String,
         meta: models::PlaylistItemsRelationshipReorderOperationPayloadDataMeta,
-        r#type: TypeFalse,
+        r#type: models::ResourceType,
     ) -> PlaylistItemsRelationshipReorderOperationPayloadData {
+        match r#type {
+            models::ResourceType::Tracks | models::ResourceType::Videos => {},
+            _ => panic!("Invalid resource type for playlist items: {:?}. Must be Tracks or Videos.", r#type),
+        }
         PlaylistItemsRelationshipReorderOperationPayloadData { id, meta, r#type }
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TypeFalse {
-    #[serde(rename = "tracks")]
-    Tracks,
-    #[serde(rename = "videos")]
-    Videos,
-}
-
-impl Default for TypeFalse {
-    fn default() -> TypeFalse {
-        Self::Tracks
     }
 }

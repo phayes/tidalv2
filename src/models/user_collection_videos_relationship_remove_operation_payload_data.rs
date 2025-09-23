@@ -11,65 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserCollectionVideosRelationshipRemoveOperationPayloadData {
     #[serde(rename = "id")]
     pub id: String,
+    /// Resource type - accepts any valid resource type
     #[serde(rename = "type")]
-    pub r#type: TypeFalse,
+    pub r#type: models::ResourceType,
 }
 
 impl UserCollectionVideosRelationshipRemoveOperationPayloadData {
     pub fn new(
         id: String,
-        r#type: TypeFalse,
+        r#type: models::ResourceType,
     ) -> UserCollectionVideosRelationshipRemoveOperationPayloadData {
         UserCollectionVideosRelationshipRemoveOperationPayloadData { id, r#type }
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TypeFalse {
-    #[serde(rename = "albums")]
-    Albums,
-    #[serde(rename = "appreciations")]
-    Appreciations,
-    #[serde(rename = "artistClaims")]
-    ArtistClaims,
-    #[serde(rename = "artistRoles")]
-    ArtistRoles,
-    #[serde(rename = "artists")]
-    Artists,
-    #[serde(rename = "artworks")]
-    Artworks,
-    #[serde(rename = "playlists")]
-    Playlists,
-    #[serde(rename = "providers")]
-    Providers,
-    #[serde(rename = "searchResults")]
-    SearchResults,
-    #[serde(rename = "searchSuggestions")]
-    SearchSuggestions,
-    #[serde(rename = "tracks")]
-    Tracks,
-    #[serde(rename = "trackStatistics")]
-    TrackStatistics,
-    #[serde(rename = "userCollections")]
-    UserCollections,
-    #[serde(rename = "userEntitlements")]
-    UserEntitlements,
-    #[serde(rename = "userRecommendations")]
-    UserRecommendations,
-    #[serde(rename = "userReports")]
-    UserReports,
-    #[serde(rename = "users")]
-    Users,
-    #[serde(rename = "videos")]
-    Videos,
-}
-
-impl Default for TypeFalse {
-    fn default() -> TypeFalse {
-        Self::Albums
     }
 }
