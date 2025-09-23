@@ -18,7 +18,9 @@ pub struct TrackStatisticsRelationships {
 }
 
 impl TrackStatisticsRelationships {
-    pub fn new(owners: models::MultiRelationship<models::ResourceIdentifier>) -> TrackStatisticsRelationships {
+    pub fn new(
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+    ) -> TrackStatisticsRelationships {
         TrackStatisticsRelationships { owners }
     }
 }

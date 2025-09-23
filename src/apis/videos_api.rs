@@ -205,8 +205,10 @@ pub async fn videos_id_relationships_albums_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<VideosIdRelationshipsAlbumsGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<VideosIdRelationshipsAlbumsGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -278,8 +280,10 @@ pub async fn videos_id_relationships_artists_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<VideosIdRelationshipsArtistsGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<VideosIdRelationshipsArtistsGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;

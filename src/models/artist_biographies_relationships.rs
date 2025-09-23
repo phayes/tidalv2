@@ -18,7 +18,9 @@ pub struct ArtistBiographiesRelationships {
 }
 
 impl ArtistBiographiesRelationships {
-    pub fn new(owners: models::MultiRelationship<models::ResourceIdentifier>) -> ArtistBiographiesRelationships {
+    pub fn new(
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+    ) -> ArtistBiographiesRelationships {
         ArtistBiographiesRelationships { owners }
     }
 }

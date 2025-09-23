@@ -330,8 +330,10 @@ pub async fn tracks_id_relationships_albums_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<TracksIdRelationshipsAlbumsGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<TracksIdRelationshipsAlbumsGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -403,8 +405,10 @@ pub async fn tracks_id_relationships_artists_get(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<TracksIdRelationshipsArtistsGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<TracksIdRelationshipsArtistsGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -476,8 +480,10 @@ pub async fn tracks_id_relationships_genres_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<TracksIdRelationshipsGenresGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<TracksIdRelationshipsGenresGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -549,8 +555,10 @@ pub async fn tracks_id_relationships_lyrics_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<TracksIdRelationshipsLyricsGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<TracksIdRelationshipsLyricsGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -621,8 +629,10 @@ pub async fn tracks_id_relationships_owners_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<TracksIdRelationshipsOwnersGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<TracksIdRelationshipsOwnersGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -768,8 +778,10 @@ pub async fn tracks_id_relationships_radio_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<TracksIdRelationshipsRadioGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<TracksIdRelationshipsRadioGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -914,10 +926,7 @@ pub async fn tracks_id_relationships_source_file_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<
-    models::Relationship,
-    Error<TracksIdRelationshipsSourceFileGetError>,
-> {
+) -> Result<models::Relationship, Error<TracksIdRelationshipsSourceFileGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -983,10 +992,7 @@ pub async fn tracks_id_relationships_track_statistics_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<
-    models::Relationship,
-    Error<TracksIdRelationshipsTrackStatisticsGetError>,
-> {
+) -> Result<models::Relationship, Error<TracksIdRelationshipsTrackStatisticsGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;

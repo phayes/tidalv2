@@ -18,7 +18,9 @@ pub struct TrackSourceFilesRelationships {
 }
 
 impl TrackSourceFilesRelationships {
-    pub fn new(owners: models::MultiRelationship<models::ResourceIdentifier>) -> TrackSourceFilesRelationships {
+    pub fn new(
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+    ) -> TrackSourceFilesRelationships {
         TrackSourceFilesRelationships { owners }
     }
 }

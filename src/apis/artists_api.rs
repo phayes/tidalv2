@@ -282,8 +282,10 @@ pub async fn artists_id_relationships_albums_get(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ArtistsIdRelationshipsAlbumsGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<ArtistsIdRelationshipsAlbumsGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -354,10 +356,7 @@ pub async fn artists_id_relationships_biography_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<
-    models::Relationship,
-    Error<ArtistsIdRelationshipsBiographyGetError>,
-> {
+) -> Result<models::Relationship, Error<ArtistsIdRelationshipsBiographyGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -668,8 +667,10 @@ pub async fn artists_id_relationships_owners_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ArtistsIdRelationshipsOwnersGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<ArtistsIdRelationshipsOwnersGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -857,8 +858,10 @@ pub async fn artists_id_relationships_radio_get(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ArtistsIdRelationshipsRadioGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<ArtistsIdRelationshipsRadioGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -930,8 +933,10 @@ pub async fn artists_id_relationships_roles_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ArtistsIdRelationshipsRolesGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<ArtistsIdRelationshipsRolesGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -1152,8 +1157,10 @@ pub async fn artists_id_relationships_tracks_get(
     collapse_by: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ArtistsIdRelationshipsTracksGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<ArtistsIdRelationshipsTracksGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_collapse_by = collapse_by;
@@ -1227,8 +1234,10 @@ pub async fn artists_id_relationships_videos_get(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ArtistsIdRelationshipsVideosGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<ArtistsIdRelationshipsVideosGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;

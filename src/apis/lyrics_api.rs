@@ -220,8 +220,10 @@ pub async fn lyrics_id_relationships_owners_get(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<LyricsIdRelationshipsOwnersGetError>>
-{
+) -> Result<
+    models::MultiRelationship<models::ResourceIdentifier>,
+    Error<LyricsIdRelationshipsOwnersGetError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -292,8 +294,7 @@ pub async fn lyrics_id_relationships_track_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Relationship, Error<LyricsIdRelationshipsTrackGetError>>
-{
+) -> Result<models::Relationship, Error<LyricsIdRelationshipsTrackGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
