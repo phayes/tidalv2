@@ -87,7 +87,7 @@ pub async fn genres_get(
 pub async fn genres_id_get(
     configuration: &configuration::Configuration,
     id: &str,
-) -> Result<models::GenresSingleResourceDataDocument, Error<GenresIdGetError>> {
+) -> Result<models::Resource<models::Genre>, Error<GenresIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 
@@ -112,8 +112,8 @@ pub async fn genres_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::GenresSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::GenresSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Genre>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Genre>`")))),
         }
     } else {
         let content = resp.text().await?;

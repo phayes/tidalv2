@@ -82,7 +82,7 @@ pub async fn providers_get(
 pub async fn providers_id_get(
     configuration: &configuration::Configuration,
     id: &str,
-) -> Result<models::ProvidersSingleResourceDataDocument, Error<ProvidersIdGetError>> {
+) -> Result<models::Resource<models::Provider>, Error<ProvidersIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 
@@ -107,8 +107,8 @@ pub async fn providers_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ProvidersSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ProvidersSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Provider>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Provider>`")))),
         }
     } else {
         let content = resp.text().await?;

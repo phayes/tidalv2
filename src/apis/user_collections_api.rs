@@ -70,7 +70,7 @@ pub async fn user_collections_id_get(
     id: &str,
     locale: &str,
     include: Option<Vec<String>>,
-) -> Result<models::UserCollectionsSingleResourceDataDocument, Error<UserCollectionsIdGetError>> {
+) -> Result<models::Resource<models::UserCollection>, Error<UserCollectionsIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
@@ -119,8 +119,8 @@ pub async fn user_collections_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::UserCollectionsSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::UserCollectionsSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::UserCollection>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::UserCollection>`")))),
         }
     } else {
         let content = resp.text().await?;

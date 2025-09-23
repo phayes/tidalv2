@@ -111,7 +111,7 @@ pub async fn artworks_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::ArtworksSingleResourceDataDocument, Error<ArtworksIdGetError>> {
+) -> Result<models::Resource<models::Artwork>, Error<ArtworksIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -158,8 +158,8 @@ pub async fn artworks_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ArtworksSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ArtworksSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Artwork>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Artwork>`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -250,7 +250,7 @@ pub async fn artworks_id_relationships_owners_get(
 pub async fn artworks_post(
     configuration: &configuration::Configuration,
     artwork_create_operation_payload: Option<models::ArtworkCreateOperationPayload>,
-) -> Result<models::ArtworksSingleResourceDataDocument, Error<ArtworksPostError>> {
+) -> Result<models::Resource<models::Artwork>, Error<ArtworksPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_artwork_create_operation_payload = artwork_create_operation_payload;
 
@@ -275,8 +275,8 @@ pub async fn artworks_post(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ArtworksSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ArtworksSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Artwork>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Artwork>`")))),
         }
     } else {
         let content = resp.text().await?;

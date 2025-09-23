@@ -110,7 +110,7 @@ pub async fn track_source_files_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::TrackSourceFilesSingleResourceDataDocument, Error<TrackSourceFilesIdGetError>> {
+) -> Result<models::Resource<models::TrackSourceFile>, Error<TrackSourceFilesIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -156,8 +156,8 @@ pub async fn track_source_files_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::TrackSourceFilesSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::TrackSourceFilesSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::TrackSourceFile>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::TrackSourceFile>`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -250,7 +250,7 @@ pub async fn track_source_files_post(
     track_source_file_create_operation_payload: Option<
         models::TrackSourceFileCreateOperationPayload,
     >,
-) -> Result<models::TrackSourceFilesSingleResourceDataDocument, Error<TrackSourceFilesPostError>> {
+) -> Result<models::Resource<models::TrackSourceFile>, Error<TrackSourceFilesPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_track_source_file_create_operation_payload = track_source_file_create_operation_payload;
 
@@ -275,8 +275,8 @@ pub async fn track_source_files_post(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::TrackSourceFilesSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::TrackSourceFilesSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::TrackSourceFile>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::TrackSourceFile>`")))),
         }
     } else {
         let content = resp.text().await?;

@@ -225,7 +225,7 @@ pub async fn tracks_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::TracksSingleResourceDataDocument, Error<TracksIdGetError>> {
+) -> Result<models::Resource<models::Track>, Error<TracksIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -272,8 +272,8 @@ pub async fn tracks_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::TracksSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::TracksSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Track>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Track>`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -1051,7 +1051,7 @@ pub async fn tracks_id_relationships_track_statistics_get(
 pub async fn tracks_post(
     configuration: &configuration::Configuration,
     track_create_operation_payload: Option<models::TrackCreateOperationPayload>,
-) -> Result<models::TracksSingleResourceDataDocument, Error<TracksPostError>> {
+) -> Result<models::Resource<models::Track>, Error<TracksPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_track_create_operation_payload = track_create_operation_payload;
 
@@ -1076,8 +1076,8 @@ pub async fn tracks_post(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::TracksSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::TracksSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Track>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Track>`")))),
         }
     } else {
         let content = resp.text().await?;

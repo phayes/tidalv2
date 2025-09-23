@@ -20,7 +20,7 @@ pub type AppreciationsPostError = ApiError;
 pub async fn appreciations_post(
     configuration: &configuration::Configuration,
     appreciations_create_operation_payload: Option<models::AppreciationsCreateOperationPayload>,
-) -> Result<models::AppreciationsSingleResourceDataDocument, Error<AppreciationsPostError>> {
+) -> Result<models::Resource<models::Appreciation>, Error<AppreciationsPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_appreciations_create_operation_payload = appreciations_create_operation_payload;
 
@@ -45,8 +45,8 @@ pub async fn appreciations_post(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::AppreciationsSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::AppreciationsSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Appreciation>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Appreciation>`")))),
         }
     } else {
         let content = resp.text().await?;

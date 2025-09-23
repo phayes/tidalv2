@@ -177,7 +177,7 @@ pub async fn artists_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::ArtistsSingleResourceDataDocument, Error<ArtistsIdGetError>> {
+) -> Result<models::Resource<models::Artist>, Error<ArtistsIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -224,8 +224,8 @@ pub async fn artists_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ArtistsSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ArtistsSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Artist>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Artist>`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -1298,7 +1298,7 @@ pub async fn artists_id_relationships_videos_get(
 pub async fn artists_post(
     configuration: &configuration::Configuration,
     artist_create_operation_payload: Option<models::ArtistCreateOperationPayload>,
-) -> Result<models::ArtistsSingleResourceDataDocument, Error<ArtistsPostError>> {
+) -> Result<models::Resource<models::Artist>, Error<ArtistsPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_artist_create_operation_payload = artist_create_operation_payload;
 
@@ -1323,8 +1323,8 @@ pub async fn artists_post(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ArtistsSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ArtistsSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Artist>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Artist>`")))),
         }
     } else {
         let content = resp.text().await?;

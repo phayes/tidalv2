@@ -25,7 +25,7 @@ pub async fn track_manifests_id_get(
     uri_scheme: &str,
     usage: &str,
     adaptive: &str,
-) -> Result<models::TrackManifestsSingleResourceDataDocument, Error<TrackManifestsIdGetError>> {
+) -> Result<models::Resource<models::TrackManifest>, Error<TrackManifestsIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_manifest_type = manifest_type;
@@ -61,8 +61,8 @@ pub async fn track_manifests_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::TrackManifestsSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::TrackManifestsSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::TrackManifest>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::TrackManifest>`")))),
         }
     } else {
         let content = resp.text().await?;

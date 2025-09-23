@@ -180,7 +180,7 @@ pub async fn albums_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::AlbumsSingleResourceDataDocument, Error<ApiError>> {
+) -> Result<models::Resource<models::Album>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -227,8 +227,8 @@ pub async fn albums_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::AlbumsSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::AlbumsSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Album>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Album>`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -820,7 +820,7 @@ pub async fn albums_id_relationships_similar_albums_get(
 pub async fn albums_post(
     configuration: &configuration::Configuration,
     album_create_operation_payload: Option<models::AlbumCreateOperationPayload>,
-) -> Result<models::AlbumsSingleResourceDataDocument, Error<ApiError>> {
+) -> Result<models::Resource<models::Album>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_album_create_operation_payload = album_create_operation_payload;
 
@@ -845,8 +845,8 @@ pub async fn albums_post(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::AlbumsSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::AlbumsSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Album>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::Album>`")))),
         }
     } else {
         let content = resp.text().await?;

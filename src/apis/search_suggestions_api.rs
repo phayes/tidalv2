@@ -25,7 +25,7 @@ pub async fn search_suggestions_id_get(
     id: &str,
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<models::SearchSuggestionsSingleResourceDataDocument, Error<SearchSuggestionsIdGetError>>
+) -> Result<models::Resource<models::SearchSuggestion>, Error<SearchSuggestionsIdGetError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -77,8 +77,8 @@ pub async fn search_suggestions_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::SearchSuggestionsSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::SearchSuggestionsSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::SearchSuggestion>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::SearchSuggestion>`")))),
         }
     } else {
         let content = resp.text().await?;

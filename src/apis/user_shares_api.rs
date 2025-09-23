@@ -134,7 +134,7 @@ pub async fn user_shares_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::UserSharesSingleResourceDataDocument, Error<UserSharesIdGetError>> {
+) -> Result<models::Resource<models::UserShare>, Error<UserSharesIdGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -180,8 +180,8 @@ pub async fn user_shares_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::UserSharesSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::UserSharesSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::UserShare>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::UserShare>`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -346,7 +346,7 @@ pub async fn user_shares_id_relationships_shared_resources_get(
 pub async fn user_shares_post(
     configuration: &configuration::Configuration,
     user_shares_create_operation_payload: Option<models::UserSharesCreateOperationPayload>,
-) -> Result<models::UserSharesSingleResourceDataDocument, Error<UserSharesPostError>> {
+) -> Result<models::Resource<models::UserShare>, Error<UserSharesPostError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_user_shares_create_operation_payload = user_shares_create_operation_payload;
 
@@ -371,8 +371,8 @@ pub async fn user_shares_post(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::UserSharesSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::UserSharesSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::UserShare>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::UserShare>`")))),
         }
     } else {
         let content = resp.text().await?;

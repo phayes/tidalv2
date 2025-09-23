@@ -111,7 +111,7 @@ pub async fn artist_biographies_id_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::ArtistBiographiesSingleResourceDataDocument, Error<ArtistBiographiesIdGetError>>
+) -> Result<models::Resource<models::ArtistBiography>, Error<ArtistBiographiesIdGetError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -159,8 +159,8 @@ pub async fn artist_biographies_id_get(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ArtistBiographiesSingleResourceDataDocument`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ArtistBiographiesSingleResourceDataDocument`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::ArtistBiography>`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::Resource<models::ArtistBiography>`")))),
         }
     } else {
         let content = resp.text().await?;
