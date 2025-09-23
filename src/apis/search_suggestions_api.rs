@@ -12,6 +12,7 @@ use super::{configuration, ApiError, ContentType, Error};
 use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
+use log::trace;
 
 /// Retrieves single searchSuggestion by id.
 pub async fn search_suggestions_id_get(
@@ -68,6 +69,7 @@ pub async fn search_suggestions_id_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::SearchSuggestion>`"))),
@@ -75,6 +77,7 @@ pub async fn search_suggestions_id_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -144,6 +147,7 @@ pub async fn search_suggestions_id_relationships_direct_hits_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
@@ -151,6 +155,7 @@ pub async fn search_suggestions_id_relationships_direct_hits_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

@@ -12,6 +12,7 @@ use super::{configuration, ApiError, ContentType, Error};
 use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
+use log::trace;
 
 /// Retrieves multiple tracks by available filters, or without if applicable.
 ///
@@ -132,6 +133,7 @@ pub async fn tracks_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiResource<models::Track>`"))),
@@ -139,6 +141,7 @@ pub async fn tracks_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -176,6 +179,7 @@ pub async fn tracks_id_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -239,6 +243,7 @@ pub async fn tracks_id_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Track>`"))),
@@ -246,6 +251,7 @@ pub async fn tracks_id_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -284,6 +290,7 @@ pub async fn tracks_id_patch(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -348,6 +355,7 @@ pub async fn tracks_id_relationships_albums_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
@@ -355,6 +363,7 @@ pub async fn tracks_id_relationships_albums_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -419,6 +428,7 @@ pub async fn tracks_id_relationships_artists_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
@@ -426,6 +436,7 @@ pub async fn tracks_id_relationships_artists_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -490,6 +501,7 @@ pub async fn tracks_id_relationships_genres_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
@@ -497,6 +509,7 @@ pub async fn tracks_id_relationships_genres_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -560,6 +573,7 @@ pub async fn tracks_id_relationships_lyrics_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
@@ -567,6 +581,7 @@ pub async fn tracks_id_relationships_lyrics_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -630,6 +645,7 @@ pub async fn tracks_id_relationships_owners_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
@@ -637,6 +653,7 @@ pub async fn tracks_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -701,6 +718,7 @@ pub async fn tracks_id_relationships_providers_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
@@ -708,6 +726,7 @@ pub async fn tracks_id_relationships_providers_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -771,6 +790,7 @@ pub async fn tracks_id_relationships_radio_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
@@ -778,6 +798,7 @@ pub async fn tracks_id_relationships_radio_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -842,6 +863,7 @@ pub async fn tracks_id_relationships_similar_tracks_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
@@ -849,6 +871,7 @@ pub async fn tracks_id_relationships_similar_tracks_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -907,6 +930,7 @@ pub async fn tracks_id_relationships_source_file_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Relationship`"))),
@@ -914,6 +938,7 @@ pub async fn tracks_id_relationships_source_file_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -972,6 +997,7 @@ pub async fn tracks_id_relationships_track_statistics_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Relationship`"))),
@@ -979,6 +1005,7 @@ pub async fn tracks_id_relationships_track_statistics_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -1015,6 +1042,7 @@ pub async fn tracks_post(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::Track>`"))),
@@ -1022,6 +1050,7 @@ pub async fn tracks_post(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

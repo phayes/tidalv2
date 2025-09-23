@@ -75,7 +75,6 @@ impl Configuration {
         let headers = req.headers().clone();
 
         debug!("HTTP Request - Method: {}, URL: {}", method, url);
-        debug!("HTTP Request Headers: {:?}", headers);
 
         let response = self.client.execute(req).await?;
 

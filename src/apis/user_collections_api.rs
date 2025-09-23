@@ -12,6 +12,7 @@ use super::{configuration, ApiError, ContentType, Error};
 use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
+use log::trace;
 
 /// Retrieves single userCollection by id.
 ///
@@ -71,6 +72,7 @@ pub async fn user_collections_id_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::Resource<models::UserCollection>`"))),
@@ -78,6 +80,7 @@ pub async fn user_collections_id_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -119,6 +122,7 @@ pub async fn user_collections_id_relationships_albums_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -210,6 +214,7 @@ pub async fn user_collections_id_relationships_albums_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::UserCollectionsAlbumsResourceIdentifier>`"))),
@@ -217,6 +222,7 @@ pub async fn user_collections_id_relationships_albums_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -259,6 +265,7 @@ pub async fn user_collections_id_relationships_albums_post(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -301,6 +308,7 @@ pub async fn user_collections_id_relationships_artists_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -392,6 +400,7 @@ pub async fn user_collections_id_relationships_artists_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::UserCollectionsArtistsResourceIdentifier>`"))),
@@ -399,6 +408,7 @@ pub async fn user_collections_id_relationships_artists_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -441,6 +451,7 @@ pub async fn user_collections_id_relationships_artists_post(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -504,6 +515,7 @@ pub async fn user_collections_id_relationships_owners_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::ResourceIdentifier>`"))),
@@ -511,6 +523,7 @@ pub async fn user_collections_id_relationships_owners_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -553,6 +566,7 @@ pub async fn user_collections_id_relationships_playlists_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -640,6 +654,7 @@ pub async fn user_collections_id_relationships_playlists_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::UserCollectionsPlaylistsResourceIdentifier>`"))),
@@ -647,6 +662,7 @@ pub async fn user_collections_id_relationships_playlists_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -689,6 +705,7 @@ pub async fn user_collections_id_relationships_playlists_post(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -730,6 +747,7 @@ pub async fn user_collections_id_relationships_tracks_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -821,6 +839,7 @@ pub async fn user_collections_id_relationships_tracks_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::UserCollectionsTracksResourceIdentifier>`"))),
@@ -828,6 +847,7 @@ pub async fn user_collections_id_relationships_tracks_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -870,6 +890,7 @@ pub async fn user_collections_id_relationships_tracks_post(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -911,6 +932,7 @@ pub async fn user_collections_id_relationships_videos_delete(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -1002,6 +1024,7 @@ pub async fn user_collections_id_relationships_videos_get(
 
     if !status.is_client_error() && !status.is_server_error() {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::MultiRelationship<models::UserCollectionsVideosResourceIdentifier>`"))),
@@ -1009,6 +1032,7 @@ pub async fn user_collections_id_relationships_videos_get(
         }
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -1051,6 +1075,7 @@ pub async fn user_collections_id_relationships_videos_post(
         Ok(())
     } else {
         let content = resp.text().await?;
+        trace!("Response content: {}", content);
         let entity: Option<ApiError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
