@@ -134,4 +134,3 @@ impl Default for TypeFalse {
         Self::Album
     }
 }
-
