@@ -139,20 +139,3 @@ pub async fn artworks_id_relationships_owners_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Creates a new artwork.
-pub async fn artworks_post(
-    configuration: &configuration::Configuration,
-    artwork_create_operation_payload: Option<models::ArtworkCreateOperationPayload>,
-) -> Result<models::Resource<models::Artwork>, Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_artwork_create_operation_payload = artwork_create_operation_payload;
-
-    let uri_str = format!("{}/artworks", configuration.base_path);
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::POST, &uri_str);
-
-    req_builder = req_builder.json(&p_artwork_create_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}

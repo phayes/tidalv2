@@ -239,32 +239,6 @@ pub async fn playlists_id_relationships_cover_art_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Updates coverArt relationship.
-pub async fn playlists_id_relationships_cover_art_patch(
-    configuration: &configuration::Configuration,
-    id: &str,
-    playlist_cover_art_relationship_update_operation_payload: Option<
-        models::PlaylistCoverArtRelationshipUpdateOperationPayload,
-    >,
-) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_playlist_cover_art_relationship_update_operation_payload =
-        playlist_cover_art_relationship_update_operation_payload;
-
-    let uri_str = format!(
-        "{}/playlists/{id}/relationships/coverArt",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::PATCH, &uri_str);
-
-    req_builder = req_builder.json(&p_playlist_cover_art_relationship_update_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}
 
 /// Deletes item(s) from items relationship.
 pub async fn playlists_id_relationships_items_delete(

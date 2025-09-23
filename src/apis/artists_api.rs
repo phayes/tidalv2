@@ -152,32 +152,6 @@ pub async fn artists_id_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Updates existing artist.
-///
-/// # Parameters
-/// * `id` - Artist id (e.g. "1566")
-pub async fn artists_id_patch(
-    configuration: &configuration::Configuration,
-    id: &str,
-    artist_update_body: Option<models::ArtistUpdateBody>,
-) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_artist_update_body = artist_update_body;
-
-    let uri_str = format!(
-        "{}/artists/{id}",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::PATCH, &uri_str);
-
-    req_builder = req_builder.json(&p_artist_update_body);
-
-    configuration.execute_request(req_builder).await
-}
 
 /// Retrieves albums relationship.
 ///
@@ -233,162 +207,9 @@ pub async fn artists_id_relationships_biography_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Retrieves followers relationship.
-pub async fn artists_id_relationships_followers_get(
-    configuration: &configuration::Configuration,
-    id: &str,
-    viewer_context: Option<&str>,
-    page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
-) -> Result<models::MultiRelationship<models::ArtistsFollowersResourceIdentifier>, Error<ApiError>>
-{
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_viewer_context = viewer_context;
-    let p_page_cursor = page_cursor;
-    let p_include = include;
 
-    let uri_str = format!(
-        "{}/artists/{id}/relationships/followers",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_viewer_context {
-        req_builder = req_builder.query(&[("viewerContext", &param_value.to_string())]);
-    }
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
 
-    configuration.execute_request(req_builder).await
-}
-
-/// Deletes item(s) from following relationship.
-pub async fn artists_id_relationships_following_delete(
-    configuration: &configuration::Configuration,
-    id: &str,
-    artist_following_relationship_remove_operation_payload: Option<
-        models::ArtistFollowingRelationshipRemoveOperationPayload,
-    >,
-) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_artist_following_relationship_remove_operation_payload =
-        artist_following_relationship_remove_operation_payload;
-
-    let uri_str = format!(
-        "{}/artists/{id}/relationships/following",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::DELETE, &uri_str);
-
-    req_builder = req_builder.json(&p_artist_following_relationship_remove_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}
-
-/// Retrieves following relationship.
-pub async fn artists_id_relationships_following_get(
-    configuration: &configuration::Configuration,
-    id: &str,
-    viewer_context: Option<&str>,
-    page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
-) -> Result<models::MultiRelationship<models::ArtistsFollowingResourceIdentifier>, Error<ApiError>>
-{
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_viewer_context = viewer_context;
-    let p_page_cursor = page_cursor;
-    let p_include = include;
-
-    let uri_str = format!(
-        "{}/artists/{id}/relationships/following",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
-
-    if let Some(ref param_value) = p_viewer_context {
-        req_builder = req_builder.query(&[("viewerContext", &param_value.to_string())]);
-    }
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-    if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .into_iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .into_iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
-    }
-
-    configuration.execute_request(req_builder).await
-}
-
-/// Adds item(s) to following relationship.
-pub async fn artists_id_relationships_following_post(
-    configuration: &configuration::Configuration,
-    id: &str,
-    artist_following_relationship_add_operation_payload: Option<
-        models::ArtistFollowingRelationshipAddOperationPayload,
-    >,
-) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_artist_following_relationship_add_operation_payload =
-        artist_following_relationship_add_operation_payload;
-
-    let uri_str = format!(
-        "{}/artists/{id}/relationships/following",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::POST, &uri_str);
-
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    req_builder = req_builder.json(&p_artist_following_relationship_add_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}
 
 /// Retrieves owners relationship.
 pub async fn artists_id_relationships_owners_get(
@@ -481,32 +302,6 @@ pub async fn artists_id_relationships_profile_art_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Updates profileArt relationship.
-pub async fn artists_id_relationships_profile_art_patch(
-    configuration: &configuration::Configuration,
-    id: &str,
-    artist_profile_art_relationship_update_operation_payload: Option<
-        models::ArtistProfileArtRelationshipUpdateOperationPayload,
-    >,
-) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_artist_profile_art_relationship_update_operation_payload =
-        artist_profile_art_relationship_update_operation_payload;
-
-    let uri_str = format!(
-        "{}/artists/{id}/relationships/profileArt",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::PATCH, &uri_str);
-
-    req_builder = req_builder.json(&p_artist_profile_art_relationship_update_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}
 
 /// Retrieves radio relationship.
 pub async fn artists_id_relationships_radio_get(
@@ -788,20 +583,3 @@ pub async fn artists_id_relationships_videos_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Creates a new artist.
-pub async fn artists_post(
-    configuration: &configuration::Configuration,
-    artist_create_operation_payload: Option<models::ArtistCreateOperationPayload>,
-) -> Result<models::Resource<models::Artist>, Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_artist_create_operation_payload = artist_create_operation_payload;
-
-    let uri_str = format!("{}/artists", configuration.base_path);
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::POST, &uri_str);
-
-    req_builder = req_builder.json(&p_artist_create_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}

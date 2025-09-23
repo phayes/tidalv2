@@ -123,28 +123,6 @@ pub async fn tracks_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Deletes existing track.
-///
-/// # Parameters
-/// * `id` - A Tidal catalogue ID (e.g. "75413016")
-pub async fn tracks_id_delete(
-    configuration: &configuration::Configuration,
-    id: &str,
-) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-
-    let uri_str = format!(
-        "{}/tracks/{id}",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let req_builder = configuration
-        .client
-        .request(reqwest::Method::DELETE, &uri_str);
-
-    configuration.execute_request(req_builder).await
-}
 
 /// Retrieves single track by id.
 ///
@@ -191,29 +169,6 @@ pub async fn tracks_id_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Updates existing track.
-pub async fn tracks_id_patch(
-    configuration: &configuration::Configuration,
-    id: &str,
-    track_update_operation_payload: Option<models::TrackUpdateOperationPayload>,
-) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_track_update_operation_payload = track_update_operation_payload;
-
-    let uri_str = format!(
-        "{}/tracks/{id}",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::PATCH, &uri_str);
-
-    req_builder = req_builder.json(&p_track_update_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}
 
 /// Retrieves albums relationship.
 ///
@@ -275,35 +230,6 @@ pub async fn tracks_id_relationships_artists_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Retrieves genres relationship.
-///
-/// # Parameters
-/// * `id` - A Tidal catalogue ID (e.g. "75413016")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn tracks_id_relationships_genres_get(
-    configuration: &configuration::Configuration,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
-
-    let uri_str = format!(
-        "{}/tracks/{id}/relationships/genres",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
-
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    req_builder = req_builder.query(&[("include", "genres")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-
-    configuration.execute_request(req_builder).await
-}
 
 /// Retrieves lyrics relationship.
 ///
@@ -498,20 +424,3 @@ pub async fn tracks_id_relationships_track_statistics_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Creates a new track.
-pub async fn tracks_post(
-    configuration: &configuration::Configuration,
-    track_create_operation_payload: Option<models::TrackCreateOperationPayload>,
-) -> Result<models::Resource<models::Track>, Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_track_create_operation_payload = track_create_operation_payload;
-
-    let uri_str = format!("{}/tracks", configuration.base_path);
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::POST, &uri_str);
-
-    req_builder = req_builder.json(&p_track_create_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}

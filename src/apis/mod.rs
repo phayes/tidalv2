@@ -132,28 +132,19 @@ impl From<&str> for ContentType {
 }
 
 pub mod albums_api;
-pub mod appreciations_api;
-pub mod artist_biographies_api;
-pub mod artist_claims_api;
 pub mod artist_roles_api;
 pub mod artists_api;
 pub mod artworks_api;
-pub mod genres_api;
-pub mod lyrics_api;
 pub mod playlists_api;
 pub mod providers_api;
 pub mod search_results_api;
 pub mod search_suggestions_api;
 pub mod track_files_api;
 pub mod track_manifests_api;
-pub mod track_source_files_api;
-pub mod track_statistics_api;
 pub mod tracks_api;
 pub mod user_collections_api;
 pub mod user_entitlements_api;
 pub mod user_recommendations_api;
-pub mod user_reports_api;
-pub mod user_shares_api;
 pub mod users_api;
 pub mod videos_api;
 

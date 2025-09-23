@@ -123,28 +123,6 @@ pub async fn albums_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Deletes existing album.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-pub async fn albums_id_delete(
-    configuration: &configuration::Configuration,
-    id: &str,
-) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-
-    let uri_str = format!(
-        "{}/albums/{id}",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let req_builder = configuration
-        .client
-        .request(reqwest::Method::DELETE, &uri_str);
-
-    configuration.execute_request(req_builder).await
-}
 
 /// Retrieves single album by id.
 ///
@@ -191,32 +169,6 @@ pub async fn albums_id_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Updates existing album.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-pub async fn albums_id_patch(
-    configuration: &configuration::Configuration,
-    id: &str,
-    album_update_operation_payload: Option<models::AlbumUpdateOperationPayload>,
-) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_album_update_operation_payload = album_update_operation_payload;
-
-    let uri_str = format!(
-        "{}/albums/{id}",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::PATCH, &uri_str);
-
-    req_builder = req_builder.json(&p_album_update_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}
 
 /// Retrieves artists relationship.
 ///
@@ -278,65 +230,7 @@ pub async fn albums_id_relationships_cover_art_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Updates coverArt relationship.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-pub async fn albums_id_relationships_cover_art_patch(
-    configuration: &configuration::Configuration,
-    id: &str,
-    album_cover_art_relationship_update_operation_payload: Option<
-        models::AlbumCoverArtRelationshipUpdateOperationPayload,
-    >,
-) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_album_cover_art_relationship_update_operation_payload =
-        album_cover_art_relationship_update_operation_payload;
 
-    let uri_str = format!(
-        "{}/albums/{id}/relationships/coverArt",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::PATCH, &uri_str);
-
-    req_builder = req_builder.json(&p_album_cover_art_relationship_update_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}
-
-/// Retrieves genres relationship.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn albums_id_relationships_genres_get(
-    configuration: &configuration::Configuration,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
-
-    let uri_str = format!(
-        "{}/albums/{id}/relationships/genres",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
-
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-    req_builder = req_builder.query(&[("include", "genres")]);
-
-    configuration.execute_request(req_builder).await
-}
 
 /// Retrieves items relationship.
 ///
@@ -457,23 +351,3 @@ pub async fn albums_id_relationships_similar_albums_get(
     configuration.execute_request(req_builder).await
 }
 
-/// Creates a new album.
-///
-/// # Parameters
-/// * `album_create_operation_payload` - Request body payload for creating a new album
-pub async fn albums_post(
-    configuration: &configuration::Configuration,
-    album_create_operation_payload: Option<models::AlbumCreateOperationPayload>,
-) -> Result<models::Resource<models::Album>, Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_album_create_operation_payload = album_create_operation_payload;
-
-    let uri_str = format!("{}/albums", configuration.base_path);
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::POST, &uri_str);
-
-    req_builder = req_builder.json(&p_album_create_operation_payload);
-
-    configuration.execute_request(req_builder).await
-}

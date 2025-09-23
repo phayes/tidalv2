@@ -17,10 +17,6 @@ pub struct ArtistsRelationships {
     pub albums: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "biography")]
     pub biography: models::Relationship,
-    #[serde(rename = "followers")]
-    pub followers: models::MultiRelationship<models::ArtistsFollowersResourceIdentifier>,
-    #[serde(rename = "following")]
-    pub following: models::MultiRelationship<models::ArtistsFollowingResourceIdentifier>,
     #[serde(rename = "owners")]
     pub owners: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "profileArt")]
@@ -43,8 +39,6 @@ impl ArtistsRelationships {
     pub fn new(
         albums: models::MultiRelationship<models::ResourceIdentifier>,
         biography: models::Relationship,
-        followers: models::MultiRelationship<models::ArtistsFollowersResourceIdentifier>,
-        following: models::MultiRelationship<models::ArtistsFollowingResourceIdentifier>,
         owners: models::MultiRelationship<models::ResourceIdentifier>,
         profile_art: models::MultiRelationship<models::ResourceIdentifier>,
         radio: models::MultiRelationship<models::ResourceIdentifier>,
@@ -57,8 +51,6 @@ impl ArtistsRelationships {
         ArtistsRelationships {
             albums,
             biography,
-            followers,
-            following,
             owners,
             profile_art,
             radio,
