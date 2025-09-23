@@ -10,9 +10,9 @@
 
 use super::{configuration, ApiError, ContentType, Error};
 use crate::{apis::ResponseContent, models};
+use log::trace;
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
-use log::trace;
 
 /// Retrieves single trackManifest by id.
 pub async fn track_manifests_id_get(

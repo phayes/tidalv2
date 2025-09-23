@@ -473,7 +473,7 @@ Class | Method | HTTP request | Description
  - [GenresMultiResourceDataDocument](docs/GenresMultiResourceDataDocument.md)
  - [GenresResourceObject](docs/GenresResourceObject.md)
  - [GenresSingleResourceDataDocument](docs/GenresSingleResourceDataDocument.md)
- - [IncludedInner](docs/IncludedInner.md)
+ - [AnyResource](docs/AnyResource.md)
  - [Links](docs/Links.md)
  - [LinksMeta](docs/LinksMeta.md)
  - [LyricsAttributes](docs/LyricsAttributes.md)

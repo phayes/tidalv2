@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **data** | [**models::UserSharesResourceObject**](UserShares_Resource_Object.md) |  | 
-**included** | Option<[**Vec<models::IncludedInner>**](Included_inner.md)> |  | [optional]
+**included** | Option<[**Vec<models::AnyResource>**](AnyResource.md)> |  | [optional]
 **links** | [**models::Links**](Links.md) |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
