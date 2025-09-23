@@ -14,7 +14,7 @@ use crate::models;
 use reqwest;
 
 /// Retrieves single trackFile by id.
-pub async fn track_files_id_get(
+pub async fn track_file_get(
     configuration: &configuration::Configuration,
     id: &str,
     formats: &str,

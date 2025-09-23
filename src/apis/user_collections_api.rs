@@ -19,7 +19,7 @@ use reqwest;
 /// * `id` - User id (e.g. "123456")
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists (e.g. "albums")
-pub async fn user_collections_id_get(
+pub async fn user_collection_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
@@ -96,7 +96,7 @@ pub async fn user_collections_id_relationships_albums_delete(
 /// * `locale` - BCP 47 locale (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
-pub async fn user_collections_id_relationships_albums_get(
+pub async fn user_collection_albums(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
@@ -211,7 +211,7 @@ pub async fn user_collections_id_relationships_artists_delete(
 /// * `locale` - BCP 47 locale (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
-pub async fn user_collections_id_relationships_artists_get(
+pub async fn user_collection_artists(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
@@ -296,7 +296,7 @@ pub async fn user_collections_id_relationships_artists_post(
 /// # Parameters
 /// * `id` - User id (e.g. "123456")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn user_collections_id_relationships_owners_get(
+pub async fn user_collection_owners(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -354,7 +354,7 @@ pub async fn user_collections_id_relationships_playlists_delete(
 /// * `id` - User id (e.g. "123456")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
-pub async fn user_collections_id_relationships_playlists_get(
+pub async fn user_collection_playlists(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -464,7 +464,7 @@ pub async fn user_collections_id_relationships_tracks_delete(
 /// * `locale` - BCP 47 locale (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
-pub async fn user_collections_id_relationships_tracks_get(
+pub async fn user_collection_tracks(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
@@ -578,7 +578,7 @@ pub async fn user_collections_id_relationships_videos_delete(
 /// * `locale` - BCP 47 locale (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
-pub async fn user_collections_id_relationships_videos_get(
+pub async fn user_collection_videos(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,

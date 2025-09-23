@@ -21,7 +21,7 @@ use reqwest;
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners (e.g. "coverArt")
 /// * `filter_owners_period_id` - User id (e.g. "123456")
 /// * `filter_id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
-pub async fn playlists_get(
+pub async fn playlist_list(
     configuration: &configuration::Configuration,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
@@ -124,7 +124,7 @@ pub async fn playlists_get(
 }
 
 /// Deletes existing playlist.
-pub async fn playlists_id_delete(
+pub async fn playlist_delete(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<(), Error<ApiError>> {
@@ -144,7 +144,7 @@ pub async fn playlists_id_delete(
 }
 
 /// Retrieves single playlist by id.
-pub async fn playlists_id_get(
+pub async fn playlist_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
@@ -185,7 +185,7 @@ pub async fn playlists_id_get(
 }
 
 /// Updates existing playlist.
-pub async fn playlists_id_patch(
+pub async fn playlist_patch(
     configuration: &configuration::Configuration,
     id: &str,
     playlist_update_operation_payload: Option<models::PlaylistUpdateOperationPayload>,
@@ -214,7 +214,7 @@ pub async fn playlists_id_patch(
 /// # Parameters
 /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn playlists_id_relationships_cover_art_get(
+pub async fn playlist_cover_art(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -240,7 +240,7 @@ pub async fn playlists_id_relationships_cover_art_get(
 }
 
 /// Deletes item(s) from items relationship.
-pub async fn playlists_id_relationships_items_delete(
+pub async fn playlist_remove_items(
     configuration: &configuration::Configuration,
     id: &str,
     playlist_items_relationship_remove_operation_payload: Option<
@@ -271,7 +271,7 @@ pub async fn playlists_id_relationships_items_delete(
 /// # Parameters
 /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn playlists_id_relationships_items_get(
+pub async fn playlist_items(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -297,7 +297,7 @@ pub async fn playlists_id_relationships_items_get(
 }
 
 /// Updates items relationship.
-pub async fn playlists_id_relationships_items_patch(
+pub async fn playlist_update_items(
     configuration: &configuration::Configuration,
     id: &str,
     playlist_items_relationship_reorder_operation_payload: Option<
@@ -324,7 +324,7 @@ pub async fn playlists_id_relationships_items_patch(
 }
 
 /// Adds item(s) to items relationship.
-pub async fn playlists_id_relationships_items_post(
+pub async fn playlist_add_items(
     configuration: &configuration::Configuration,
     id: &str,
     playlist_items_relationship_add_operation_payload: Option<
@@ -356,7 +356,7 @@ pub async fn playlists_id_relationships_items_post(
 /// # Parameters
 /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn playlists_id_relationships_owners_get(
+pub async fn playlist_owners(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -382,7 +382,7 @@ pub async fn playlists_id_relationships_owners_get(
 }
 
 /// Creates a new playlist.
-pub async fn playlists_post(
+pub async fn playlist_create(
     configuration: &configuration::Configuration,
     playlist_create_operation_payload: Option<models::PlaylistCreateOperationPayload>,
 ) -> Result<models::Resource<models::Playlist>, Error<ApiError>> {

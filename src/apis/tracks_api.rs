@@ -21,7 +21,7 @@ use reqwest;
 /// * `filter_owners_period_id` - User id (e.g. "123456")
 /// * `filter_isrc` - International Standard Recording Code (ISRC) (e.g. "QMJMT1701237")
 /// * `filter_id` - A Tidal catalogue ID (e.g. "75413016")
-pub async fn tracks_get(
+pub async fn track_list(
     configuration: &configuration::Configuration,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
@@ -128,7 +128,7 @@ pub async fn tracks_get(
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, sourceFile, trackStatistics (e.g. "albums")
-pub async fn tracks_id_get(
+pub async fn track_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
@@ -173,7 +173,7 @@ pub async fn tracks_id_get(
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn tracks_id_relationships_albums_get(
+pub async fn track_albums(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -203,7 +203,7 @@ pub async fn tracks_id_relationships_albums_get(
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn tracks_id_relationships_artists_get(
+pub async fn track_artists(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -233,7 +233,7 @@ pub async fn tracks_id_relationships_artists_get(
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn tracks_id_relationships_lyrics_get(
+pub async fn track_lyrics(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -262,7 +262,7 @@ pub async fn tracks_id_relationships_lyrics_get(
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn tracks_id_relationships_owners_get(
+pub async fn track_owners(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -291,7 +291,7 @@ pub async fn tracks_id_relationships_owners_get(
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn tracks_id_relationships_providers_get(
+pub async fn track_providers(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -321,7 +321,7 @@ pub async fn tracks_id_relationships_providers_get(
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn tracks_id_relationships_radio_get(
+pub async fn track_radio(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -350,7 +350,7 @@ pub async fn tracks_id_relationships_radio_get(
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn tracks_id_relationships_similar_tracks_get(
+pub async fn track_similar_tracks(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -379,7 +379,7 @@ pub async fn tracks_id_relationships_similar_tracks_get(
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
-pub async fn tracks_id_relationships_source_file_get(
+pub async fn track_source_file(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::Relationship, Error<ApiError>> {
@@ -402,7 +402,7 @@ pub async fn tracks_id_relationships_source_file_get(
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
-pub async fn tracks_id_relationships_track_statistics_get(
+pub async fn track_statistics(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::Relationship, Error<ApiError>> {

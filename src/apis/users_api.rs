@@ -16,7 +16,7 @@ use reqwest;
 ///
 /// # Parameters
 /// This endpoint takes no parameters.
-pub async fn users_me_get(
+pub async fn user_me(
     configuration: &configuration::Configuration,
 ) -> Result<models::Resource<models::User>, Error<ApiError>> {
     let uri_str = format!("{}/users/me", configuration.base_path);

@@ -20,7 +20,7 @@ use reqwest;
 /// * `collapse_by` - Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based entry fingerprints while collapsing by ID always returns all available items. (e.g. "FINGERPRINT")
 /// * `filter_handle` - Artist handle (e.g. "jayz")
 /// * `filter_id` - Artist id (e.g. "1566")
-pub async fn artists_get(
+pub async fn artist_list(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     collapse_by: Option<String>,
@@ -107,7 +107,7 @@ pub async fn artists_get(
 /// * `id` - Artist id (e.g. "1566")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos (e.g. "albums")
 /// * `collapse_by` - Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based entry fingerprints while collapsing by ID always returns all available items. (e.g. "FINGERPRINT")
-pub async fn artists_id_get(
+pub async fn artist_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
@@ -157,7 +157,7 @@ pub async fn artists_id_get(
 /// # Parameters
 /// * `id` - Artist id (e.g. "1566")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn artists_id_relationships_albums_get(
+pub async fn artist_albums(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -186,7 +186,7 @@ pub async fn artists_id_relationships_albums_get(
 ///
 /// # Parameters
 /// * `id` - Artist id (e.g. "1566")
-pub async fn artists_id_relationships_biography_get(
+pub async fn artist_biography(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::Relationship, Error<ApiError>> {
@@ -207,7 +207,7 @@ pub async fn artists_id_relationships_biography_get(
 }
 
 /// Retrieves owners relationship.
-pub async fn artists_id_relationships_owners_get(
+pub async fn artist_owners(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
@@ -252,7 +252,7 @@ pub async fn artists_id_relationships_owners_get(
 }
 
 /// Retrieves profileArt relationship.
-pub async fn artists_id_relationships_profile_art_get(
+pub async fn artist_profile_art(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
@@ -298,7 +298,7 @@ pub async fn artists_id_relationships_profile_art_get(
 }
 
 /// Retrieves radio relationship.
-pub async fn artists_id_relationships_radio_get(
+pub async fn artist_radio(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -344,7 +344,7 @@ pub async fn artists_id_relationships_radio_get(
 }
 
 /// Retrieves roles relationship.
-pub async fn artists_id_relationships_roles_get(
+pub async fn artist_roles(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
@@ -389,7 +389,7 @@ pub async fn artists_id_relationships_roles_get(
 }
 
 /// Retrieves similarArtists relationship.
-pub async fn artists_id_relationships_similar_artists_get(
+pub async fn artist_similar_artists(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -435,7 +435,7 @@ pub async fn artists_id_relationships_similar_artists_get(
 }
 
 /// Retrieves trackProviders relationship.
-pub async fn artists_id_relationships_track_providers_get(
+pub async fn artist_track_providers(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -483,7 +483,7 @@ pub async fn artists_id_relationships_track_providers_get(
 }
 
 /// Retrieves tracks relationship.
-pub async fn artists_id_relationships_tracks_get(
+pub async fn artist_tracks(
     configuration: &configuration::Configuration,
     id: &str,
     collapse_by: &str,
@@ -532,7 +532,7 @@ pub async fn artists_id_relationships_tracks_get(
 }
 
 /// Retrieves videos relationship.
-pub async fn artists_id_relationships_videos_get(
+pub async fn artist_videos(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,

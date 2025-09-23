@@ -18,7 +18,7 @@ use reqwest;
 /// # Parameters
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
 /// * `filter_id` - Artwork id (e.g. "550e8400-e29b-41d4-a716-446655440000")
-pub async fn artworks_get(
+pub async fn artwork_list(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
@@ -74,7 +74,7 @@ pub async fn artworks_get(
 }
 
 /// Retrieves single artwork by id.
-pub async fn artworks_id_get(
+pub async fn artwork_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
@@ -115,7 +115,7 @@ pub async fn artworks_id_get(
 }
 
 /// Retrieves owners relationship.
-pub async fn artworks_id_relationships_owners_get(
+pub async fn artwork_owners(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,

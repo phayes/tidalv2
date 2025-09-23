@@ -19,7 +19,7 @@ use reqwest;
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, thumbnailArt (e.g. "albums")
 /// * `filter_isrc` - Allows to filter the collection of resources based on isrc attribute value (e.g. "USSM21600755")
 /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "75623239")
-pub async fn videos_get(
+pub async fn video_list(
     configuration: &configuration::Configuration,
     include: Option<Vec<String>>,
     filter_isrc: Option<Vec<String>>,
@@ -96,7 +96,7 @@ pub async fn videos_get(
 }
 
 /// Retrieves single video by id.
-pub async fn videos_id_get(
+pub async fn video_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
@@ -141,7 +141,7 @@ pub async fn videos_id_get(
 /// # Parameters
 /// * `id` - Video id (e.g. "75623239")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn videos_id_relationships_albums_get(
+pub async fn video_albums(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -171,7 +171,7 @@ pub async fn videos_id_relationships_albums_get(
 /// # Parameters
 /// * `id` - Video id (e.g. "75623239")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn videos_id_relationships_artists_get(
+pub async fn video_artists(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -201,7 +201,7 @@ pub async fn videos_id_relationships_artists_get(
 /// # Parameters
 /// * `id` - Video id (e.g. "75623239")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn videos_id_relationships_providers_get(
+pub async fn video_providers(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -231,7 +231,7 @@ pub async fn videos_id_relationships_providers_get(
 /// # Parameters
 /// * `id` - Video id (e.g. "75623239")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn videos_id_relationships_thumbnail_art_get(
+pub async fn video_thumbnail_art(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,

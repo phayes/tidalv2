@@ -17,7 +17,7 @@ use reqwest;
 ///
 /// # Parameters
 /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "771")
-pub async fn providers_get(
+pub async fn provider_list(
     configuration: &configuration::Configuration,
     filter_id: Option<Vec<String>>,
 ) -> Result<models::MultiResource<models::Provider>, Error<ApiError>> {
@@ -54,7 +54,7 @@ pub async fn providers_get(
 ///
 /// # Parameters
 /// * `id` - Provider id (e.g. "771")
-pub async fn providers_id_get(
+pub async fn provider_get(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::Resource<models::Provider>, Error<ApiError>> {

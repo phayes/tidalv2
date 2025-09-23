@@ -14,7 +14,7 @@ use crate::models;
 use reqwest;
 
 /// Retrieves single trackManifest by id.
-pub async fn track_manifests_id_get(
+pub async fn track_manifest_get(
     configuration: &configuration::Configuration,
     id: &str,
     manifest_type: &str,

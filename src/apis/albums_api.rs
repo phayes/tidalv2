@@ -21,7 +21,7 @@ use reqwest;
 /// * `filter_owners_period_id` - User id (e.g. "123456")
 /// * `filter_id` - Album id (e.g. "251380836")
 /// * `filter_barcode_id` - Barcode Id (e.g. "196589525444")
-pub async fn albums_get(
+pub async fn album_list(
     configuration: &configuration::Configuration,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
@@ -128,7 +128,7 @@ pub async fn albums_get(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums (e.g. "artists")
-pub async fn albums_id_get(
+pub async fn album_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
@@ -173,7 +173,7 @@ pub async fn albums_id_get(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn albums_id_relationships_artists_get(
+pub async fn album_artists(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -203,7 +203,7 @@ pub async fn albums_id_relationships_artists_get(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn albums_id_relationships_cover_art_get(
+pub async fn album_cover_art(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -233,7 +233,7 @@ pub async fn albums_id_relationships_cover_art_get(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn albums_id_relationships_items_get(
+pub async fn album_items(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -263,7 +263,7 @@ pub async fn albums_id_relationships_items_get(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn albums_id_relationships_owners_get(
+pub async fn album_owners(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -292,7 +292,7 @@ pub async fn albums_id_relationships_owners_get(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn albums_id_relationships_providers_get(
+pub async fn album_providers(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
@@ -322,7 +322,7 @@ pub async fn albums_id_relationships_providers_get(
 /// # Parameters
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn albums_id_relationships_similar_albums_get(
+pub async fn album_similar_albums(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,

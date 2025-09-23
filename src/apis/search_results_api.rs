@@ -14,7 +14,7 @@ use crate::models;
 use reqwest;
 
 /// Retrieves single searchResult by id.
-pub async fn search_results_id_get(
+pub async fn search_result_get(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,
@@ -65,7 +65,7 @@ pub async fn search_results_id_get(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_results_id_relationships_albums_get(
+pub async fn search_result_albums(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,
@@ -101,7 +101,7 @@ pub async fn search_results_id_relationships_albums_get(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_results_id_relationships_artists_get(
+pub async fn search_result_artists(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,
@@ -137,7 +137,7 @@ pub async fn search_results_id_relationships_artists_get(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_results_id_relationships_playlists_get(
+pub async fn search_result_playlists(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,
@@ -173,7 +173,7 @@ pub async fn search_results_id_relationships_playlists_get(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_results_id_relationships_top_hits_get(
+pub async fn search_result_top_hits(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,
@@ -209,7 +209,7 @@ pub async fn search_results_id_relationships_top_hits_get(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_results_id_relationships_tracks_get(
+pub async fn search_result_tracks(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,
@@ -245,7 +245,7 @@ pub async fn search_results_id_relationships_tracks_get(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_results_id_relationships_videos_get(
+pub async fn search_result_videos(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,

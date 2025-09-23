@@ -17,7 +17,7 @@ use reqwest;
 ///
 /// # Parameters
 /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "1")
-pub async fn artist_roles_get(
+pub async fn artist_role_list(
     configuration: &configuration::Configuration,
     filter_id: Option<Vec<String>>,
 ) -> Result<models::MultiResource<models::ArtistRole>, Error<ApiError>> {
@@ -54,7 +54,7 @@ pub async fn artist_roles_get(
 ///
 /// # Parameters
 /// * `id` - Artist role id (e.g. "1")
-pub async fn artist_roles_id_get(
+pub async fn artist_role_get(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::Resource<models::ArtistRole>, Error<ApiError>> {

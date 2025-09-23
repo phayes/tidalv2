@@ -14,7 +14,7 @@ use crate::models;
 use reqwest;
 
 /// Retrieves single searchSuggestion by id.
-pub async fn search_suggestions_id_get(
+pub async fn search_suggestion_get(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,
@@ -65,7 +65,7 @@ pub async fn search_suggestions_id_get(
 /// * `id` - Search suggestion id
 /// * `explicit_filter` - Explicit filter (e.g. "INCLUDE/EXCLUDE")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_suggestions_id_relationships_direct_hits_get(
+pub async fn search_suggestion_direct_hits(
     configuration: &configuration::Configuration,
     id: &str,
     explicit_filter: Option<&str>,

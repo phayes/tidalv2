@@ -19,7 +19,7 @@ use reqwest;
 /// * `id` - User id (e.g. "123456")
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes (e.g. "discoveryMixes")
-pub async fn user_recommendations_id_get(
+pub async fn user_recommendation_get(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
@@ -68,7 +68,7 @@ pub async fn user_recommendations_id_get(
 /// * `id` - User id (e.g. "123456")
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn user_recommendations_id_relationships_discovery_mixes_get(
+pub async fn user_recommendation_discovery_mixes(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
@@ -102,7 +102,7 @@ pub async fn user_recommendations_id_relationships_discovery_mixes_get(
 /// * `id` - User id (e.g. "123456")
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn user_recommendations_id_relationships_my_mixes_get(
+pub async fn user_recommendation_my_mixes(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,
@@ -136,7 +136,7 @@ pub async fn user_recommendations_id_relationships_my_mixes_get(
 /// * `id` - User id (e.g. "123456")
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn user_recommendations_id_relationships_new_arrival_mixes_get(
+pub async fn user_recommendation_new_arrival_mixes(
     configuration: &configuration::Configuration,
     id: &str,
     locale: &str,

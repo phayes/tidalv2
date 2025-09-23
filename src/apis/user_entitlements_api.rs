@@ -17,7 +17,7 @@ use reqwest;
 ///
 /// # Parameters
 /// * `id` - User id (e.g. "123456")
-pub async fn user_entitlements_id_get(
+pub async fn user_entitlement_get(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::Resource<models::UserEntitlement>, Error<ApiError>> {
