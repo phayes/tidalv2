@@ -12,14 +12,14 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct GenresAttributes {
+pub struct GenreAttributes {
     /// Genre name
     #[serde(rename = "genreName")]
     pub genre_name: String,
 }
 
-impl GenresAttributes {
-    pub fn new(genre_name: String) -> GenresAttributes {
-        GenresAttributes { genre_name }
+impl GenreAttributes {
+    pub fn new(genre_name: String) -> GenreAttributes {
+        GenreAttributes { genre_name }
     }
 }

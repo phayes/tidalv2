@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct TrackManifestsAttributes {
+pub struct TrackManifestAttributes {
     #[serde(
         rename = "albumAudioNormalizationData",
         skip_serializing_if = "Option::is_none"
@@ -39,9 +39,9 @@ pub struct TrackManifestsAttributes {
     pub uri: Option<String>,
 }
 
-impl TrackManifestsAttributes {
-    pub fn new() -> TrackManifestsAttributes {
-        TrackManifestsAttributes {
+impl TrackManifestAttributes {
+    pub fn new() -> TrackManifestAttributes {
+        TrackManifestAttributes {
             album_audio_normalization_data: None,
             drm_data: None,
             formats: None,

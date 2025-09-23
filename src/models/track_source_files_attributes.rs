@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct TrackSourceFilesAttributes {
+pub struct TrackSourceFileAttributes {
     /// MD5 hash of file to be uploaded
     #[serde(rename = "md5Hash")]
     pub md5_hash: String,
@@ -25,14 +25,14 @@ pub struct TrackSourceFilesAttributes {
     pub upload_link: models::FileUploadLink,
 }
 
-impl TrackSourceFilesAttributes {
+impl TrackSourceFileAttributes {
     pub fn new(
         md5_hash: String,
         size: i64,
         status: models::FileStatus,
         upload_link: models::FileUploadLink,
-    ) -> TrackSourceFilesAttributes {
-        TrackSourceFilesAttributes {
+    ) -> TrackSourceFileAttributes {
+        TrackSourceFileAttributes {
             md5_hash,
             size,
             status,

@@ -12,15 +12,15 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct UserEntitlementsAttributes {
+pub struct UserEntitlementAttributes {
     /// entitlements for user
     #[serde(rename = "entitlements")]
     pub entitlements: Vec<EntitlementsFalse>,
 }
 
-impl UserEntitlementsAttributes {
-    pub fn new(entitlements: Vec<EntitlementsFalse>) -> UserEntitlementsAttributes {
-        UserEntitlementsAttributes { entitlements }
+impl UserEntitlementAttributes {
+    pub fn new(entitlements: Vec<EntitlementsFalse>) -> UserEntitlementAttributes {
+        UserEntitlementAttributes { entitlements }
     }
 }
 /// entitlements for user

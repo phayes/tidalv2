@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct UsersAttributes {
+pub struct UserAttributes {
     /// ISO 3166-1 alpha-2 country code
     #[serde(rename = "country")]
     pub country: String,
@@ -36,9 +36,9 @@ pub struct UsersAttributes {
     pub username: String,
 }
 
-impl UsersAttributes {
-    pub fn new(country: String, username: String) -> UsersAttributes {
-        UsersAttributes {
+impl UserAttributes {
+    pub fn new(country: String, username: String) -> UserAttributes {
+        UserAttributes {
             country,
             email: None,
             email_verified: None,

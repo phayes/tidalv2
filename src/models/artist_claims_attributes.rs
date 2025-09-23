@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ArtistClaimsAttributes {
+pub struct ArtistClaimAttributes {
     /// The DSP used for authentication
     #[serde(rename = "provider")]
     pub provider: ProviderFalse,
@@ -30,9 +30,9 @@ pub struct ArtistClaimsAttributes {
     pub status: Option<StatusFalse>,
 }
 
-impl ArtistClaimsAttributes {
-    pub fn new(provider: ProviderFalse) -> ArtistClaimsAttributes {
-        ArtistClaimsAttributes {
+impl ArtistClaimAttributes {
+    pub fn new(provider: ProviderFalse) -> ArtistClaimAttributes {
+        ArtistClaimAttributes {
             provider,
             recommendation: None,
             redirect_url: None,

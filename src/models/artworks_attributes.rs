@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ArtworksAttributes {
+pub struct ArtworkAttributes {
     /// Artwork files
     #[serde(rename = "files")]
     pub files: Vec<models::ArtworkFile>,
@@ -23,9 +23,9 @@ pub struct ArtworksAttributes {
     pub source_file: Option<models::ArtworkSourceFile>,
 }
 
-impl ArtworksAttributes {
-    pub fn new(files: Vec<models::ArtworkFile>, media_type: MediaTypeFalse) -> ArtworksAttributes {
-        ArtworksAttributes {
+impl ArtworkAttributes {
+    pub fn new(files: Vec<models::ArtworkFile>, media_type: MediaTypeFalse) -> ArtworkAttributes {
+        ArtworkAttributes {
             files,
             media_type,
             source_file: None,

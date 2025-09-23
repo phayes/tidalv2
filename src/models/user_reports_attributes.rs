@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct UserReportsAttributes {
+pub struct UserReportAttributes {
     /// Description
     #[serde(rename = "description")]
     pub description: String,
@@ -21,9 +21,9 @@ pub struct UserReportsAttributes {
     pub reason: ReasonFalse,
 }
 
-impl UserReportsAttributes {
-    pub fn new(description: String, reason: ReasonFalse) -> UserReportsAttributes {
-        UserReportsAttributes {
+impl UserReportAttributes {
+    pub fn new(description: String, reason: ReasonFalse) -> UserReportAttributes {
+        UserReportAttributes {
             description,
             reason,
         }

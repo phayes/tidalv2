@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SearchResult {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<models::SearchResultsAttributes>,
+    pub attributes: Option<models::SearchResultAttributes>,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,

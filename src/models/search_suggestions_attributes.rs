@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SearchSuggestionsAttributes {
+pub struct SearchSuggestionAttributes {
     /// Suggestions from search history
     #[serde(rename = "history", skip_serializing_if = "Option::is_none")]
     pub history: Option<Vec<models::SearchSuggestionsHistory>>,
@@ -24,9 +24,9 @@ pub struct SearchSuggestionsAttributes {
     pub tracking_id: String,
 }
 
-impl SearchSuggestionsAttributes {
-    pub fn new(tracking_id: String) -> SearchSuggestionsAttributes {
-        SearchSuggestionsAttributes {
+impl SearchSuggestionAttributes {
+    pub fn new(tracking_id: String) -> SearchSuggestionAttributes {
+        SearchSuggestionAttributes {
             history: None,
             suggestions: None,
             tracking_id,

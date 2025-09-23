@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct VideosAttributes {
+pub struct VideoAttributes {
     /// Available usage for this video
     #[serde(rename = "availability", skip_serializing_if = "Option::is_none")]
     pub availability: Option<Vec<AvailabilityFalse>>,
@@ -44,15 +44,15 @@ pub struct VideosAttributes {
     pub version: Option<String>,
 }
 
-impl VideosAttributes {
+impl VideoAttributes {
     pub fn new(
         duration: String,
         explicit: bool,
         isrc: String,
         popularity: f64,
         title: String,
-    ) -> VideosAttributes {
-        VideosAttributes {
+    ) -> VideoAttributes {
+        VideoAttributes {
             availability: None,
             copyright: None,
             duration,

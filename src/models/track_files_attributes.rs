@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct TrackFilesAttributes {
+pub struct TrackFileAttributes {
     #[serde(
         rename = "albumAudioNormalizationData",
         skip_serializing_if = "Option::is_none"
@@ -34,9 +34,9 @@ pub struct TrackFilesAttributes {
     pub url: Option<String>,
 }
 
-impl TrackFilesAttributes {
-    pub fn new() -> TrackFilesAttributes {
-        TrackFilesAttributes {
+impl TrackFileAttributes {
+    pub fn new() -> TrackFileAttributes {
+        TrackFileAttributes {
             album_audio_normalization_data: None,
             format: None,
             track_audio_normalization_data: None,

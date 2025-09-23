@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct PlaylistsAttributes {
+pub struct PlaylistAttributes {
     /// Access type
     #[serde(rename = "accessType")]
     pub access_type: AccessTypeFalse,
@@ -44,7 +44,7 @@ pub struct PlaylistsAttributes {
     pub playlist_type: PlaylistTypeFalse,
 }
 
-impl PlaylistsAttributes {
+impl PlaylistAttributes {
     pub fn new(
         access_type: AccessTypeFalse,
         bounded: bool,
@@ -53,8 +53,8 @@ impl PlaylistsAttributes {
         last_modified_at: String,
         name: String,
         playlist_type: PlaylistTypeFalse,
-    ) -> PlaylistsAttributes {
-        PlaylistsAttributes {
+    ) -> PlaylistAttributes {
+        PlaylistAttributes {
             access_type,
             bounded,
             created_at,

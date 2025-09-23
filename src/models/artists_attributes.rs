@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ArtistsAttributes {
+pub struct ArtistAttributes {
     /// Is the artist enabled for contributions?
     #[serde(
         rename = "contributionsEnabled",
@@ -42,9 +42,9 @@ pub struct ArtistsAttributes {
     pub spotlighted: Option<bool>,
 }
 
-impl ArtistsAttributes {
-    pub fn new(name: String, popularity: f64) -> ArtistsAttributes {
-        ArtistsAttributes {
+impl ArtistAttributes {
+    pub fn new(name: String, popularity: f64) -> ArtistAttributes {
+        ArtistAttributes {
             contributions_enabled: None,
             contributions_sales_pitch: None,
             external_links: None,

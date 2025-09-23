@@ -12,14 +12,14 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct AppreciationsAttributes {
+pub struct AppreciationAttributes {
     /// Time when the appreciation was created
     #[serde(rename = "createdAt")]
     pub created_at: String,
 }
 
-impl AppreciationsAttributes {
-    pub fn new(created_at: String) -> AppreciationsAttributes {
-        AppreciationsAttributes { created_at }
+impl AppreciationAttributes {
+    pub fn new(created_at: String) -> AppreciationAttributes {
+        AppreciationAttributes { created_at }
     }
 }

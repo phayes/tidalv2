@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct AlbumsAttributes {
+pub struct AlbumAttributes {
     /// Available usage for this album
     #[serde(rename = "availability", skip_serializing_if = "Option::is_none")]
     pub availability: Option<Vec<AvailabilityFalse>>,
@@ -55,7 +55,7 @@ pub struct AlbumsAttributes {
     pub version: Option<String>,
 }
 
-impl AlbumsAttributes {
+impl AlbumAttributes {
     pub fn new(
         barcode_id: String,
         duration: String,
@@ -66,8 +66,8 @@ impl AlbumsAttributes {
         popularity: f64,
         title: String,
         r#type: TypeFalse,
-    ) -> AlbumsAttributes {
-        AlbumsAttributes {
+    ) -> AlbumAttributes {
+        AlbumAttributes {
             availability: None,
             barcode_id,
             copyright: None,

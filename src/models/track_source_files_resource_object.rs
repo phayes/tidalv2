@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TrackSourceFile {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<models::TrackSourceFilesAttributes>,
+    pub attributes: Option<models::TrackSourceFileAttributes>,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,

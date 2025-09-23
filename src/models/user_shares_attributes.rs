@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct UserSharesAttributes {
+pub struct UserShareAttributes {
     /// Share code
     #[serde(rename = "code")]
     pub code: String,
@@ -24,9 +24,9 @@ pub struct UserSharesAttributes {
     pub external_links: Option<Vec<models::ExternalLink>>,
 }
 
-impl UserSharesAttributes {
-    pub fn new(code: String, created_at: String) -> UserSharesAttributes {
-        UserSharesAttributes {
+impl UserShareAttributes {
+    pub fn new(code: String, created_at: String) -> UserShareAttributes {
+        UserShareAttributes {
             code,
             created_at,
             external_links: None,

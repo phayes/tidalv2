@@ -12,14 +12,14 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ProvidersAttributes {
+pub struct ProviderAttributes {
     /// Provider name
     #[serde(rename = "name")]
     pub name: String,
 }
 
-impl ProvidersAttributes {
-    pub fn new(name: String) -> ProvidersAttributes {
-        ProvidersAttributes { name }
+impl ProviderAttributes {
+    pub fn new(name: String) -> ProviderAttributes {
+        ProviderAttributes { name }
     }
 }

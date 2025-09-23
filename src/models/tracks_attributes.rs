@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct TracksAttributes {
+pub struct TrackAttributes {
     /// Access type
     #[serde(rename = "accessType", skip_serializing_if = "Option::is_none")]
     pub access_type: Option<AccessTypeFalse>,
@@ -63,7 +63,7 @@ pub struct TracksAttributes {
     pub version: Option<String>,
 }
 
-impl TracksAttributes {
+impl TrackAttributes {
     pub fn new(
         duration: String,
         explicit: bool,
@@ -73,8 +73,8 @@ impl TracksAttributes {
         media_tags: Vec<String>,
         popularity: f64,
         title: String,
-    ) -> TracksAttributes {
-        TracksAttributes {
+    ) -> TrackAttributes {
+        TrackAttributes {
             access_type: None,
             availability: None,
             bpm: None,

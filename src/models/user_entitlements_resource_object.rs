@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserEntitlement {
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<models::UserEntitlementsAttributes>,
+    pub attributes: Option<models::UserEntitlementAttributes>,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,
