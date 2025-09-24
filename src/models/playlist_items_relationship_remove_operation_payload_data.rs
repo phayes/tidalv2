@@ -29,8 +29,11 @@ impl PlaylistItemsRelationshipRemoveOperationPayloadData {
         r#type: models::ResourceType,
     ) -> PlaylistItemsRelationshipRemoveOperationPayloadData {
         match r#type {
-            models::ResourceType::Tracks | models::ResourceType::Videos => {},
-            _ => panic!("Invalid resource type for playlist items: {:?}. Must be Tracks or Videos.", r#type),
+            models::ResourceType::Tracks | models::ResourceType::Videos => {}
+            _ => panic!(
+                "Invalid resource type for playlist items: {:?}. Must be Tracks or Videos.",
+                r#type
+            ),
         }
         PlaylistItemsRelationshipRemoveOperationPayloadData { id, meta, r#type }
     }

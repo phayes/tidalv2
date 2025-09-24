@@ -25,12 +25,24 @@ pub struct ResourceIdentifier<M = ()> {
 
 impl ResourceIdentifier<()> {
     pub fn new(id: String, r#type: models::ResourceType) -> ResourceIdentifier {
-        ResourceIdentifier { id, r#type, meta: None }
+        ResourceIdentifier {
+            id,
+            r#type,
+            meta: None,
+        }
     }
 }
 
 impl<M> ResourceIdentifier<M> {
-    pub fn new_with_meta(id: String, r#type: models::ResourceType, meta: M) -> ResourceIdentifier<M> {
-        ResourceIdentifier { id, r#type, meta: Some(meta) }
+    pub fn new_with_meta(
+        id: String,
+        r#type: models::ResourceType,
+        meta: M,
+    ) -> ResourceIdentifier<M> {
+        ResourceIdentifier {
+            id,
+            r#type,
+            meta: Some(meta),
+        }
     }
 }

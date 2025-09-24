@@ -109,7 +109,7 @@ pub use self::playlist::{Playlist, PlaylistAttributes};
 pub mod provider;
 pub use self::provider::{Provider, ProviderAttributes};
 pub mod resource_identifier;
-pub use self::resource_identifier::{ResourceIdentifier};
+pub use self::resource_identifier::ResourceIdentifier;
 pub mod resource_object_object_object;
 pub use self::resource_object_object_object::ResourceObjectObjectObject;
 pub mod search_results_relationships;
@@ -165,9 +165,23 @@ pub use self::video::{Video, VideoAttributes};
 
 // Generic Resource struct for all single resource data documents
 use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize, Serializer};
-use strum::{Display, AsRefStr, IntoStaticStr};
+use strum::{AsRefStr, Display, IntoStaticStr};
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Display, AsRefStr, IntoStaticStr)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    PartialEq,
+    Ord,
+    PartialOrd,
+    Hash,
+    Serialize,
+    Deserialize,
+    Display,
+    AsRefStr,
+    IntoStaticStr,
+)]
 #[serde(rename_all = "camelCase")]
 #[strum(serialize_all = "camelCase")]
 pub enum ResourceType {
@@ -450,14 +464,21 @@ impl<T> DataWrap<T, ()> {
 
 impl<T, M> DataWrap<T, M> {
     pub fn new_with_meta(data: T, meta: M) -> Self {
-        Self { data, meta: Some(meta) }
+        Self {
+            data,
+            meta: Some(meta),
+        }
     }
 }
 
 impl<T> From<T> for DataWrap<T, ()> {
-    fn from(data: T) -> Self { DataWrap::new(data) }
+    fn from(data: T) -> Self {
+        DataWrap::new(data)
+    }
 }
 
 impl<T, M> From<(T, M)> for DataWrap<T, M> {
-    fn from((data, meta): (T, M)) -> Self { DataWrap::new_with_meta(data, meta) }
+    fn from((data, meta): (T, M)) -> Self {
+        DataWrap::new_with_meta(data, meta)
+    }
 }

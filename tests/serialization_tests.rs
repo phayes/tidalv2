@@ -78,10 +78,7 @@ async fn test_search_result_json_deserialization() {
 
     // Verify we have the expected resource types
     assert!(type_counts.contains_key(&Tracks), "Should contain tracks");
-    assert!(
-        type_counts.contains_key(&Artists),
-        "Should contain artists"
-    );
+    assert!(type_counts.contains_key(&Artists), "Should contain artists");
     assert!(type_counts.contains_key(&Albums), "Should contain albums");
     assert!(
         type_counts.contains_key(&Playlists),
@@ -242,7 +239,10 @@ async fn test_artist_json_deserialization() {
 
         // Verify the first similar artist has basic information
         info!("First similar artist id: {}", similar_artists_data[0].id);
-        info!("First similar artist type: {}", similar_artists_data[0].r#type);
+        info!(
+            "First similar artist type: {}",
+            similar_artists_data[0].r#type
+        );
     }
 
     // Verify track providers relationship with meta information

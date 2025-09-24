@@ -202,7 +202,9 @@ pub async fn user_collections_id_relationships_artists_delete(
     let payload = DataWrap::new(
         artists_to_remove
             .into_iter()
-            .map(|artist_id: String| models::ResourceIdentifier::new(artist_id, models::ResourceType::Artists))
+            .map(|artist_id: String| {
+                models::ResourceIdentifier::new(artist_id, models::ResourceType::Artists)
+            })
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -290,7 +292,9 @@ pub async fn user_collections_id_relationships_artists_post(
     let payload = DataWrap::new(
         artists_to_add
             .into_iter()
-            .map(|artist_id: String| models::ResourceIdentifier::new(artist_id, models::ResourceType::Artists))
+            .map(|artist_id: String| {
+                models::ResourceIdentifier::new(artist_id, models::ResourceType::Artists)
+            })
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -349,7 +353,9 @@ pub async fn user_collections_id_relationships_playlists_delete(
     let payload = DataWrap::new(
         playlists_to_remove
             .into_iter()
-            .map(|playlist_id: String| models::ResourceIdentifier::new(playlist_id, models::ResourceType::Playlists))
+            .map(|playlist_id: String| {
+                models::ResourceIdentifier::new(playlist_id, models::ResourceType::Playlists)
+            })
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -432,7 +438,9 @@ pub async fn user_collections_id_relationships_playlists_post(
     let payload = DataWrap::new(
         playlists_to_add
             .into_iter()
-            .map(|playlist_id: String| models::ResourceIdentifier::new(playlist_id, models::ResourceType::Playlists))
+            .map(|playlist_id: String| {
+                models::ResourceIdentifier::new(playlist_id, models::ResourceType::Playlists)
+            })
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -461,7 +469,9 @@ pub async fn user_collections_id_relationships_tracks_delete(
     let payload = DataWrap::new(
         tracks_to_remove
             .into_iter()
-            .map(|track_id: String| models::ResourceIdentifier::new(track_id, models::ResourceType::Tracks))
+            .map(|track_id: String| {
+                models::ResourceIdentifier::new(track_id, models::ResourceType::Tracks)
+            })
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -549,7 +559,9 @@ pub async fn user_collections_id_relationships_tracks_post(
     let payload = DataWrap::new(
         tracks_to_add
             .into_iter()
-            .map(|track_id: String| models::ResourceIdentifier::new(track_id, models::ResourceType::Tracks))
+            .map(|track_id: String| {
+                models::ResourceIdentifier::new(track_id, models::ResourceType::Tracks)
+            })
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -579,7 +591,9 @@ pub async fn user_collections_id_relationships_videos_delete(
     let payload = DataWrap::new(
         videos_to_remove
             .into_iter()
-            .map(|video_id: String| models::ResourceIdentifier::new(video_id, models::ResourceType::Videos))
+            .map(|video_id: String| {
+                models::ResourceIdentifier::new(video_id, models::ResourceType::Videos)
+            })
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -667,7 +681,9 @@ pub async fn user_collections_id_relationships_videos_post(
     let payload = DataWrap::new(
         videos_to_add
             .into_iter()
-            .map(|video_id: String| models::ResourceIdentifier::new(video_id, models::ResourceType::Videos))
+            .map(|video_id: String| {
+                models::ResourceIdentifier::new(video_id, models::ResourceType::Videos)
+            })
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 

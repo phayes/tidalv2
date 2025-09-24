@@ -29,8 +29,11 @@ impl PlaylistItemsRelationshipReorderOperationPayloadData {
         r#type: models::ResourceType,
     ) -> PlaylistItemsRelationshipReorderOperationPayloadData {
         match r#type {
-            models::ResourceType::Tracks | models::ResourceType::Videos => {},
-            _ => panic!("Invalid resource type for playlist items: {:?}. Must be Tracks or Videos.", r#type),
+            models::ResourceType::Tracks | models::ResourceType::Videos => {}
+            _ => panic!(
+                "Invalid resource type for playlist items: {:?}. Must be Tracks or Videos.",
+                r#type
+            ),
         }
         PlaylistItemsRelationshipReorderOperationPayloadData { id, meta, r#type }
     }

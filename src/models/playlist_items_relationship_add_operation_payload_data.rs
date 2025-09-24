@@ -21,10 +21,16 @@ pub struct PlaylistItemsRelationshipAddOperationPayloadData {
 }
 
 impl PlaylistItemsRelationshipAddOperationPayloadData {
-    pub fn new(id: String, r#type: models::ResourceType) -> PlaylistItemsRelationshipAddOperationPayloadData {
+    pub fn new(
+        id: String,
+        r#type: models::ResourceType,
+    ) -> PlaylistItemsRelationshipAddOperationPayloadData {
         match r#type {
-            models::ResourceType::Tracks | models::ResourceType::Videos => {},
-            _ => panic!("Invalid resource type for playlist items: {:?}. Must be Tracks or Videos.", r#type),
+            models::ResourceType::Tracks | models::ResourceType::Videos => {}
+            _ => panic!(
+                "Invalid resource type for playlist items: {:?}. Must be Tracks or Videos.",
+                r#type
+            ),
         }
         PlaylistItemsRelationshipAddOperationPayloadData { id, r#type }
     }

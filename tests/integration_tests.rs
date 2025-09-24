@@ -3,8 +3,8 @@ use std::collections::{HashSet, VecDeque};
 use std::env;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Once;
-use tidalv2::{apis, models};
 use tidalv2::models::ResourceType::*;
+use tidalv2::{apis, models};
 
 /// Ensure logging is only initialized once across all tests
 static INIT_LOGGER: Once = Once::new();
@@ -547,7 +547,9 @@ impl ResourceWalker {
 
     fn queue_album_items_relationship(
         &mut self,
-        items_rel: &models::MultiRelationship<models::ResourceIdentifier<crate::apis::albums_api::AlbumsItemsResourceMeta>>,
+        items_rel: &models::MultiRelationship<
+            models::ResourceIdentifier<crate::apis::albums_api::AlbumsItemsResourceMeta>,
+        >,
         relationship_type: &str,
     ) {
         if let Some(data) = &items_rel.data {
