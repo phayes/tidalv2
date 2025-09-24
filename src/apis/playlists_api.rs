@@ -188,7 +188,7 @@ pub async fn playlist_get(
 pub async fn playlist_patch(
     configuration: &configuration::Configuration,
     id: &str,
-    playlist_update_operation_payload: Option<models::PlaylistUpdateOperationPayload>,
+    playlist_update_operation_payload: Option<models::DataWrap<models::PlaylistUpdateOperationPayloadData>>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -244,7 +244,7 @@ pub async fn playlist_remove_items(
     configuration: &configuration::Configuration,
     id: &str,
     playlist_items_relationship_remove_operation_payload: Option<
-        models::PlaylistItemsRelationshipRemoveOperationPayload,
+        models::DataWrap<Vec<models::PlaylistItemsRelationshipRemoveOperationPayloadData>>,
     >,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -301,7 +301,7 @@ pub async fn playlist_update_items(
     configuration: &configuration::Configuration,
     id: &str,
     playlist_items_relationship_reorder_operation_payload: Option<
-        models::PlaylistItemsRelationshipReorderOperationPayload,
+        models::DataWrap<Vec<models::PlaylistItemsRelationshipReorderOperationPayloadData>, models::PlaylistItemsRelationshipReorderOperationPayloadMeta>,
     >,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -328,7 +328,7 @@ pub async fn playlist_add_items(
     configuration: &configuration::Configuration,
     id: &str,
     playlist_items_relationship_add_operation_payload: Option<
-        models::PlaylistItemsRelationshipAddOperationPayload,
+        models::DataWrap<Vec<models::PlaylistItemsRelationshipAddOperationPayloadData>, models::PlaylistItemsRelationshipAddOperationPayloadMeta>,
     >,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -384,7 +384,7 @@ pub async fn playlist_owners(
 /// Creates a new playlist.
 pub async fn playlist_create(
     configuration: &configuration::Configuration,
-    playlist_create_operation_payload: Option<models::PlaylistCreateOperationPayload>,
+    playlist_create_operation_payload: Option<models::DataWrap<models::PlaylistCreateOperationPayloadData>>,
 ) -> Result<models::Resource<models::Playlist>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_playlist_create_operation_payload = playlist_create_operation_payload;
