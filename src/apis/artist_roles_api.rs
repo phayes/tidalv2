@@ -9,7 +9,7 @@
  */
 
 use super::{configuration, ApiError, Error};
-use crate::models;
+use crate::models::*;
 
 use reqwest;
 
@@ -20,7 +20,7 @@ use reqwest;
 pub async fn artist_role_list(
     configuration: &configuration::Configuration,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::ArtistRole>, Error<ApiError>> {
+) -> Result<MultiResource<artist_role::ArtistRole>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_filter_id = filter_id;
 
@@ -57,7 +57,7 @@ pub async fn artist_role_list(
 pub async fn artist_role_get(
     configuration: &configuration::Configuration,
     id: &str,
-) -> Result<models::Resource<models::ArtistRole>, Error<ApiError>> {
+) -> Result<Resource<artist_role::ArtistRole>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 

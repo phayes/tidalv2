@@ -1,6 +1,6 @@
 use crate::models;
-use serde::{Deserialize, Serialize};
 use models::*;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Artist {
@@ -10,7 +10,7 @@ pub struct Artist {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::ArtistsRelationships>,
+    pub relationships: Option<ArtistsRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -71,7 +71,6 @@ impl ArtistAttributes {
         }
     }
 }
-
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArtistsRelationships {

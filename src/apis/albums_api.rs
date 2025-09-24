@@ -238,10 +238,8 @@ pub async fn album_items(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<
-    MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>,
-    Error<ApiError>,
-> {
+) -> Result<MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>, Error<ApiError>>
+{
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;

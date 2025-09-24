@@ -142,7 +142,6 @@ impl PlaylistItemPosition {
     }
 }
 
-
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlaylistsItemsIdentifierMeta {
     #[serde(rename = "addedAt", skip_serializing_if = "Option::is_none")]
@@ -183,7 +182,6 @@ impl PlaylistRelationships {
         }
     }
 }
-
 
 /*------------------------------------------------*/
 /* Playlist Modification types                 */
@@ -228,7 +226,6 @@ impl CreatePlaylistAttributes {
     }
 }
 
-
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UpdatePlaylist {
     #[serde(rename = "attributes")]
@@ -241,10 +238,7 @@ pub struct UpdatePlaylist {
 }
 
 impl UpdatePlaylist {
-    pub fn new(
-        attributes: UpdatePlaylistAttributes,
-        id: String,
-    ) -> UpdatePlaylist {
+    pub fn new(attributes: UpdatePlaylistAttributes, id: String) -> UpdatePlaylist {
         UpdatePlaylist {
             attributes,
             id,

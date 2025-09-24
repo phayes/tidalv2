@@ -11,8 +11,8 @@
 use super::{configuration, ApiError, Error};
 use crate::models;
 pub use models::*;
-use serde::{Deserialize, Serialize};
 use reqwest;
+use serde::{Deserialize, Serialize};
 
 /// Retrieves multiple playlists by available filters, or without if applicable.
 ///

@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -9,7 +9,7 @@ pub struct ArtistBiography {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::ArtistBiographyRelationships>,
+    pub relationships: Option<ArtistBiographyRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -45,5 +45,5 @@ impl ArtistBiographyAttributes {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArtistBiographyRelationships {
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
+    pub owners: MultiRelationship<ResourceIdentifier>,
 }

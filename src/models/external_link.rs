@@ -25,7 +25,6 @@ impl ExternalLink {
     }
 }
 
-
 /// ExternalLinkMeta : metadata about an external link
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ExternalLinkMeta {

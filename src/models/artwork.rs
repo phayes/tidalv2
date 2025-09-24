@@ -38,10 +38,7 @@ pub struct ArtworkAttributes {
 
 impl ArtworkAttributes {
     pub fn new(files: Vec<models::ArtworkFile>, media_type: MediaTypeFalse) -> ArtworkAttributes {
-        ArtworkAttributes {
-            files,
-            media_type,
-        }
+        ArtworkAttributes { files, media_type }
     }
 }
 

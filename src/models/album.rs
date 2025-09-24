@@ -135,7 +135,6 @@ impl Default for AlbumType {
     }
 }
 
-
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AlbumsRelationships {
     #[serde(rename = "artists")]
@@ -153,7 +152,6 @@ pub struct AlbumsRelationships {
     #[serde(rename = "similarAlbums")]
     pub similar_albums: MultiRelationship<ResourceIdentifier>,
 }
-
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AlbumsItemsResourceMeta {

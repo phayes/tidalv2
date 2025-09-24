@@ -1,10 +1,10 @@
 use log::{debug, info};
+use models::*;
 use std::collections::{HashSet, VecDeque};
 use std::env;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Once;
 use tidalv2::{apis, models};
-use models::*;
 use ResourceType::*;
 
 /// Ensure logging is only initialized once across all tests
@@ -252,10 +252,7 @@ impl ResourceWalker {
         }
     }
 
-    async fn walk_search_result(
-        &mut self,
-        search_response: &Resource<SearchResult>,
-    ) {
+    async fn walk_search_result(&mut self, search_response: &Resource<SearchResult>) {
         info!("Starting resource walking from search result");
 
         // Process included resources first
@@ -548,9 +545,7 @@ impl ResourceWalker {
 
     fn queue_album_items_relationship(
         &mut self,
-        items_rel: &MultiRelationship<
-            ResourceIdentifier<album::AlbumsItemsResourceMeta>,
-        >,
+        items_rel: &MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>,
         relationship_type: &str,
     ) {
         if let Some(data) = &items_rel.data {

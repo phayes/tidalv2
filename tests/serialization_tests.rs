@@ -173,14 +173,14 @@ async fn test_artist_json_deserialization() {
     let _ = env_logger::try_init();
 
     // Test deserialization of the test_artist.json file
-    use tidalv2::models;
+    use tidalv2::models::*;
 
     // Read the test JSON file
     let json_content =
         fs::read_to_string("tests/test_artist.json").expect("Failed to read test_artist.json file");
 
     // Test artist deserialization
-    let artist_result = serde_json::from_str::<models::Artist>(&json_content);
+    let artist_result = serde_json::from_str::<artist::Artist>(&json_content);
     assert!(
         artist_result.is_ok(),
         "Failed to deserialize artist: {:?}",
