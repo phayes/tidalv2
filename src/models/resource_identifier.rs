@@ -29,8 +29,13 @@ impl ResourceIdentifier {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ResourceIdentiferWithMeta<T> {
+    /// Resource id
+    #[serde(rename = "id")]
     pub id: String,
-    pub meta: T,
-    pub r#type: models::ResourceType,
+    #[serde(rename = "meta")]
+    pub meta: Option<T>,
+    /// Resource type
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
