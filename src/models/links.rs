@@ -32,3 +32,18 @@ impl Links {
         }
     }
 }
+
+/// LinksMeta : Non-standard meta information for links
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct LinksMeta {
+    /// Only cursor part of next link
+    #[serde(rename = "nextCursor")]
+    pub next_cursor: String,
+}
+
+impl LinksMeta {
+    /// Non-standard meta information for links
+    pub fn new(next_cursor: String) -> LinksMeta {
+        LinksMeta { next_cursor }
+    }
+}

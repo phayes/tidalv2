@@ -9,7 +9,7 @@ pub struct Artwork {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::ArtworksRelationships>,
+    pub relationships: Option<models::ArtworkRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -34,8 +34,6 @@ pub struct ArtworkAttributes {
     /// Media type of artwork files
     #[serde(rename = "mediaType")]
     pub media_type: MediaTypeFalse,
-    #[serde(rename = "sourceFile", skip_serializing_if = "Option::is_none")]
-    pub source_file: Option<models::ArtworkSourceFile>,
 }
 
 impl ArtworkAttributes {
@@ -43,7 +41,6 @@ impl ArtworkAttributes {
         ArtworkAttributes {
             files,
             media_type,
-            source_file: None,
         }
     }
 }
@@ -60,5 +57,19 @@ pub enum MediaTypeFalse {
 impl Default for MediaTypeFalse {
     fn default() -> MediaTypeFalse {
         Self::Image
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ArtworkRelationships {
+    #[serde(rename = "owners")]
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
+}
+
+impl ArtworkRelationships {
+    pub fn new(
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+    ) -> ArtworkRelationships {
+        ArtworkRelationships { owners }
     }
 }

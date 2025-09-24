@@ -16,11 +16,53 @@ pub struct ExternalLink {
     #[serde(rename = "href")]
     pub href: String,
     #[serde(rename = "meta")]
-    pub meta: models::ExternalLinkMeta,
+    pub meta: ExternalLinkMeta,
 }
 
 impl ExternalLink {
-    pub fn new(href: String, meta: models::ExternalLinkMeta) -> ExternalLink {
+    pub fn new(href: String, meta: ExternalLinkMeta) -> ExternalLink {
         ExternalLink { href, meta }
+    }
+}
+
+
+/// ExternalLinkMeta : metadata about an external link
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ExternalLinkMeta {
+    #[serde(rename = "type")]
+    pub r#type: ExternalLinkType,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum ExternalLinkType {
+    #[serde(rename = "TIDAL_SHARING")]
+    TidalSharing,
+    #[serde(rename = "TIDAL_USER_SHARING")]
+    TidalUserSharing,
+    #[serde(rename = "TIDAL_AUTOPLAY_ANDROID")]
+    TidalAutoplayAndroid,
+    #[serde(rename = "TIDAL_AUTOPLAY_IOS")]
+    TidalAutoplayIos,
+    #[serde(rename = "TIDAL_AUTOPLAY_WEB")]
+    TidalAutoplayWeb,
+    #[serde(rename = "TWITTER")]
+    Twitter,
+    #[serde(rename = "FACEBOOK")]
+    Facebook,
+    #[serde(rename = "INSTAGRAM")]
+    Instagram,
+    #[serde(rename = "TIKTOK")]
+    Tiktok,
+    #[serde(rename = "SNAPCHAT")]
+    Snapchat,
+    #[serde(rename = "OFFICIAL_HOMEPAGE")]
+    OfficialHomepage,
+    #[serde(rename = "CASHAPP_CONTRIBUTIONS")]
+    CashappContributions,
+}
+
+impl Default for ExternalLinkType {
+    fn default() -> ExternalLinkType {
+        Self::TidalSharing
     }
 }

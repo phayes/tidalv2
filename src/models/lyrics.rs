@@ -29,13 +29,13 @@ impl Lyrics {
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LyricsAttributes {
     #[serde(rename = "technicalStatus")]
-    pub technical_status: TechnicalStatusFalse,
+    pub technical_status: LyricsTechnicalStatus,
     #[serde(rename = "text", skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
 }
 
 impl LyricsAttributes {
-    pub fn new(technical_status: TechnicalStatusFalse) -> LyricsAttributes {
+    pub fn new(technical_status: LyricsTechnicalStatus) -> LyricsAttributes {
         LyricsAttributes {
             technical_status,
             text: None,
@@ -45,7 +45,7 @@ impl LyricsAttributes {
 
 ///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TechnicalStatusFalse {
+pub enum LyricsTechnicalStatus {
     #[serde(rename = "PENDING")]
     Pending,
     #[serde(rename = "PROCESSING")]
@@ -56,8 +56,25 @@ pub enum TechnicalStatusFalse {
     Ok,
 }
 
-impl Default for TechnicalStatusFalse {
-    fn default() -> TechnicalStatusFalse {
+impl Default for LyricsTechnicalStatus {
+    fn default() -> LyricsTechnicalStatus {
         Self::Pending
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct LyricsRelationships {
+    #[serde(rename = "owners")]
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
+    #[serde(rename = "track")]
+    pub track: models::Relationship,
+}
+
+impl LyricsRelationships {
+    pub fn new(
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+        track: models::Relationship,
+    ) -> LyricsRelationships {
+        LyricsRelationships { owners, track }
     }
 }

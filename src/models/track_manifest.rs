@@ -7,7 +7,7 @@ pub struct TrackManifestAttributes {
         rename = "albumAudioNormalizationData",
         skip_serializing_if = "Option::is_none"
     )]
-    pub album_audio_normalization_data: Option<models::AudioNormalizationData>,
+    pub album_audio_normalization_data: Option<models::AudioNormalization>,
     #[serde(rename = "drmData", skip_serializing_if = "Option::is_none")]
     pub drm_data: Option<models::DrmData>,
     /// Formats present in manifest
@@ -20,7 +20,7 @@ pub struct TrackManifestAttributes {
         rename = "trackAudioNormalizationData",
         skip_serializing_if = "Option::is_none"
     )]
-    pub track_audio_normalization_data: Option<models::AudioNormalizationData>,
+    pub track_audio_normalization_data: Option<models::AudioNormalization>,
     /// Track presentation
     #[serde(rename = "trackPresentation", skip_serializing_if = "Option::is_none")]
     pub track_presentation: Option<TrackPresentationFalse>,

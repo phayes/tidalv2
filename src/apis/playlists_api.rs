@@ -12,56 +12,7 @@ use super::{configuration, ApiError, Error};
 use crate::models;
 pub use models::*;
 use serde::{Deserialize, Serialize};
-
 use reqwest;
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct PlaylistUpdate {
-    #[serde(rename = "attributes")]
-    pub attributes: models::PlaylistUpdateOperationPayloadDataAttributes,
-    #[serde(rename = "id")]
-    pub id: String,
-    /// Resource type - Must be [`models::ResourceType::Playlists`]
-    #[serde(rename = "type")]
-    pub r#type: models::ResourceType,
-}
-
-impl PlaylistUpdate {
-    pub fn new(
-        attributes: models::PlaylistUpdateOperationPayloadDataAttributes,
-        id: String,
-    ) -> PlaylistUpdate {
-        PlaylistUpdate {
-            attributes,
-            id,
-            r#type: models::ResourceType::Playlists,
-        }
-    }
-}
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct PlaylistItemMeta {
-    #[serde(rename = "itemId")]
-    pub item_id: String,
-}
-
-impl PlaylistItemMeta {
-    pub fn new(item_id: String) -> PlaylistItemMeta {
-        PlaylistItemMeta { item_id }
-    }
-}
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct PlaylistItemPosition {
-    #[serde(rename = "positionBefore")]
-    pub position_before: String,
-}
-
-impl PlaylistItemPosition {
-    pub fn new(position_before: String) -> PlaylistItemPosition {
-        PlaylistItemPosition { position_before }
-    }
-}
 
 /// Retrieves multiple playlists by available filters, or without if applicable.
 ///
@@ -238,11 +189,11 @@ pub async fn playlist_get(
 pub async fn playlist_update(
     configuration: &configuration::Configuration,
     id: &str,
-    playlist_update: PlaylistUpdate,
+    update: UpdatePlaylist,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_playlist_update_operation_payload = DataWrap::new(playlist_update);
+    let p_playlist_update_operation_payload = DataWrap::new(update);
 
     let uri_str = format!(
         "{}/playlists/{id}",
@@ -338,7 +289,7 @@ pub async fn playlist_items(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::PlaylistsItemsResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier<PlaylistsItemsIdentifierMeta>>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;

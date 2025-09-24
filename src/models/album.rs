@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -9,7 +9,7 @@ pub struct Album {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::AlbumsRelationships>,
+    pub relationships: Option<album::AlbumsRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -30,12 +30,12 @@ impl Album {
 pub struct AlbumAttributes {
     /// Available usage for this album
     #[serde(rename = "availability", skip_serializing_if = "Option::is_none")]
-    pub availability: Option<Vec<AvailabilityFalse>>,
+    pub availability: Option<Vec<AlbumAvailability>>,
     /// Barcode id (EAN-13 or UPC-A)
     #[serde(rename = "barcodeId")]
     pub barcode_id: String,
     #[serde(rename = "copyright", skip_serializing_if = "Option::is_none")]
-    pub copyright: Option<models::Copyright>,
+    pub copyright: Option<copyright::Copyright>,
     /// Duration (ISO 8601)
     #[serde(rename = "duration")]
     pub duration: String,
@@ -44,7 +44,7 @@ pub struct AlbumAttributes {
     pub explicit: bool,
     /// Album links external to TIDAL API
     #[serde(rename = "externalLinks", skip_serializing_if = "Option::is_none")]
-    pub external_links: Option<Vec<models::ExternalLink>>,
+    pub external_links: Option<Vec<ExternalLink>>,
     #[serde(rename = "mediaTags")]
     pub media_tags: Vec<String>,
     /// Number of items in album
@@ -64,7 +64,7 @@ pub struct AlbumAttributes {
     pub title: String,
     /// Album type
     #[serde(rename = "type")]
-    pub r#type: TypeFalse,
+    pub r#type: AlbumType,
     /// Album version
     #[serde(rename = "version", skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -80,7 +80,7 @@ impl AlbumAttributes {
         number_of_volumes: i32,
         popularity: f64,
         title: String,
-        r#type: TypeFalse,
+        r#type: AlbumType,
     ) -> AlbumAttributes {
         AlbumAttributes {
             availability: None,
@@ -103,7 +103,7 @@ impl AlbumAttributes {
 
 /// Available usage for this album
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum AvailabilityFalse {
+pub enum AlbumAvailability {
     #[serde(rename = "STREAM")]
     Stream,
     #[serde(rename = "DJ")]
@@ -112,15 +112,15 @@ pub enum AvailabilityFalse {
     Stem,
 }
 
-impl Default for AvailabilityFalse {
-    fn default() -> AvailabilityFalse {
+impl Default for AlbumAvailability {
+    fn default() -> AlbumAvailability {
         Self::Stream
     }
 }
 
 /// Album type
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TypeFalse {
+pub enum AlbumType {
     #[serde(rename = "ALBUM")]
     Album,
     #[serde(rename = "EP")]
@@ -129,8 +129,38 @@ pub enum TypeFalse {
     Single,
 }
 
-impl Default for TypeFalse {
-    fn default() -> TypeFalse {
+impl Default for AlbumType {
+    fn default() -> AlbumType {
         Self::Album
     }
+}
+
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct AlbumsRelationships {
+    #[serde(rename = "artists")]
+    pub artists: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "coverArt")]
+    pub cover_art: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "genres")]
+    pub genres: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "items")]
+    pub items: MultiRelationship<ResourceIdentifier<AlbumsItemsResourceMeta>>,
+    #[serde(rename = "owners")]
+    pub owners: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "providers")]
+    pub providers: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "similarAlbums")]
+    pub similar_albums: MultiRelationship<ResourceIdentifier>,
+}
+
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct AlbumsItemsResourceMeta {
+    /// track number
+    #[serde(rename = "trackNumber")]
+    pub track_number: i32,
+    /// volume number
+    #[serde(rename = "volumeNumber")]
+    pub volume_number: i32,
 }

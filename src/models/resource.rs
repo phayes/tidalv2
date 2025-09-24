@@ -1,13 +1,14 @@
 use crate::models::{
-    Album, Appreciation, Artist, ArtistBiography, ArtistRole, Artwork, Genre, Links, Lyrics,
+    album::Album, Artist, ArtistBiography, ArtistRole, Artwork, Genre, Links, Lyrics,
     Playlist, Provider, SearchResult, SearchSuggestion, Track, TrackFile, TrackManifest,
-    TrackSourceFile, TrackStatistics, User, UserCollection, UserEntitlement, UserRecommendation,
+    TrackStatistics, User, UserCollection, UserEntitlement, UserRecommendation,
     UserShare, Video,
 };
 
 // Generic Resource struct for all single resource data documents
 use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize, Serializer};
 use strum::{AsRefStr, Display, IntoStaticStr};
+use serde_json::Value;
 
 #[derive(
     Clone,
@@ -56,7 +57,7 @@ pub enum ResourceType {
 #[derive(Clone, Debug, PartialEq)]
 pub enum AnyResource {
     Albums(Album),
-    Appreciations(Appreciation),
+    Appreciations(Value), /// Not supported
     ArtistBiographies(ArtistBiography),
     ArtistRoles(ArtistRole),
     Artists(Artist),
@@ -69,7 +70,7 @@ pub enum AnyResource {
     SearchSuggestions(SearchSuggestion),
     TrackFiles(TrackFile),
     TrackManifests(TrackManifest),
-    TrackSourceFiles(TrackSourceFile),
+    TrackSourceFiles(Value), /// Not supported
     TrackStatistics(TrackStatistics),
     Tracks(Track),
     UserCollections(UserCollection),

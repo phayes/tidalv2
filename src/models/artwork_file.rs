@@ -27,3 +27,13 @@ impl ArtworkFile {
         ArtworkFile { href, meta: None }
     }
 }
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ArtworkFileMeta {
+    /// Height (in pixels)
+    #[serde(rename = "height")]
+    pub height: i32,
+    /// Width (in pixels)
+    #[serde(rename = "width")]
+    pub width: i32,
+}

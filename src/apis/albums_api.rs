@@ -9,20 +9,10 @@
  */
 
 use super::{configuration, ApiError, Error};
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 use reqwest;
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct AlbumsItemsResourceMeta {
-    /// track number
-    #[serde(rename = "trackNumber")]
-    pub track_number: i32,
-    /// volume number
-    #[serde(rename = "volumeNumber")]
-    pub volume_number: i32,
-}
 
 /// Retrieves multiple albums by available filters, or without if applicable.
 ///
@@ -39,7 +29,7 @@ pub async fn album_list(
     filter_owners_period_id: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
     filter_barcode_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::Album>, Error<ApiError>> {
+) -> Result<MultiResource<album::Album>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_page_cursor = page_cursor;
     let p_include = include;
@@ -143,7 +133,7 @@ pub async fn album_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::Album>, Error<ApiError>> {
+) -> Result<Resource<album::Album>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -188,7 +178,7 @@ pub async fn album_artists(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -218,7 +208,7 @@ pub async fn album_cover_art(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -249,7 +239,7 @@ pub async fn album_items(
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<
-    models::MultiRelationship<models::ResourceIdentifier<AlbumsItemsResourceMeta>>,
+    MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -281,7 +271,7 @@ pub async fn album_owners(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -310,7 +300,7 @@ pub async fn album_providers(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -340,7 +330,7 @@ pub async fn album_similar_albums(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;

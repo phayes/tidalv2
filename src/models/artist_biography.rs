@@ -9,7 +9,7 @@ pub struct ArtistBiography {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::ArtistBiographiesRelationships>,
+    pub relationships: Option<models::ArtistBiographyRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -40,4 +40,10 @@ impl ArtistBiographyAttributes {
     pub fn new(editable: bool, text: String) -> ArtistBiographyAttributes {
         ArtistBiographyAttributes { editable, text }
     }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ArtistBiographyRelationships {
+    #[serde(rename = "owners")]
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
 }

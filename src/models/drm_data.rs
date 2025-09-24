@@ -17,7 +17,7 @@ pub struct DrmData {
     #[serde(rename = "certificateUrl", skip_serializing_if = "Option::is_none")]
     pub certificate_url: Option<String>,
     #[serde(rename = "drmSystem", skip_serializing_if = "Option::is_none")]
-    pub drm_system: Option<DrmSystemFalse>,
+    pub drm_system: Option<DrmSystem>,
     #[serde(rename = "licenseUrl", skip_serializing_if = "Option::is_none")]
     pub license_url: Option<String>,
 }
@@ -34,15 +34,15 @@ impl DrmData {
 }
 ///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum DrmSystemFalse {
+pub enum DrmSystem {
     #[serde(rename = "FAIRPLAY")]
     Fairplay,
     #[serde(rename = "WIDEVINE")]
     Widevine,
 }
 
-impl Default for DrmSystemFalse {
-    fn default() -> DrmSystemFalse {
+impl Default for DrmSystem {
+    fn default() -> DrmSystem {
         Self::Fairplay
     }
 }

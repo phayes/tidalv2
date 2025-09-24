@@ -3,8 +3,9 @@ use std::collections::{HashSet, VecDeque};
 use std::env;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Once;
-use tidalv2::models::ResourceType::*;
 use tidalv2::{apis, models};
+use models::*;
+use ResourceType::*;
 
 /// Ensure logging is only initialized once across all tests
 static INIT_LOGGER: Once = Once::new();
@@ -230,13 +231,13 @@ struct ResourceWalker {
     max_resources: usize,
     processed_ids: HashSet<String>,
     resource_queue: VecDeque<ResourceRef>,
-    resource_type_counts: std::collections::HashMap<models::ResourceType, usize>,
+    resource_type_counts: std::collections::HashMap<ResourceType, usize>,
 }
 
 #[derive(Debug, Clone)]
 struct ResourceRef {
     id: String,
-    resource_type: models::ResourceType,
+    resource_type: ResourceType,
 }
 
 impl ResourceWalker {
@@ -253,7 +254,7 @@ impl ResourceWalker {
 
     async fn walk_search_result(
         &mut self,
-        search_response: &models::Resource<models::SearchResult>,
+        search_response: &Resource<SearchResult>,
     ) {
         info!("Starting resource walking from search result");
 
@@ -288,7 +289,7 @@ impl ResourceWalker {
         );
     }
 
-    fn queue_resource_from_included(&mut self, included: &models::AnyResource) {
+    fn queue_resource_from_included(&mut self, included: &AnyResource) {
         // Extract resource info from included resource
         // Note: IncludedInner is an enum, we need to handle different variants
         debug!("Processing included resource: {:?}", included);
@@ -297,7 +298,7 @@ impl ResourceWalker {
         // The actual implementation would depend on the IncludedInner enum structure
     }
 
-    fn queue_relationships(&mut self, relationships: &models::SearchResultsRelationships) {
+    fn queue_relationships(&mut self, relationships: &SearchResultsRelationships) {
         // Queue albums
         self.queue_multi_relationship_resources(&relationships.albums, "albums");
 
@@ -319,7 +320,7 @@ impl ResourceWalker {
 
     fn queue_multi_relationship_resources(
         &mut self,
-        multi_rel: &models::MultiRelationship<models::ResourceIdentifier>,
+        multi_rel: &MultiRelationship<ResourceIdentifier>,
         relationship_type: &str,
     ) {
         if let Some(data) = &multi_rel.data {
@@ -547,8 +548,8 @@ impl ResourceWalker {
 
     fn queue_album_items_relationship(
         &mut self,
-        items_rel: &models::MultiRelationship<
-            models::ResourceIdentifier<crate::apis::albums_api::AlbumsItemsResourceMeta>,
+        items_rel: &MultiRelationship<
+            ResourceIdentifier<album::AlbumsItemsResourceMeta>,
         >,
         relationship_type: &str,
     ) {
@@ -572,21 +573,14 @@ impl ResourceWalker {
 
     fn queue_playlist_items_relationship(
         &mut self,
-        items_rel: &models::MultiRelationship<models::PlaylistsItemsResourceIdentifier>,
+        items_rel: &MultiRelationship<ResourceIdentifier<PlaylistsItemsIdentifierMeta>>,
         relationship_type: &str,
     ) {
         if let Some(data) = &items_rel.data {
             for resource_id in data {
                 let resource_ref = ResourceRef {
                     id: resource_id.id.clone(),
-                    resource_type: match resource_id.r#type.as_str() {
-                        "albums" => Albums,
-                        "artists" => Artists,
-                        "tracks" => Tracks,
-                        "videos" => Videos,
-                        "playlists" => Playlists,
-                        _ => panic!("Unknown resource type: {}", resource_id.r#type),
-                    },
+                    resource_type: resource_id.r#type,
                 };
 
                 if !self.processed_ids.contains(&resource_ref.id) {

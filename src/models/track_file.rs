@@ -7,7 +7,7 @@ pub struct TrackFileAttributes {
         rename = "albumAudioNormalizationData",
         skip_serializing_if = "Option::is_none"
     )]
-    pub album_audio_normalization_data: Option<models::AudioNormalizationData>,
+    pub album_audio_normalization_data: Option<models::AudioNormalization>,
     /// File's audio format
     #[serde(rename = "format", skip_serializing_if = "Option::is_none")]
     pub format: Option<FormatFalse>,
@@ -15,7 +15,7 @@ pub struct TrackFileAttributes {
         rename = "trackAudioNormalizationData",
         skip_serializing_if = "Option::is_none"
     )]
-    pub track_audio_normalization_data: Option<models::AudioNormalizationData>,
+    pub track_audio_normalization_data: Option<models::AudioNormalization>,
     /// Track presentation
     #[serde(rename = "trackPresentation", skip_serializing_if = "Option::is_none")]
     pub track_presentation: Option<TrackPresentationFalse>,

@@ -1,5 +1,6 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
+use models::*;
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Artist {
@@ -69,4 +70,31 @@ impl ArtistAttributes {
             spotlighted: None,
         }
     }
+}
+
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ArtistsRelationships {
+    #[serde(rename = "albums")]
+    pub albums: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "biography")]
+    pub biography: Relationship,
+    #[serde(rename = "owners")]
+    pub owners: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "profileArt")]
+    pub profile_art: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "radio")]
+    pub radio: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "roles")]
+    pub roles: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "similarArtists")]
+    pub similar_artists: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "trackProviders")]
+    pub track_providers: MultiRelationship<
+        ResourceIdentifier<crate::apis::artists_api::ArtistsTrackProvidersResourceMeta>,
+    >,
+    #[serde(rename = "tracks")]
+    pub tracks: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "videos")]
+    pub videos: MultiRelationship<ResourceIdentifier>,
 }
