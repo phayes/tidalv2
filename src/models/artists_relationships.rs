@@ -28,7 +28,7 @@ pub struct ArtistsRelationships {
     #[serde(rename = "similarArtists")]
     pub similar_artists: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "trackProviders")]
-    pub track_providers: models::MultiRelationship<models::ArtistsTrackProvidersResourceIdentifier>,
+    pub track_providers: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::artists_api::ArtistsTrackProvidersResourceMeta>>,
     #[serde(rename = "tracks")]
     pub tracks: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "videos")]
@@ -44,7 +44,7 @@ impl ArtistsRelationships {
         radio: models::MultiRelationship<models::ResourceIdentifier>,
         roles: models::MultiRelationship<models::ResourceIdentifier>,
         similar_artists: models::MultiRelationship<models::ResourceIdentifier>,
-        track_providers: models::MultiRelationship<models::ArtistsTrackProvidersResourceIdentifier>,
+        track_providers: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::artists_api::ArtistsTrackProvidersResourceMeta>>,
         tracks: models::MultiRelationship<models::ResourceIdentifier>,
         videos: models::MultiRelationship<models::ResourceIdentifier>,
     ) -> ArtistsRelationships {

@@ -1,7 +1,3 @@
-pub mod albums_items_resource_identifier;
-pub use self::albums_items_resource_identifier::AlbumsItemsResourceIdentifier;
-pub mod albums_items_resource_identifier_meta;
-pub use self::albums_items_resource_identifier_meta::AlbumsItemsResourceIdentifierMeta;
 pub mod albums_relationships;
 pub use self::albums_relationships::AlbumsRelationships;
 pub mod album;
@@ -24,10 +20,6 @@ pub mod artists_relationships;
 pub use self::artists_relationships::ArtistsRelationships;
 pub mod artist;
 pub use self::artist::{Artist, ArtistAttributes};
-pub mod artists_track_providers_resource_identifier;
-pub use self::artists_track_providers_resource_identifier::ArtistsTrackProvidersResourceIdentifier;
-pub mod artists_track_providers_resource_identifier_meta;
-pub use self::artists_track_providers_resource_identifier_meta::ArtistsTrackProvidersResourceIdentifierMeta;
 pub mod artwork_file;
 pub use self::artwork_file::ArtworkFile;
 pub mod artwork_file_meta;

@@ -20,7 +20,7 @@ pub struct AlbumsRelationships {
     #[serde(rename = "genres")]
     pub genres: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "items")]
-    pub items: models::MultiRelationship<models::AlbumsItemsResourceIdentifier>,
+    pub items: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::albums_api::AlbumsItemsResourceMeta>>,
     #[serde(rename = "owners")]
     pub owners: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "providers")]
@@ -34,7 +34,7 @@ impl AlbumsRelationships {
         artists: models::MultiRelationship<models::ResourceIdentifier>,
         cover_art: models::MultiRelationship<models::ResourceIdentifier>,
         genres: models::MultiRelationship<models::ResourceIdentifier>,
-        items: models::MultiRelationship<models::AlbumsItemsResourceIdentifier>,
+        items: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::albums_api::AlbumsItemsResourceMeta>>,
         owners: models::MultiRelationship<models::ResourceIdentifier>,
         providers: models::MultiRelationship<models::ResourceIdentifier>,
         similar_albums: models::MultiRelationship<models::ResourceIdentifier>,

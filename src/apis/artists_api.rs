@@ -10,8 +10,16 @@
 
 use super::{configuration, ApiError, Error};
 use crate::models;
+use serde::{Deserialize, Serialize};
 
 use reqwest;
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ArtistsTrackProvidersResourceMeta {
+    /// Total number of tracks released together with the provider
+    #[serde(rename = "numberOfTracks")]
+    pub number_of_tracks: i64,
+}
 
 /// Retrieves multiple artists by available filters, or without if applicable.
 ///
@@ -441,7 +449,7 @@ pub async fn artist_track_providers(
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::ArtistsTrackProvidersResourceIdentifier>,
+    models::MultiRelationship<models::ResourceIdentiferWithMeta<ArtistsTrackProvidersResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions

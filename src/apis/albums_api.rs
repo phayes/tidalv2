@@ -10,8 +10,19 @@
 
 use super::{configuration, ApiError, Error};
 use crate::models;
+use serde::{Deserialize, Serialize};
 
 use reqwest;
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct AlbumsItemsResourceMeta {
+    /// track number
+    #[serde(rename = "trackNumber")]
+    pub track_number: i32,
+    /// volume number
+    #[serde(rename = "volumeNumber")]
+    pub volume_number: i32,
+}
 
 /// Retrieves multiple albums by available filters, or without if applicable.
 ///
@@ -237,7 +248,7 @@ pub async fn album_items(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::AlbumsItemsResourceIdentifier>, Error<ApiError>> {
+) -> Result<models::MultiRelationship<models::ResourceIdentiferWithMeta<AlbumsItemsResourceMeta>>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
