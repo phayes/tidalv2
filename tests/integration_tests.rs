@@ -568,7 +568,7 @@ impl ResourceWalker {
 
     fn queue_playlist_items_relationship(
         &mut self,
-        items_rel: &MultiRelationship<ResourceIdentifier<PlaylistsItemsIdentifierMeta>>,
+        items_rel: &MultiRelationship<ResourceIdentifier<playlist::PlaylistsItemsIdentifierMeta>>,
         relationship_type: &str,
     ) {
         if let Some(data) = &items_rel.data {

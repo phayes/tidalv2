@@ -29,7 +29,7 @@ pub async fn playlist_list(
     include: Option<Vec<String>>,
     filter_owners_period_id: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::Playlist>, Error<ApiError>> {
+) -> Result<MultiResource<playlist::Playlist>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_page_cursor = page_cursor;
     let p_sort = sort;
@@ -149,7 +149,7 @@ pub async fn playlist_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::Playlist>, Error<ApiError>> {
+) -> Result<Resource<playlist::Playlist>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -189,7 +189,7 @@ pub async fn playlist_get(
 pub async fn playlist_update(
     configuration: &configuration::Configuration,
     id: &str,
-    update: UpdatePlaylist,
+    update: playlist::UpdatePlaylist,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -252,10 +252,10 @@ pub async fn playlist_remove_tracks(
             ResourceIdentifier::new_with_meta(
                 track_id.clone(),
                 ResourceType::Tracks,
-                PlaylistItemMeta::new(track_id),
+                playlist::PlaylistItemMeta::new(track_id),
             )
         })
-        .collect::<Vec<ResourceIdentifier<PlaylistItemMeta>>>();
+        .collect::<Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>>();
 
     playlist_remove_items(configuration, id, resource_identifiers).await
 }
@@ -272,10 +272,10 @@ pub async fn playlist_remove_videos(
             ResourceIdentifier::new_with_meta(
                 video_id.clone(),
                 ResourceType::Videos,
-                PlaylistItemMeta::new(video_id),
+                playlist::PlaylistItemMeta::new(video_id),
             )
         })
-        .collect::<Vec<ResourceIdentifier<PlaylistItemMeta>>>();
+        .collect::<Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>>();
 
     playlist_remove_items(configuration, id, resource_identifiers).await
 }
@@ -289,7 +289,7 @@ pub async fn playlist_items(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier<PlaylistsItemsIdentifierMeta>>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier<playlist::PlaylistsItemsIdentifierMeta>>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -318,7 +318,7 @@ pub async fn playlist_items(
 pub async fn playlist_remove_items(
     configuration: &configuration::Configuration,
     id: &str,
-    items_to_remove: Vec<models::ResourceIdentifier<PlaylistItemMeta>>,
+    items_to_remove: Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -347,13 +347,13 @@ pub async fn playlist_remove_items(
 pub async fn playlist_reorder_items(
     configuration: &configuration::Configuration,
     id: &str,
-    reorder_items: Vec<models::ResourceIdentifier<PlaylistItemMeta>>,
+    reorder_items: Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>,
     position_before: String,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_playlist_items_relationship_reorder_operation_payload =
-        DataWrap::new_with_meta(reorder_items, PlaylistItemPosition::new(position_before));
+        DataWrap::new_with_meta(reorder_items, playlist::PlaylistItemPosition::new(position_before));
 
     let uri_str = format!(
         "{}/playlists/{id}/relationships/items",
@@ -380,7 +380,7 @@ pub async fn playlist_add_items(
     let p_id = id;
     let p_playlist_items_relationship_add_operation_payload = DataWrap::new_with_meta(
         items_to_add,
-        position_before.map(|position_before| PlaylistItemPosition::new(position_before)),
+        position_before.map(|position_before| playlist::PlaylistItemPosition::new(position_before)),
     );
 
     let uri_str = format!(
@@ -459,8 +459,8 @@ pub async fn playlist_owners(
 /// Creates a new playlist.
 pub async fn playlist_create(
     configuration: &configuration::Configuration,
-    playlist: models::CreatePlaylist,
-) -> Result<models::Resource<models::Playlist>, Error<ApiError>> {
+    playlist: playlist::CreatePlaylist,
+) -> Result<Resource<playlist::Playlist>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_playlist_create_operation_payload = DataWrap::new(playlist);
 

@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -9,7 +9,7 @@ pub struct Artwork {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::ArtworkRelationships>,
+    pub relationships: Option<ArtworkRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -30,14 +30,14 @@ impl Artwork {
 pub struct ArtworkAttributes {
     /// Artwork files
     #[serde(rename = "files")]
-    pub files: Vec<models::ArtworkFile>,
+    pub files: Vec<artwork_file::ArtworkFile>,
     /// Media type of artwork files
     #[serde(rename = "mediaType")]
     pub media_type: MediaTypeFalse,
 }
 
 impl ArtworkAttributes {
-    pub fn new(files: Vec<models::ArtworkFile>, media_type: MediaTypeFalse) -> ArtworkAttributes {
+    pub fn new(files: Vec<artwork_file::ArtworkFile>, media_type: MediaTypeFalse) -> ArtworkAttributes {
         ArtworkAttributes { files, media_type }
     }
 }
@@ -60,12 +60,12 @@ impl Default for MediaTypeFalse {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArtworkRelationships {
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
+    pub owners: MultiRelationship<ResourceIdentifier>,
 }
 
 impl ArtworkRelationships {
     pub fn new(
-        owners: models::MultiRelationship<models::ResourceIdentifier>,
+        owners: MultiRelationship<ResourceIdentifier>,
     ) -> ArtworkRelationships {
         ArtworkRelationships { owners }
     }

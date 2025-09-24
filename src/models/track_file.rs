@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -7,18 +7,18 @@ pub struct TrackFileAttributes {
         rename = "albumAudioNormalizationData",
         skip_serializing_if = "Option::is_none"
     )]
-    pub album_audio_normalization_data: Option<models::AudioNormalization>,
+    pub album_audio_normalization_data: Option<audio::AudioNormalization>,
     /// File's audio format
     #[serde(rename = "format", skip_serializing_if = "Option::is_none")]
-    pub format: Option<FormatFalse>,
+    pub format: Option<audio::AudioFormat>,
     #[serde(
         rename = "trackAudioNormalizationData",
         skip_serializing_if = "Option::is_none"
     )]
-    pub track_audio_normalization_data: Option<models::AudioNormalization>,
+    pub track_audio_normalization_data: Option<audio::AudioNormalization>,
     /// Track presentation
     #[serde(rename = "trackPresentation", skip_serializing_if = "Option::is_none")]
-    pub track_presentation: Option<TrackPresentationFalse>,
+    pub track_presentation: Option<TrackPresentation>,
     /// File URL
     #[serde(rename = "url", skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
@@ -36,36 +36,19 @@ impl TrackFileAttributes {
     }
 }
 
-/// File's audio format
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum FormatFalse {
-    #[serde(rename = "HEAACV1")]
-    Heaacv1,
-    #[serde(rename = "AACLC")]
-    Aaclc,
-    #[serde(rename = "FLAC")]
-    Flac,
-    #[serde(rename = "FLAC_HIRES")]
-    FlacHires,
-}
 
-impl Default for FormatFalse {
-    fn default() -> FormatFalse {
-        Self::Heaacv1
-    }
-}
 
 /// Track presentation
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TrackPresentationFalse {
+pub enum TrackPresentation {
     #[serde(rename = "FULL")]
     Full,
     #[serde(rename = "PREVIEW")]
     Preview,
 }
 
-impl Default for TrackPresentationFalse {
-    fn default() -> TrackPresentationFalse {
+impl Default for TrackPresentation {
+    fn default() -> TrackPresentation {
         Self::Full
     }
 }

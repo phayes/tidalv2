@@ -9,7 +9,7 @@
  */
 
 use super::{configuration, ApiError, Error};
-use crate::models;
+use crate::models::*;
 
 use reqwest;
 
@@ -20,7 +20,7 @@ use reqwest;
 pub async fn provider_list(
     configuration: &configuration::Configuration,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::Provider>, Error<ApiError>> {
+) -> Result<MultiResource<provider::Provider>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_filter_id = filter_id;
 
@@ -57,7 +57,7 @@ pub async fn provider_list(
 pub async fn provider_get(
     configuration: &configuration::Configuration,
     id: &str,
-) -> Result<models::Resource<models::Provider>, Error<ApiError>> {
+) -> Result<Resource<provider::Provider>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 

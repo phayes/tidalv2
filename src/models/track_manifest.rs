@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -7,12 +7,12 @@ pub struct TrackManifestAttributes {
         rename = "albumAudioNormalizationData",
         skip_serializing_if = "Option::is_none"
     )]
-    pub album_audio_normalization_data: Option<models::AudioNormalization>,
+    pub album_audio_normalization_data: Option<audio::AudioNormalization>,
     #[serde(rename = "drmData", skip_serializing_if = "Option::is_none")]
-    pub drm_data: Option<models::DrmData>,
+    pub drm_data: Option<drm_data::DrmData>,
     /// Formats present in manifest
     #[serde(rename = "formats", skip_serializing_if = "Option::is_none")]
-    pub formats: Option<Vec<FormatsFalse>>,
+    pub formats: Option<Vec<audio::AudioFormat>>,
     /// Unique manifest hash
     #[serde(rename = "hash", skip_serializing_if = "Option::is_none")]
     pub hash: Option<String>,
@@ -20,7 +20,7 @@ pub struct TrackManifestAttributes {
         rename = "trackAudioNormalizationData",
         skip_serializing_if = "Option::is_none"
     )]
-    pub track_audio_normalization_data: Option<models::AudioNormalization>,
+    pub track_audio_normalization_data: Option<audio::AudioNormalization>,
     /// Track presentation
     #[serde(rename = "trackPresentation", skip_serializing_if = "Option::is_none")]
     pub track_presentation: Option<TrackPresentationFalse>,
@@ -40,25 +40,6 @@ impl TrackManifestAttributes {
             track_presentation: None,
             uri: None,
         }
-    }
-}
-
-/// Formats present in manifest
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum FormatsFalse {
-    #[serde(rename = "HEAACV1")]
-    Heaacv1,
-    #[serde(rename = "AACLC")]
-    Aaclc,
-    #[serde(rename = "FLAC")]
-    Flac,
-    #[serde(rename = "FLAC_HIRES")]
-    FlacHires,
-}
-
-impl Default for FormatsFalse {
-    fn default() -> FormatsFalse {
-        Self::Heaacv1
     }
 }
 

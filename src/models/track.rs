@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -9,7 +9,7 @@ pub struct Track {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::TracksRelationships>,
+    pub relationships: Option<TracksRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -38,7 +38,7 @@ pub struct TrackAttributes {
     #[serde(rename = "bpm", skip_serializing_if = "Option::is_none")]
     pub bpm: Option<f32>,
     #[serde(rename = "copyright", skip_serializing_if = "Option::is_none")]
-    pub copyright: Option<models::Copyright>,
+    pub copyright: Option<copyright::Copyright>,
     /// Datetime of track creation (ISO 8601)
     #[serde(rename = "createdAt", skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
@@ -50,7 +50,7 @@ pub struct TrackAttributes {
     pub explicit: bool,
     /// Track links external to TIDAL API
     #[serde(rename = "externalLinks", skip_serializing_if = "Option::is_none")]
-    pub external_links: Option<Vec<models::ExternalLink>>,
+    pub external_links: Option<Vec<ExternalLink>>,
     /// International Standard Recording Code (ISRC)
     #[serde(rename = "isrc")]
     pub isrc: String,

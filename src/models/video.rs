@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -32,7 +32,7 @@ pub struct VideoAttributes {
     #[serde(rename = "availability", skip_serializing_if = "Option::is_none")]
     pub availability: Option<Vec<AvailabilityFalse>>,
     #[serde(rename = "copyright", skip_serializing_if = "Option::is_none")]
-    pub copyright: Option<models::Copyright>,
+    pub copyright: Option<copyright::Copyright>,
     /// Duration (ISO 8601)
     #[serde(rename = "duration")]
     pub duration: String,
@@ -41,7 +41,7 @@ pub struct VideoAttributes {
     pub explicit: bool,
     /// Video links external to TIDAL API
     #[serde(rename = "externalLinks", skip_serializing_if = "Option::is_none")]
-    pub external_links: Option<Vec<models::ExternalLink>>,
+    pub external_links: Option<Vec<ExternalLink>>,
     /// International Standard Recording Code (ISRC)
     #[serde(rename = "isrc")]
     pub isrc: String,
@@ -103,21 +103,21 @@ impl Default for AvailabilityFalse {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct VideoRelationships {
     #[serde(rename = "albums")]
-    pub albums: models::MultiRelationship<models::ResourceIdentifier>,
+    pub albums: MultiRelationship<ResourceIdentifier>,
     #[serde(rename = "artists")]
-    pub artists: models::MultiRelationship<models::ResourceIdentifier>,
+    pub artists: MultiRelationship<ResourceIdentifier>,
     #[serde(rename = "providers")]
-    pub providers: models::MultiRelationship<models::ResourceIdentifier>,
+    pub providers: MultiRelationship<ResourceIdentifier>,
     #[serde(rename = "thumbnailArt")]
-    pub thumbnail_art: models::MultiRelationship<models::ResourceIdentifier>,
+    pub thumbnail_art: MultiRelationship<ResourceIdentifier>,
 }
 
 impl VideoRelationships {
     pub fn new(
-        albums: models::MultiRelationship<models::ResourceIdentifier>,
-        artists: models::MultiRelationship<models::ResourceIdentifier>,
-        providers: models::MultiRelationship<models::ResourceIdentifier>,
-        thumbnail_art: models::MultiRelationship<models::ResourceIdentifier>,
+        albums: MultiRelationship<ResourceIdentifier>,
+        artists: MultiRelationship<ResourceIdentifier>,
+        providers: MultiRelationship<ResourceIdentifier>,
+        thumbnail_art: MultiRelationship<ResourceIdentifier>,
     ) -> VideoRelationships {
         VideoRelationships {
             albums,

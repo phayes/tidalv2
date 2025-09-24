@@ -1,6 +1,6 @@
 use crate::models::{
     album::Album, artist::Artist, artist_biography::ArtistBiography, artist_role::ArtistRole,
-    Artwork, Genre, Links, Lyrics, Playlist, Provider, SearchResult, SearchSuggestion, Track,
+    artwork::Artwork, genre::Genre, Links, lyrics::Lyrics, playlist::Playlist, provider::Provider, SearchResult, SearchSuggestion, Track,
     TrackFile, TrackManifest, TrackStatistics, User, UserCollection,
     UserRecommendation, UserShare, Video,
 };

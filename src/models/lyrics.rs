@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -9,7 +9,7 @@ pub struct Lyrics {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::LyricsRelationships>,
+    pub relationships: Option<LyricsRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -65,15 +65,15 @@ impl Default for LyricsTechnicalStatus {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LyricsRelationships {
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
+    pub owners: MultiRelationship<ResourceIdentifier>,
     #[serde(rename = "track")]
-    pub track: models::Relationship,
+    pub track: Relationship,
 }
 
 impl LyricsRelationships {
     pub fn new(
-        owners: models::MultiRelationship<models::ResourceIdentifier>,
-        track: models::Relationship,
+        owners: MultiRelationship<ResourceIdentifier>,
+        track: Relationship,
     ) -> LyricsRelationships {
         LyricsRelationships { owners, track }
     }
