@@ -30,7 +30,7 @@ impl Video {
 pub struct VideoAttributes {
     /// Available usage for this video
     #[serde(rename = "availability", skip_serializing_if = "Option::is_none")]
-    pub availability: Option<Vec<AvailabilityFalse>>,
+    pub availability: Option<Vec<VideoAvailability>>,
     #[serde(rename = "copyright", skip_serializing_if = "Option::is_none")]
     pub copyright: Option<copyright::Copyright>,
     /// Duration (ISO 8601)
@@ -84,7 +84,7 @@ impl VideoAttributes {
 
 /// Available usage for this video
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum AvailabilityFalse {
+pub enum VideoAvailability {
     #[serde(rename = "STREAM")]
     Stream,
     #[serde(rename = "DJ")]
@@ -93,8 +93,8 @@ pub enum AvailabilityFalse {
     Stem,
 }
 
-impl Default for AvailabilityFalse {
-    fn default() -> AvailabilityFalse {
+impl Default for VideoAvailability {
+    fn default() -> VideoAvailability {
         Self::Stream
     }
 }

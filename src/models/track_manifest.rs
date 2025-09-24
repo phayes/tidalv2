@@ -23,7 +23,7 @@ pub struct TrackManifestAttributes {
     pub track_audio_normalization_data: Option<audio::AudioNormalization>,
     /// Track presentation
     #[serde(rename = "trackPresentation", skip_serializing_if = "Option::is_none")]
-    pub track_presentation: Option<TrackPresentationFalse>,
+    pub track_presentation: Option<TrackPresentation>,
     /// Manifest URI
     #[serde(rename = "uri", skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
@@ -45,15 +45,15 @@ impl TrackManifestAttributes {
 
 /// Track presentation
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TrackPresentationFalse {
+pub enum TrackPresentation {
     #[serde(rename = "FULL")]
     Full,
     #[serde(rename = "PREVIEW")]
     Preview,
 }
 
-impl Default for TrackPresentationFalse {
-    fn default() -> TrackPresentationFalse {
+impl Default for TrackPresentation {
+    fn default() -> TrackPresentation {
         Self::Full
     }
 }

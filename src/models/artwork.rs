@@ -33,26 +33,26 @@ pub struct ArtworkAttributes {
     pub files: Vec<artwork_file::ArtworkFile>,
     /// Media type of artwork files
     #[serde(rename = "mediaType")]
-    pub media_type: MediaTypeFalse,
+    pub media_type: ArtworkMediaType,
 }
 
 impl ArtworkAttributes {
-    pub fn new(files: Vec<artwork_file::ArtworkFile>, media_type: MediaTypeFalse) -> ArtworkAttributes {
+    pub fn new(files: Vec<artwork_file::ArtworkFile>, media_type: ArtworkMediaType) -> ArtworkAttributes {
         ArtworkAttributes { files, media_type }
     }
 }
 
 /// Media type of artwork files
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum MediaTypeFalse {
+pub enum ArtworkMediaType {
     #[serde(rename = "IMAGE")]
     Image,
     #[serde(rename = "VIDEO")]
     Video,
 }
 
-impl Default for MediaTypeFalse {
-    fn default() -> MediaTypeFalse {
+impl Default for ArtworkMediaType {
+    fn default() -> ArtworkMediaType {
         Self::Image
     }
 }

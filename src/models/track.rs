@@ -30,10 +30,10 @@ impl Track {
 pub struct TrackAttributes {
     /// Access type
     #[serde(rename = "accessType", skip_serializing_if = "Option::is_none")]
-    pub access_type: Option<AccessTypeFalse>,
+    pub access_type: Option<TrackAccess>,
     /// Available usage for this track
     #[serde(rename = "availability", skip_serializing_if = "Option::is_none")]
-    pub availability: Option<Vec<AvailabilityFalse>>,
+    pub availability: Option<Vec<TrackAvailability>>,
     /// Beats per minute
     #[serde(rename = "bpm", skip_serializing_if = "Option::is_none")]
     pub bpm: Option<f32>,
@@ -56,10 +56,10 @@ pub struct TrackAttributes {
     pub isrc: String,
     /// Key
     #[serde(rename = "key")]
-    pub key: KeyFalse,
+    pub key: TrackKey,
     /// The scale of the key
     #[serde(rename = "keyScale")]
-    pub key_scale: KeyScaleFalse,
+    pub key_scale: TrackKeyScale,
     #[serde(rename = "mediaTags")]
     pub media_tags: Vec<String>,
     /// Popularity (0.0 - 1.0)
@@ -83,8 +83,8 @@ impl TrackAttributes {
         duration: String,
         explicit: bool,
         isrc: String,
-        key: KeyFalse,
-        key_scale: KeyScaleFalse,
+        key: TrackKey,
+        key_scale: TrackKeyScale,
         media_tags: Vec<String>,
         popularity: f64,
         title: String,
@@ -113,7 +113,7 @@ impl TrackAttributes {
 
 /// Access type
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum AccessTypeFalse {
+pub enum TrackAccess {
     #[serde(rename = "PUBLIC")]
     Public,
     #[serde(rename = "UNLISTED")]
@@ -122,15 +122,15 @@ pub enum AccessTypeFalse {
     Private,
 }
 
-impl Default for AccessTypeFalse {
-    fn default() -> AccessTypeFalse {
+impl Default for TrackAccess {
+    fn default() -> TrackAccess {
         Self::Public
     }
 }
 
 /// Available usage for this track
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum AvailabilityFalse {
+pub enum TrackAvailability {
     #[serde(rename = "STREAM")]
     Stream,
     #[serde(rename = "DJ")]
@@ -139,15 +139,15 @@ pub enum AvailabilityFalse {
     Stem,
 }
 
-impl Default for AvailabilityFalse {
-    fn default() -> AvailabilityFalse {
+impl Default for TrackAvailability {
+    fn default() -> TrackAvailability {
         Self::Stream
     }
 }
 
 /// Key
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum KeyFalse {
+pub enum TrackKey {
     #[serde(rename = "UNKNOWN")]
     Unknown,
     #[serde(rename = "C")]
@@ -176,15 +176,15 @@ pub enum KeyFalse {
     B,
 }
 
-impl Default for KeyFalse {
-    fn default() -> KeyFalse {
+impl Default for TrackKey {
+    fn default() -> TrackKey {
         Self::Unknown
     }
 }
 
 /// The scale of the key
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum KeyScaleFalse {
+pub enum TrackKeyScale {
     #[serde(rename = "UNKNOWN")]
     Unknown,
     #[serde(rename = "MAJOR")]
@@ -215,8 +215,8 @@ pub enum KeyScaleFalse {
     PentatonicMinor,
 }
 
-impl Default for KeyScaleFalse {
-    fn default() -> KeyScaleFalse {
+impl Default for TrackKeyScale {
+    fn default() -> TrackKeyScale {
         Self::Unknown
     }
 }
