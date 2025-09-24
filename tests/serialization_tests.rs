@@ -1,4 +1,4 @@
-use log::info;
+use log::{trace};
 use std::collections::HashMap;
 use std::fs;
 use tidalv2::models::ResourceType::*;
@@ -43,13 +43,13 @@ async fn test_search_result_json_deserialization() {
     // Verify that albums relationship has data
     if let Some(albums_data) = &relationships.albums.data {
         assert!(!albums_data.is_empty(), "Albums data should not be empty");
-        info!("Found {} albums in relationships", albums_data.len());
+        trace!("Found {} albums in relationships", albums_data.len());
     }
 
     // Verify that artists relationship has data
     if let Some(artists_data) = &relationships.artists.data {
         assert!(!artists_data.is_empty(), "Artists data should not be empty");
-        info!("Found {} artists in relationships", artists_data.len());
+        trace!("Found {} artists in relationships", artists_data.len());
     }
 
     // Most importantly, verify that the included array deserializes correctly
@@ -60,7 +60,7 @@ async fn test_search_result_json_deserialization() {
     let included = search_response.included.as_ref().unwrap();
     assert!(!included.is_empty(), "Included array should not be empty");
 
-    info!(
+    trace!(
         "Successfully deserialized search result with {} included resources",
         included.len()
     );
@@ -71,9 +71,9 @@ async fn test_search_result_json_deserialization() {
         *type_counts.entry(item.resource_type()).or_insert(0) += 1;
     }
 
-    info!("Included resource type breakdown:");
+    trace!("Included resource type breakdown:");
     for (resource_type, count) in &type_counts {
-        info!("  {}: {}", resource_type, count);
+        trace!("  {}: {}", resource_type, count);
     }
 
     // Verify we have the expected resource types
@@ -147,7 +147,7 @@ async fn test_album_json_deserialization() {
     // Verify that various relationships have data
     if let Some(artists_data) = &relationships.artists.data {
         assert!(!artists_data.is_empty(), "Artists data should not be empty");
-        info!(
+        trace!(
             "Found {} artists in album relationships",
             artists_data.len()
         );
@@ -155,16 +155,16 @@ async fn test_album_json_deserialization() {
 
     if let Some(items_data) = &relationships.items.data {
         assert!(!items_data.is_empty(), "Items data should not be empty");
-        info!("Found {} items in album relationships", items_data.len());
+        trace!("Found {} items in album relationships", items_data.len());
 
         // Verify the first item has meta information
         if let Some(meta) = &items_data[0].meta {
             // Check that we can access track and volume numbers
-            info!("First item meta: {:?}", meta);
+            trace!("First item meta: {:?}", meta);
         }
     }
 
-    info!("Successfully deserialized album: {}", attributes.title);
+    trace!("Successfully deserialized album: {}", attributes.title);
 }
 
 #[tokio::test]
@@ -218,12 +218,12 @@ async fn test_artist_json_deserialization() {
     // Verify that various relationships have data
     if let Some(albums_data) = &relationships.albums.data {
         assert!(!albums_data.is_empty(), "Albums data should not be empty");
-        info!("Found {} albums in artist relationships", albums_data.len());
+        trace!("Found {} albums in artist relationships", albums_data.len());
     }
 
     if let Some(tracks_data) = &relationships.tracks.data {
         assert!(!tracks_data.is_empty(), "Tracks data should not be empty");
-        info!("Found {} tracks in artist relationships", tracks_data.len());
+        trace!("Found {} tracks in artist relationships", tracks_data.len());
     }
 
     // Verify similar artists relationship
@@ -232,14 +232,14 @@ async fn test_artist_json_deserialization() {
             !similar_artists_data.is_empty(),
             "Similar artists data should not be empty"
         );
-        info!(
+        trace!(
             "Found {} similar artists in artist relationships",
             similar_artists_data.len()
         );
 
         // Verify the first similar artist has basic information
-        info!("First similar artist id: {}", similar_artists_data[0].id);
-        info!(
+        trace!("First similar artist id: {}", similar_artists_data[0].id);
+        trace!(
             "First similar artist type: {}",
             similar_artists_data[0].r#type
         );
@@ -251,16 +251,16 @@ async fn test_artist_json_deserialization() {
             !track_providers_data.is_empty(),
             "Track providers data should not be empty"
         );
-        info!(
+        trace!(
             "Found {} track providers in artist relationships",
             track_providers_data.len()
         );
 
         // Verify the first track provider has meta information
         if let Some(meta) = &track_providers_data[0].meta {
-            info!("First track provider meta: {:?}", meta);
+            trace!("First track provider meta: {:?}", meta);
         }
     }
 
-    info!("Successfully deserialized artist: {}", attributes.name);
+    trace!("Successfully deserialized artist: {}", attributes.name);
 }

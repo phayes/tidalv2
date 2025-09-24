@@ -1,6 +1,7 @@
-use log::{debug, info};
+use async_recursion::async_recursion;
+use log::{info, trace};
 use models::*;
-use std::collections::{HashSet, VecDeque};
+use std::collections::HashSet;
 use std::env;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Once;
@@ -18,7 +19,7 @@ fn init_logging_once() {
 }
 
 /// Maximum total number of API requests allowed across all tests
-const MAX_TOTAL_REQUESTS: usize = 200;
+const MAX_TOTAL_REQUESTS: usize = 400;
 
 /// Global atomic counter tracking total API requests made
 static TOTAL_REQUESTS: AtomicUsize = AtomicUsize::new(0);
@@ -32,27 +33,29 @@ static TOTAL_REQUESTS: AtomicUsize = AtomicUsize::new(0);
 
 /// Check if we can make another API request without exceeding the global limit
 fn can_make_request() -> bool {
-    TOTAL_REQUESTS.load(Ordering::Relaxed) < MAX_TOTAL_REQUESTS
+    TOTAL_REQUESTS.load(Ordering::SeqCst) < MAX_TOTAL_REQUESTS
 }
 
 /// Increment the global request counter and return the new count
-fn increment_request_count() -> usize {
-    TOTAL_REQUESTS.fetch_add(1, Ordering::Relaxed) + 1
+fn increment_request_count() {
+    let total = TOTAL_REQUESTS.fetch_add(1, Ordering::SeqCst) + 1;
+    info!("Total requests: {} / {}", total, MAX_TOTAL_REQUESTS);
 }
 
 /// Get the current total request count
+#[allow(dead_code)]
 fn get_request_count() -> usize {
-    TOTAL_REQUESTS.load(Ordering::Relaxed)
+    TOTAL_REQUESTS.load(Ordering::SeqCst)
 }
 
 /// Reset the global request counter (useful for testing)
-#[allow(dead_code)]
 fn reset_request_count() {
-    TOTAL_REQUESTS.store(0, Ordering::Relaxed);
+    TOTAL_REQUESTS.store(0, Ordering::SeqCst);
 }
 
 #[tokio::test]
 async fn test_search_and_walk_resources() {
+    reset_request_count();
     // Initialize logging for HTTP request/response debugging
     init_logging_once();
 
@@ -65,27 +68,16 @@ async fn test_search_and_walk_resources() {
     config.bearer_access_token = Some(bearer_token);
     config.country_code = "US".to_string();
 
-    info!("Starting integration test: search and walk resources");
-
     // Perform search for a popular query
     let search_query = "taylor swift";
     info!("Performing search for: {}", search_query);
 
     // Check global request limit before making search request
     if !can_make_request() {
-        info!(
-            "✓ Test completed successfully: reached global request limit of {} without errors",
-            MAX_TOTAL_REQUESTS
-        );
         return;
     }
 
-    let request_count = increment_request_count();
-    info!(
-        "Making search request ({}/{})",
-        request_count, MAX_TOTAL_REQUESTS
-    );
-
+    increment_request_count();
     let search_result = apis::search_results_api::search_result_get(
         &config,
         search_query,
@@ -103,52 +95,30 @@ async fn test_search_and_walk_resources() {
 
     match search_result {
         Ok(search_response) => {
-            info!(
+            trace!(
                 "Search successful! Processing search result with ID: {}",
                 search_response.data.id
             );
 
             if let Some(attributes) = &search_response.data.attributes {
-                info!("Search tracking ID: {}", attributes.tracking_id);
+                trace!("Search tracking ID: {}", attributes.tracking_id);
                 if let Some(did_you_mean) = &attributes.did_you_mean {
-                    info!("Did you mean: {}", did_you_mean);
+                    trace!("Did you mean: {}", did_you_mean);
                 }
             }
 
-            // Walk through search result relationships
-            let mut walker = ResourceWalker::new(config, MAX_TOTAL_REQUESTS);
-            walker.walk_search_result(&search_response).await;
-
-            info!(
-                "✓ Resource walking completed successfully. Total resources processed: {}",
-                walker.processed_count
-            );
-            info!("Resource type breakdown:");
-            for (resource_type, count) in walker.resource_type_counts.iter() {
-                info!("  {}: {}", resource_type, count);
-            }
-
-            let final_count = get_request_count();
-            if final_count >= MAX_TOTAL_REQUESTS {
-                info!("✓ Test completed successfully: reached request limit ({}/{}) without critical errors", final_count, MAX_TOTAL_REQUESTS);
-            } else {
-                info!(
-                    "✓ Test completed successfully. Total API requests made: {}/{}",
-                    final_count, MAX_TOTAL_REQUESTS
-                );
-            }
+            // Walk through search result relationships using simple serial approach
+            walk_search_result(&config, &search_response).await;
         }
         Err(e) => {
-            debug!("Search failed: {:?}", e);
-            // Don't panic on API errors - they might be due to rate limits or temporary issues
-            info!("✓ Test completed: API request failed (possibly due to rate limits), but this is acceptable behavior");
-            return;
+            panic!("Search failed: {:?}", e);
         }
     }
 }
 
 #[tokio::test]
 async fn test_search_different_queries() {
+    reset_request_count();
     // Initialize logging
     init_logging_once();
 
@@ -164,22 +134,15 @@ async fn test_search_different_queries() {
     let search_queries = vec!["the beatles", "jazz", "rock", "classical music", "hip hop"];
 
     for query in search_queries {
-        info!("Testing search query: {}", query);
+        trace!("Testing search query: {}", query);
 
         // Check global request limit before each search
         if !can_make_request() {
-            info!(
-                "✓ Test completed successfully: reached global request limit of {} without errors",
-                MAX_TOTAL_REQUESTS
-            );
             break;
         }
 
-        let request_count = increment_request_count();
-        info!(
-            "Making search request for '{}' ({}/{})",
-            query, request_count, MAX_TOTAL_REQUESTS
-        );
+        increment_request_count();
+        trace!("Making search request for '{}'", query);
 
         let search_result = apis::search_results_api::search_result_get(
             &config,
@@ -195,397 +158,348 @@ async fn test_search_different_queries() {
 
         match search_result {
             Ok(response) => {
-                info!("✓ Search '{}' successful, ID: {}", query, response.data.id);
+                trace!("✓ Search '{}' successful, ID: {}", query, response.data.id);
 
                 // Quick validation of response structure
                 if let Some(_relationships) = &response.data.relationships {
-                    debug!("  Found relationships for albums, artists, tracks, etc.");
+                    trace!("  Found relationships for albums, artists, tracks, etc.");
                 }
 
                 if let Some(included) = &response.included {
-                    info!("  Included {} additional resources", included.len());
+                    trace!("  Included {} additional resources", included.len());
                 }
             }
             Err(e) => {
-                debug!("Search '{}' failed: {:?}", query, e);
-                // Don't panic on API errors - they might be due to rate limits or temporary issues
+                panic!("Search '{}' failed: {:?}", query, e);
             }
         }
-    }
-
-    let final_count = get_request_count();
-    if final_count >= MAX_TOTAL_REQUESTS {
-        info!("✓ Multiple search queries test completed successfully: reached request limit ({}/{}) without critical errors", final_count, MAX_TOTAL_REQUESTS);
-    } else {
-        info!(
-            "✓ Multiple search queries test completed successfully. Total API requests made: {}/{}",
-            final_count, MAX_TOTAL_REQUESTS
-        );
     }
 }
 
-/// Resource walker that traverses search results and loads related resources
-struct ResourceWalker {
-    config: apis::configuration::Configuration,
-    processed_count: usize,
-    max_resources: usize,
-    processed_ids: HashSet<String>,
-    resource_queue: VecDeque<ResourceRef>,
-    resource_type_counts: std::collections::HashMap<ResourceType, usize>,
-}
+/// Simple serial resource walking
+async fn walk_search_result(
+    config: &apis::configuration::Configuration,
+    search_response: &Resource<SearchResult>,
+) {
+    let mut processed_ids: HashSet<String> = HashSet::new();
 
-#[derive(Debug, Clone)]
-struct ResourceRef {
-    id: String,
-    resource_type: ResourceType,
-}
-
-impl ResourceWalker {
-    fn new(config: apis::configuration::Configuration, max_resources: usize) -> Self {
-        Self {
-            config,
-            processed_count: 0,
-            max_resources,
-            processed_ids: HashSet::new(),
-            resource_queue: VecDeque::new(),
-            resource_type_counts: std::collections::HashMap::new(),
-        }
-    }
-
-    async fn walk_search_result(&mut self, search_response: &Resource<SearchResult>) {
-        info!("Starting resource walking from search result");
-
-        // Process included resources first
-        if let Some(included) = &search_response.included {
-            for included_resource in included {
-                self.queue_resource_from_included(included_resource);
-            }
-        }
-
-        // Add relationships to queue
-        if let Some(relationships) = &search_response.data.relationships {
-            self.queue_relationships(relationships);
-        }
-
-        // Process queue
-        while !self.resource_queue.is_empty() && self.processed_count < self.max_resources {
-            // Check global request limit before processing each resource
-            if !can_make_request() {
-                info!("✓ Resource walking completed successfully: reached global request limit of {} without errors", MAX_TOTAL_REQUESTS);
-                break;
-            }
-
-            if let Some(resource_ref) = self.resource_queue.pop_front() {
-                self.process_resource(resource_ref).await;
-            }
-        }
-
-        info!(
-            "Resource walking finished. Processed {} resources",
-            self.processed_count
-        );
-    }
-
-    fn queue_resource_from_included(&mut self, included: &AnyResource) {
-        // Extract resource info from included resource
-        // Note: IncludedInner is an enum, we need to handle different variants
-        debug!("Processing included resource: {:?}", included);
-
-        // For now, we'll extract what we can from the included resources
-        // The actual implementation would depend on the IncludedInner enum structure
-    }
-
-    fn queue_relationships(&mut self, relationships: &SearchResultsRelationships) {
-        // Queue albums
-        self.queue_multi_relationship_resources(&relationships.albums, "albums");
-
-        // Queue artists
-        self.queue_multi_relationship_resources(&relationships.artists, "artists");
-
-        // Queue tracks
-        self.queue_multi_relationship_resources(&relationships.tracks, "tracks");
-
-        // Queue playlists
-        self.queue_multi_relationship_resources(&relationships.playlists, "playlists");
-
-        // Queue videos
-        self.queue_multi_relationship_resources(&relationships.videos, "videos");
-
-        // Queue top hits
-        self.queue_multi_relationship_resources(&relationships.top_hits, "topHits");
-    }
-
-    fn queue_multi_relationship_resources(
-        &mut self,
-        multi_rel: &MultiRelationship<ResourceIdentifier>,
-        relationship_type: &str,
-    ) {
-        if let Some(data) = &multi_rel.data {
+    // Process relationships directly without queuing
+    if let Some(relationships) = &search_response.data.relationships {
+        // Process albums
+        if let Some(data) = &relationships.albums.data {
             for resource_id in data {
-                let resource_ref = ResourceRef {
-                    id: resource_id.id.clone(),
-                    resource_type: resource_id.r#type,
-                };
+                if !can_make_request() {
+                    return;
+                }
+                if !processed_ids.contains(&resource_id.id) {
+                    processed_ids.insert(resource_id.id.clone());
+                    trace!("Processing album: {}", resource_id.id);
+                    process_album(config, &resource_id.id, 1).await;
+                }
+            }
+        }
 
-                if !self.processed_ids.contains(&resource_ref.id) {
-                    debug!(
-                        "Queuing {} resource: {} (type: {})",
-                        relationship_type, resource_ref.id, resource_ref.resource_type
+        // Process artists
+        if let Some(data) = &relationships.artists.data {
+            for resource_id in data {
+                if !can_make_request() {
+                    return;
+                }
+                if !processed_ids.contains(&resource_id.id) {
+                    processed_ids.insert(resource_id.id.clone());
+                    trace!("Processing artist: {}", resource_id.id);
+                    process_artist(config, &resource_id.id, 1).await;
+                }
+            }
+        }
+
+        // Process tracks
+        if let Some(data) = &relationships.tracks.data {
+            for resource_id in data {
+                if !can_make_request() {
+                    return;
+                }
+                if !processed_ids.contains(&resource_id.id) {
+                    processed_ids.insert(resource_id.id.clone());
+                    trace!("Processing track: {}", resource_id.id);
+                    process_track(config, &resource_id.id, 1).await;
+                }
+            }
+        }
+
+        // Process playlists
+        if let Some(data) = &relationships.playlists.data {
+            for resource_id in data {
+                if !can_make_request() {
+                    info!(
+                        "✓ Resource walking stopped: reached global request limit of {}",
+                        MAX_TOTAL_REQUESTS
                     );
-                    self.resource_queue.push_back(resource_ref);
+                    return;
+                }
+                if !processed_ids.contains(&resource_id.id) {
+                    processed_ids.insert(resource_id.id.clone());
+                    info!("Processing playlist: {}", resource_id.id);
+                    process_playlist(config, &resource_id.id, 1).await;
+                }
+            }
+        }
+
+        // Process videos
+        if let Some(data) = &relationships.videos.data {
+            for resource_id in data {
+                if !can_make_request() {
+                    return;
+                }
+                if !processed_ids.contains(&resource_id.id) {
+                    processed_ids.insert(resource_id.id.clone());
+                    trace!("Processing video: {}", resource_id.id);
+                    process_video(config, &resource_id.id, 1).await;
+                }
+            }
+        }
+
+        // Process top hits
+        if let Some(data) = &relationships.top_hits.data {
+            for resource_id in data {
+                if !can_make_request() {
+                    return;
+                }
+                if !processed_ids.contains(&resource_id.id) {
+                    processed_ids.insert(resource_id.id.clone());
+                    trace!(
+                        "Processing top hit: {} (type: {})",
+                        resource_id.id, resource_id.r#type
+                    );
+                    // Process based on type
+                    match resource_id.r#type {
+                        Albums => process_album(config, &resource_id.id, 2).await,
+                        Artists => process_artist(config, &resource_id.id, 2).await,
+                        Tracks => process_track(config, &resource_id.id, 2).await,
+                        Videos => process_video(config, &resource_id.id, 2).await,
+                        _ => {
+                            panic!("Unknown resource type: {}", resource_id.r#type);
+                        },
+                    }
                 }
             }
         }
     }
 
-    async fn process_resource(&mut self, resource_ref: ResourceRef) {
-        if self.processed_ids.contains(&resource_ref.id) {
-            return; // Already processed
-        }
+    info!("Simple resource walking finished");
+}
 
-        if self.processed_count >= self.max_resources {
-            return; // Hit limit
-        }
-
-        self.processed_ids.insert(resource_ref.id.clone());
-        self.processed_count += 1;
-
-        // Update resource type counts
-        *self
-            .resource_type_counts
-            .entry(resource_ref.resource_type)
-            .or_insert(0) += 1;
-
-        info!(
-            "Processing resource {}/{}: {} (type: {})",
-            self.processed_count, self.max_resources, resource_ref.id, resource_ref.resource_type
-        );
-
-        // Load the actual resource based on type
-        match resource_ref.resource_type {
-            Albums => self.process_album(&resource_ref.id).await,
-            Artists => self.process_artist(&resource_ref.id).await,
-            Tracks => self.process_track(&resource_ref.id).await,
-            Playlists => self.process_playlist(&resource_ref.id).await,
-            Videos => self.process_video(&resource_ref.id).await,
-            _ => {
-                panic!(
-                    "Unknown resource type: {}, skipping detailed processing",
-                    resource_ref.resource_type
-                );
-            }
-        }
+#[async_recursion]
+async fn process_album(config: &apis::configuration::Configuration, album_id: &str, recurse: usize) {
+    if !can_make_request() {
+        return;
     }
+    
+    trace!("Loading album: {}", album_id);
+    increment_request_count();
 
-    async fn process_album(&mut self, album_id: &str) {
-        debug!("Loading album: {}", album_id);
+    let result = apis::albums_api::album_get(
+        config,
+        album_id,
+        Some(vec![Artists.to_string(), "items".to_string()]),
+    )
+    .await;
 
-        let request_count = increment_request_count();
-        debug!(
-            "Making album request ({}/{})",
-            request_count, MAX_TOTAL_REQUESTS
-        );
-
-        let result = apis::albums_api::album_get(
-            &self.config,
-            album_id,
-            Some(vec![Artists.to_string(), "items".to_string()]), // include related
-        )
-        .await;
-
-        match result {
-            Ok(album_response) => {
-                debug!("✓ Album loaded: {}", album_id);
-
-                // Queue related resources from relationships
-                if let Some(relationships) = &album_response.data.relationships {
-                    self.queue_multi_relationship_resources(&relationships.artists, "artists");
-                    // Queue album items (tracks/videos) - need special handling for different type
-                    self.queue_album_items_relationship(&relationships.items, "items");
+    match result {
+        Ok(album_response) => {
+           if recurse > 0 {
+            for resource_id in album_response.data.relationships.unwrap().items.data.unwrap() {
+                match resource_id.r#type {
+                    Tracks => process_track(config, &resource_id.id, recurse - 1).await,
+                    Albums => process_album(config, &resource_id.id, recurse - 1).await,
+                    Artists => process_artist(config, &resource_id.id, recurse - 1).await,
+                    Videos => process_video(config, &resource_id.id, recurse - 1).await,
+                    _ => {
+                        panic!("Unknown resource type: {}", resource_id.r#type);
+                    }
                 }
             }
-            Err(e) => {
-                panic!("Failed to load album {}: {:?}", album_id, e);
-                // Don't panic on API errors - they might be due to rate limits or temporary issues
-            }
+           }
+        }
+        Err(e) => {
+            panic!("Failed to load album {}: {:?}", album_id, e);
         }
     }
+}
 
-    async fn process_artist(&mut self, artist_id: &str) {
-        debug!("Loading artist: {}", artist_id);
+#[async_recursion]
+async fn process_artist(config: &apis::configuration::Configuration, artist_id: &str, recurse: usize) {
+    if !can_make_request() {
+        return;
+    }
+    
+    trace!("Loading artist: {}", artist_id);
+    increment_request_count();
 
-        let request_count = increment_request_count();
-        debug!(
-            "Making artist request ({}/{})",
-            request_count, MAX_TOTAL_REQUESTS
-        );
+    let result = apis::artists_api::artist_get(
+        config,
+        artist_id,
+        Some(vec![Albums.to_string(), Tracks.to_string()]),
+        Some("FINGERPRINT".to_string()),
+    )
+    .await;
 
-        let result = apis::artists_api::artist_get(
-            &self.config,
-            artist_id,
-            Some(vec![Albums.to_string(), Tracks.to_string()]), // include related
-            Some("FINGERPRINT".to_string()),
-        )
-        .await;
-
-        match result {
-            Ok(artist_response) => {
-                debug!("✓ Artist loaded: {}", artist_id);
-
-                // Queue related resources from relationships
+    match result {
+        Ok(artist_response) => {
+            if recurse > 0 {
                 if let Some(relationships) = &artist_response.data.relationships {
-                    self.queue_multi_relationship_resources(&relationships.albums, "albums");
-                    self.queue_multi_relationship_resources(&relationships.tracks, "tracks");
+                    if let Some(albums_data) = &relationships.albums.data {
+                        for resource_id in albums_data {
+                            if !can_make_request() {
+                                return;
+                            }
+                            process_album(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
+                    if let Some(tracks_data) = &relationships.tracks.data {
+                        for resource_id in tracks_data {
+                            if !can_make_request() {
+                                return;
+                            }
+                            process_track(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
                 }
             }
-            Err(e) => {
-                panic!("Failed to load artist {}: {:?}", artist_id, e);
-                // Don't panic on API errors - they might be due to rate limits or temporary issues
-            }
+        }
+        Err(e) => {
+            panic!("Failed to load artist {}: {:?}", artist_id, e);
         }
     }
+}
 
-    async fn process_track(&mut self, track_id: &str) {
-        debug!("Loading track: {}", track_id);
+#[async_recursion]
+async fn process_track(config: &apis::configuration::Configuration, track_id: &str, recurse: usize) {
+    if !can_make_request() {
+        return;
+    }
+    
+    trace!("Loading track: {}", track_id);
+    increment_request_count();
 
-        let request_count = increment_request_count();
-        debug!(
-            "Making track request ({}/{})",
-            request_count, MAX_TOTAL_REQUESTS
-        );
+    let result = apis::tracks_api::track_get(
+        config,
+        track_id,
+        Some(vec![Artists.to_string(), Albums.to_string()]),
+    )
+    .await;
 
-        let result = apis::tracks_api::track_get(
-            &self.config,
-            track_id,
-            Some(vec![Artists.to_string(), Albums.to_string()]), // include related
-        )
-        .await;
-
-        match result {
-            Ok(track_response) => {
-                debug!("✓ Track loaded: {}", track_id);
-
-                // Queue related resources from relationships
+    match result {
+        Ok(track_response) => {
+            if recurse > 0 {
                 if let Some(relationships) = &track_response.data.relationships {
-                    self.queue_multi_relationship_resources(&relationships.artists, "artists");
-                    self.queue_multi_relationship_resources(&relationships.albums, "albums");
+                    if let Some(artists_data) = &relationships.artists.data {
+                        for resource_id in artists_data {
+                            if !can_make_request() {
+                                return;
+                            }
+                            process_artist(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
+                    if let Some(albums_data) = &relationships.albums.data {
+                        for resource_id in albums_data {
+                            if !can_make_request() {
+                                return;
+                            }
+                            process_album(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
                 }
             }
-            Err(e) => {
-                panic!("Failed to load track {}: {:?}", track_id, e);
-                // Don't panic on API errors - they might be due to rate limits or temporary issues
-            }
+        }
+        Err(e) => {
+            panic!("Failed to load track {}: {:?}", track_id, e);
         }
     }
+}
 
-    async fn process_playlist(&mut self, playlist_id: &str) {
-        debug!("Loading playlist: {}", playlist_id);
+#[async_recursion]
+async fn process_playlist(config: &apis::configuration::Configuration, playlist_id: &str, recurse: usize) {
+    if !can_make_request() {
+        return;
+    }
+    
+    trace!("Loading playlist: {}", playlist_id);
+    increment_request_count();
 
-        let request_count = increment_request_count();
-        debug!(
-            "Making playlist request ({}/{})",
-            request_count, MAX_TOTAL_REQUESTS
-        );
+    let result =
+        apis::playlists_api::playlist_get(config, playlist_id, Some(vec!["items".to_string()]))
+            .await;
 
-        let result = apis::playlists_api::playlist_get(
-            &self.config,
-            playlist_id,
-            Some(vec!["items".to_string()]), // include items
-        )
-        .await;
-
-        match result {
-            Ok(playlist_response) => {
-                debug!("✓ Playlist loaded: {}", playlist_id);
-
-                // Queue related resources from relationships
+    match result {
+        Ok(playlist_response) => {
+            if recurse > 0 {
                 if let Some(relationships) = &playlist_response.data.relationships {
-                    self.queue_playlist_items_relationship(&relationships.items, "items");
+                    if let Some(items_data) = &relationships.items.data {
+                        for resource_id in items_data {
+                            if !can_make_request() {
+                                return;
+                            }
+                            match resource_id.r#type {
+                                Tracks => process_track(config, &resource_id.id, recurse - 1).await,
+                                Albums => process_album(config, &resource_id.id, recurse - 1).await,
+                                Artists => process_artist(config, &resource_id.id, recurse - 1).await,
+                                Videos => process_video(config, &resource_id.id, recurse - 1).await,
+                                _ => {
+                                    panic!("Unknown resource type: {}", resource_id.r#type);
+                                }
+                            }
+                        }
+                    }
                 }
             }
-            Err(e) => {
-                panic!("Failed to load playlist {}: {:?}", playlist_id, e);
-                // Don't panic on API errors - they might be due to rate limits or temporary issues
-            }
+        }
+        Err(e) => {
+            panic!("Failed to load playlist {}: {:?}", playlist_id, e);
         }
     }
+}
 
-    async fn process_video(&mut self, video_id: &str) {
-        debug!("Loading video: {}", video_id);
+#[async_recursion]
+async fn process_video(config: &apis::configuration::Configuration, video_id: &str, recurse: usize) {
+    if !can_make_request() {
+        return;
+    }
+    
+    trace!("Loading video: {}", video_id);
+    increment_request_count();
+    let result = apis::videos_api::video_get(
+        config,
+        video_id,
+        Some(vec![Artists.to_string(), Albums.to_string()]),
+    )
+    .await;
 
-        let request_count = increment_request_count();
-        debug!(
-            "Making video request ({}/{})",
-            request_count, MAX_TOTAL_REQUESTS
-        );
-
-        let result = apis::videos_api::video_get(
-            &self.config,
-            video_id,
-            Some(vec![Artists.to_string(), Albums.to_string()]), // include related
-        )
-        .await;
-
-        match result {
-            Ok(video_response) => {
-                debug!("✓ Video loaded: {}", video_id);
-
-                // Queue related resources from relationships
+    match result {
+        Ok(video_response) => {
+            if recurse > 0 {
                 if let Some(relationships) = &video_response.data.relationships {
-                    self.queue_multi_relationship_resources(&relationships.artists, "artists");
-                    self.queue_multi_relationship_resources(&relationships.albums, "albums");
-                }
-            }
-            Err(e) => {
-                panic!("Failed to load video {}: {:?}", video_id, e);
-                // Don't panic on API errors - they might be due to rate limits or temporary issues
-            }
-        }
-    }
-
-    fn queue_album_items_relationship(
-        &mut self,
-        items_rel: &MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>,
-        relationship_type: &str,
-    ) {
-        if let Some(data) = &items_rel.data {
-            for resource_id in data {
-                let resource_ref = ResourceRef {
-                    id: resource_id.id.clone(),
-                    resource_type: resource_id.r#type.clone(),
-                };
-
-                if !self.processed_ids.contains(&resource_ref.id) {
-                    debug!(
-                        "Queuing {} resource: {} (type: {})",
-                        relationship_type, resource_ref.id, resource_ref.resource_type
-                    );
-                    self.resource_queue.push_back(resource_ref);
+                    if let Some(artists_data) = &relationships.artists.data {
+                        for resource_id in artists_data {
+                            if !can_make_request() {
+                                return;
+                            }
+                            process_artist(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
+                    if let Some(albums_data) = &relationships.albums.data {
+                        for resource_id in albums_data {
+                            if !can_make_request() {
+                                return;
+                            }
+                            process_album(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
                 }
             }
         }
-    }
-
-    fn queue_playlist_items_relationship(
-        &mut self,
-        items_rel: &MultiRelationship<ResourceIdentifier<playlist::PlaylistsItemsIdentifierMeta>>,
-        relationship_type: &str,
-    ) {
-        if let Some(data) = &items_rel.data {
-            for resource_id in data {
-                let resource_ref = ResourceRef {
-                    id: resource_id.id.clone(),
-                    resource_type: resource_id.r#type,
-                };
-
-                if !self.processed_ids.contains(&resource_ref.id) {
-                    debug!(
-                        "Queuing {} resource: {} (type: {})",
-                        relationship_type, resource_ref.id, resource_ref.resource_type
-                    );
-                    self.resource_queue.push_back(resource_ref);
-                }
-            }
+        Err(e) => {
+            panic!("Failed to load video {}: {:?}", video_id, e);
         }
     }
 }
