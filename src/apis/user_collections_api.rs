@@ -11,8 +11,15 @@
 use super::{configuration, ApiError, Error};
 use crate::models;
 use crate::models::DataWrap;
-
+use serde::{Deserialize, Serialize};
 use reqwest;
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct UserCollectionsResourceMeta {
+    #[serde(rename = "addedAt")]
+    added_at: String,
+}
+
 
 /// Retrieves single userCollection by id.
 ///
@@ -109,7 +116,7 @@ pub async fn user_collection_albums(
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::UserCollectionsAlbumsResourceIdentifier>,
+    models::MultiRelationship<models::ResourceIdentiferWithMeta<UserCollectionsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -233,7 +240,7 @@ pub async fn user_collection_artists(
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::UserCollectionsArtistsResourceIdentifier>,
+    models::MultiRelationship<models::ResourceIdentiferWithMeta<UserCollectionsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -384,7 +391,7 @@ pub async fn user_collection_playlists(
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::UserCollectionsPlaylistsResourceIdentifier>,
+    models::MultiRelationship<models::ResourceIdentiferWithMeta<UserCollectionsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -504,7 +511,7 @@ pub async fn user_collection_tracks(
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::UserCollectionsTracksResourceIdentifier>,
+    models::MultiRelationship<models::ResourceIdentiferWithMeta<UserCollectionsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -628,7 +635,7 @@ pub async fn user_collection_videos(
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::UserCollectionsVideosResourceIdentifier>,
+    models::MultiRelationship<models::ResourceIdentiferWithMeta<UserCollectionsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions

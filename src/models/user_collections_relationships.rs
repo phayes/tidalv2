@@ -14,27 +14,27 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserCollectionsRelationships {
     #[serde(rename = "albums")]
-    pub albums: models::MultiRelationship<models::UserCollectionsAlbumsResourceIdentifier>,
+    pub albums: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::user_collections_api::UserCollectionsResourceMeta>>,
     #[serde(rename = "artists")]
-    pub artists: models::MultiRelationship<models::UserCollectionsArtistsResourceIdentifier>,
+    pub artists: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::user_collections_api::UserCollectionsResourceMeta>>,
     #[serde(rename = "owners")]
     pub owners: models::MultiRelationship<models::ResourceIdentifier>,
     #[serde(rename = "playlists")]
-    pub playlists: models::MultiRelationship<models::UserCollectionsPlaylistsResourceIdentifier>,
+    pub playlists: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::user_collections_api::UserCollectionsResourceMeta>>,
     #[serde(rename = "tracks")]
-    pub tracks: models::MultiRelationship<models::UserCollectionsTracksResourceIdentifier>,
+    pub tracks: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::user_collections_api::UserCollectionsResourceMeta>>,
     #[serde(rename = "videos")]
-    pub videos: models::MultiRelationship<models::UserCollectionsVideosResourceIdentifier>,
+    pub videos: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::user_collections_api::UserCollectionsResourceMeta>>,
 }
 
 impl UserCollectionsRelationships {
     pub fn new(
-        albums: models::MultiRelationship<models::UserCollectionsAlbumsResourceIdentifier>,
-        artists: models::MultiRelationship<models::UserCollectionsArtistsResourceIdentifier>,
+        albums: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::user_collections_api::UserCollectionsResourceMeta>>,
+        artists: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::user_collections_api::UserCollectionsResourceMeta>>,
         owners: models::MultiRelationship<models::ResourceIdentifier>,
-        playlists: models::MultiRelationship<models::UserCollectionsPlaylistsResourceIdentifier>,
-        tracks: models::MultiRelationship<models::UserCollectionsTracksResourceIdentifier>,
-        videos: models::MultiRelationship<models::UserCollectionsVideosResourceIdentifier>,
+        playlists: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::user_collections_api::UserCollectionsResourceMeta>>,
+        tracks: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::user_collections_api::UserCollectionsResourceMeta>>,
+        videos: models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::user_collections_api::UserCollectionsResourceMeta>>,
     ) -> UserCollectionsRelationships {
         UserCollectionsRelationships {
             albums,
