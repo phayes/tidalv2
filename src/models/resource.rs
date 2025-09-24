@@ -1,7 +1,7 @@
 use crate::models::{
     album::Album, artist::Artist, artist_biography::ArtistBiography, artist_role::ArtistRole,
     Artwork, Genre, Links, Lyrics, Playlist, Provider, SearchResult, SearchSuggestion, Track,
-    TrackFile, TrackManifest, TrackStatistics, User, UserCollection, UserEntitlement,
+    TrackFile, TrackManifest, TrackStatistics, User, UserCollection,
     UserRecommendation, UserShare, Video,
 };
 
@@ -53,33 +53,77 @@ pub enum ResourceType {
     Videos,
 }
 
-// AnyResource enum - a fundamental type that can represent any resource in the API
+// AnyResource - all possible resource types
 #[derive(Clone, Debug, PartialEq)]
 pub enum AnyResource {
+
+    /// Album
     Albums(Album),
+
+    /// Not supported
     Appreciations(Value),
-    /// Not supported
+    
+    /// Artist Biography
     ArtistBiographies(ArtistBiography),
+
+    /// Artist Role
     ArtistRoles(ArtistRole),
+
+    /// Artist
     Artists(Artist),
+
+    /// Artwork
     Artworks(Artwork),
+
+    /// Genre
     Genres(Genre),
+
+    /// Lyrics
     Lyrics(Lyrics),
+
+    /// Playlist
     Playlists(Playlist),
+
+    /// Provider
     Providers(Provider),
+
+    /// Search Result
     SearchResults(SearchResult),
+
+    /// Search Suggestion
     SearchSuggestions(SearchSuggestion),
+
+    /// Track File
     TrackFiles(TrackFile),
+
+    /// Track Manifest
     TrackManifests(TrackManifest),
-    TrackSourceFiles(Value),
+
     /// Not supported
+    TrackSourceFiles(Value),
+    
+    /// Track Statistics
     TrackStatistics(TrackStatistics),
+
+    /// Track
     Tracks(Track),
+
+    /// User Collection (favoutites)
     UserCollections(UserCollection),
-    UserEntitlements(UserEntitlement),
+
+    /// Not supported
+    UserEntitlements(Value),  
+
+    /// User Recommendation
     UserRecommendations(UserRecommendation),
+
+    /// User Share
     UserShares(UserShare),
+
+    /// User
     Users(User),
+
+    /// Video
     Videos(Video),
 }
 

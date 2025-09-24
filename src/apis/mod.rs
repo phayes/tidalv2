@@ -143,7 +143,6 @@ pub mod track_files_api;
 pub mod track_manifests_api;
 pub mod tracks_api;
 pub mod user_collections_api;
-pub mod user_entitlements_api;
 pub mod user_recommendations_api;
 pub mod users_api;
 pub mod videos_api;

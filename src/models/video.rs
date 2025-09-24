@@ -9,7 +9,7 @@ pub struct Video {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::VideosRelationships>,
+    pub relationships: Option<VideoRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -96,5 +96,34 @@ pub enum AvailabilityFalse {
 impl Default for AvailabilityFalse {
     fn default() -> AvailabilityFalse {
         Self::Stream
+    }
+}
+
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct VideoRelationships {
+    #[serde(rename = "albums")]
+    pub albums: models::MultiRelationship<models::ResourceIdentifier>,
+    #[serde(rename = "artists")]
+    pub artists: models::MultiRelationship<models::ResourceIdentifier>,
+    #[serde(rename = "providers")]
+    pub providers: models::MultiRelationship<models::ResourceIdentifier>,
+    #[serde(rename = "thumbnailArt")]
+    pub thumbnail_art: models::MultiRelationship<models::ResourceIdentifier>,
+}
+
+impl VideoRelationships {
+    pub fn new(
+        albums: models::MultiRelationship<models::ResourceIdentifier>,
+        artists: models::MultiRelationship<models::ResourceIdentifier>,
+        providers: models::MultiRelationship<models::ResourceIdentifier>,
+        thumbnail_art: models::MultiRelationship<models::ResourceIdentifier>,
+    ) -> VideoRelationships {
+        VideoRelationships {
+            albums,
+            artists,
+            providers,
+            thumbnail_art,
+        }
     }
 }
