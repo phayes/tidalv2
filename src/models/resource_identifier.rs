@@ -34,8 +34,3 @@ pub struct ResourceIdentiferWithMeta<T> {
     pub r#type: models::ResourceType,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct UserCollectionsResourceMeta {
-    #[serde(rename = "addedAt")]
-    added_at: String,
-}

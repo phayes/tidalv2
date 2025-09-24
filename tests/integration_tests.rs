@@ -325,7 +325,7 @@ impl ResourceWalker {
             for resource_id in data {
                 let resource_ref = ResourceRef {
                     id: resource_id.id.clone(),
-                    resource_type: resource_id.r#type.clone(),
+                    resource_type: resource_id.r#type.to_string(),
                 };
 
                 if !self.processed_ids.contains(&resource_ref.id) {
@@ -553,7 +553,7 @@ impl ResourceWalker {
             for resource_id in data {
                 let resource_ref = ResourceRef {
                     id: resource_id.id.clone(),
-                    resource_type: resource_id.r#type.clone(),
+                    resource_type: resource_id.r#type.to_string(),
                 };
 
                 if !self.processed_ids.contains(&resource_ref.id) {
@@ -576,7 +576,7 @@ impl ResourceWalker {
             for resource_id in data {
                 let resource_ref = ResourceRef {
                     id: resource_id.id.clone(),
-                    resource_type: resource_id.r#type.clone(),
+                    resource_type: resource_id.r#type.to_string(),
                 };
 
                 if !self.processed_ids.contains(&resource_ref.id) {
