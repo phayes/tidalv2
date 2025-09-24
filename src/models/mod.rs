@@ -169,6 +169,7 @@ use strum::{Display, AsRefStr, IntoStaticStr};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Display, AsRefStr, IntoStaticStr)]
 #[serde(rename_all = "camelCase")]
+#[strum(serialize_all = "camelCase")]
 pub enum ResourceType {
     Albums,
     Appreciations,

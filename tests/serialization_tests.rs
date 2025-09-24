@@ -1,6 +1,7 @@
 use log::info;
 use std::collections::HashMap;
 use std::fs;
+use tidalv2::models::ResourceType::*;
 
 #[tokio::test]
 async fn test_search_result_json_deserialization() {
@@ -67,15 +68,7 @@ async fn test_search_result_json_deserialization() {
     // Count different types of included resources
     let mut type_counts = HashMap::new();
     for item in included {
-        let type_name = match item {
-            models::AnyResource::Albums(_) => "albums",
-            models::AnyResource::Artists(_) => "artists",
-            models::AnyResource::Tracks(_) => "tracks",
-            models::AnyResource::Playlists(_) => "playlists",
-            models::AnyResource::Videos(_) => "videos",
-            _ => "other",
-        };
-        *type_counts.entry(type_name).or_insert(0) += 1;
+        *type_counts.entry(item.resource_type()).or_insert(0) += 1;
     }
 
     info!("Included resource type breakdown:");
@@ -84,17 +77,17 @@ async fn test_search_result_json_deserialization() {
     }
 
     // Verify we have the expected resource types
-    assert!(type_counts.contains_key("tracks"), "Should contain tracks");
+    assert!(type_counts.contains_key(&Tracks), "Should contain tracks");
     assert!(
-        type_counts.contains_key("artists"),
+        type_counts.contains_key(&Artists),
         "Should contain artists"
     );
-    assert!(type_counts.contains_key("albums"), "Should contain albums");
+    assert!(type_counts.contains_key(&Albums), "Should contain albums");
     assert!(
-        type_counts.contains_key("playlists"),
+        type_counts.contains_key(&Playlists),
         "Should contain playlists"
     );
-    assert!(type_counts.contains_key("videos"), "Should contain videos");
+    assert!(type_counts.contains_key(&Videos), "Should contain videos");
 }
 
 #[tokio::test]
@@ -169,7 +162,7 @@ async fn test_album_json_deserialization() {
 
         // Verify the first item has meta information
         if let Some(meta) = &items_data[0].meta {
-            // Check that we can access track and volume numbers if they exist
+            // Check that we can access track and volume numbers
             info!("First item meta: {:?}", meta);
         }
     }

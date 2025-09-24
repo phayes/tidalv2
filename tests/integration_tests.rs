@@ -4,6 +4,7 @@ use std::env;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Once;
 use tidalv2::{apis, models};
+use tidalv2::models::ResourceType::*;
 
 /// Ensure logging is only initialized once across all tests
 static INIT_LOGGER: Once = Once::new();
@@ -89,11 +90,11 @@ async fn test_search_and_walk_resources() {
         search_query,
         None, // explicit_filter
         Some(vec![
-            "albums".to_string(),
-            "artists".to_string(),
-            "tracks".to_string(),
-            "playlists".to_string(),
-            "videos".to_string(),
+            Albums.to_string(),
+            Artists.to_string(),
+            Tracks.to_string(),
+            Playlists.to_string(),
+            Videos.to_string(),
             "topHits".to_string(),
         ]),
     )
@@ -184,9 +185,9 @@ async fn test_search_different_queries() {
             query,
             None,
             Some(vec![
-                "albums".to_string(),
-                "artists".to_string(),
-                "tracks".to_string(),
+                Albums.to_string(),
+                Artists.to_string(),
+                Tracks.to_string(),
             ]),
         )
         .await;
@@ -229,13 +230,13 @@ struct ResourceWalker {
     max_resources: usize,
     processed_ids: HashSet<String>,
     resource_queue: VecDeque<ResourceRef>,
-    resource_type_counts: std::collections::HashMap<String, usize>,
+    resource_type_counts: std::collections::HashMap<models::ResourceType, usize>,
 }
 
 #[derive(Debug, Clone)]
 struct ResourceRef {
     id: String,
-    resource_type: String,
+    resource_type: models::ResourceType,
 }
 
 impl ResourceWalker {
@@ -325,7 +326,7 @@ impl ResourceWalker {
             for resource_id in data {
                 let resource_ref = ResourceRef {
                     id: resource_id.id.clone(),
-                    resource_type: resource_id.r#type.to_string(),
+                    resource_type: resource_id.r#type,
                 };
 
                 if !self.processed_ids.contains(&resource_ref.id) {
@@ -354,7 +355,7 @@ impl ResourceWalker {
         // Update resource type counts
         *self
             .resource_type_counts
-            .entry(resource_ref.resource_type.clone())
+            .entry(resource_ref.resource_type)
             .or_insert(0) += 1;
 
         info!(
@@ -363,14 +364,14 @@ impl ResourceWalker {
         );
 
         // Load the actual resource based on type
-        match resource_ref.resource_type.as_str() {
-            "albums" => self.process_album(&resource_ref.id).await,
-            "artists" => self.process_artist(&resource_ref.id).await,
-            "tracks" => self.process_track(&resource_ref.id).await,
-            "playlists" => self.process_playlist(&resource_ref.id).await,
-            "videos" => self.process_video(&resource_ref.id).await,
+        match resource_ref.resource_type {
+            Albums => self.process_album(&resource_ref.id).await,
+            Artists => self.process_artist(&resource_ref.id).await,
+            Tracks => self.process_track(&resource_ref.id).await,
+            Playlists => self.process_playlist(&resource_ref.id).await,
+            Videos => self.process_video(&resource_ref.id).await,
             _ => {
-                debug!(
+                panic!(
                     "Unknown resource type: {}, skipping detailed processing",
                     resource_ref.resource_type
                 );
@@ -390,7 +391,7 @@ impl ResourceWalker {
         let result = apis::albums_api::album_get(
             &self.config,
             album_id,
-            Some(vec!["artists".to_string(), "items".to_string()]), // include related
+            Some(vec![Artists.to_string(), "items".to_string()]), // include related
         )
         .await;
 
@@ -406,7 +407,7 @@ impl ResourceWalker {
                 }
             }
             Err(e) => {
-                debug!("Failed to load album {}: {:?}", album_id, e);
+                panic!("Failed to load album {}: {:?}", album_id, e);
                 // Don't panic on API errors - they might be due to rate limits or temporary issues
             }
         }
@@ -424,7 +425,7 @@ impl ResourceWalker {
         let result = apis::artists_api::artist_get(
             &self.config,
             artist_id,
-            Some(vec!["albums".to_string(), "tracks".to_string()]), // include related
+            Some(vec![Albums.to_string(), Tracks.to_string()]), // include related
             Some("FINGERPRINT".to_string()),
         )
         .await;
@@ -440,7 +441,7 @@ impl ResourceWalker {
                 }
             }
             Err(e) => {
-                debug!("Failed to load artist {}: {:?}", artist_id, e);
+                panic!("Failed to load artist {}: {:?}", artist_id, e);
                 // Don't panic on API errors - they might be due to rate limits or temporary issues
             }
         }
@@ -458,7 +459,7 @@ impl ResourceWalker {
         let result = apis::tracks_api::track_get(
             &self.config,
             track_id,
-            Some(vec!["artists".to_string(), "albums".to_string()]), // include related
+            Some(vec![Artists.to_string(), Albums.to_string()]), // include related
         )
         .await;
 
@@ -473,7 +474,7 @@ impl ResourceWalker {
                 }
             }
             Err(e) => {
-                debug!("Failed to load track {}: {:?}", track_id, e);
+                panic!("Failed to load track {}: {:?}", track_id, e);
                 // Don't panic on API errors - they might be due to rate limits or temporary issues
             }
         }
@@ -505,7 +506,7 @@ impl ResourceWalker {
                 }
             }
             Err(e) => {
-                debug!("Failed to load playlist {}: {:?}", playlist_id, e);
+                panic!("Failed to load playlist {}: {:?}", playlist_id, e);
                 // Don't panic on API errors - they might be due to rate limits or temporary issues
             }
         }
@@ -523,7 +524,7 @@ impl ResourceWalker {
         let result = apis::videos_api::video_get(
             &self.config,
             video_id,
-            Some(vec!["artists".to_string(), "albums".to_string()]), // include related
+            Some(vec![Artists.to_string(), Albums.to_string()]), // include related
         )
         .await;
 
@@ -538,7 +539,7 @@ impl ResourceWalker {
                 }
             }
             Err(e) => {
-                debug!("Failed to load video {}: {:?}", video_id, e);
+                panic!("Failed to load video {}: {:?}", video_id, e);
                 // Don't panic on API errors - they might be due to rate limits or temporary issues
             }
         }
@@ -546,14 +547,21 @@ impl ResourceWalker {
 
     fn queue_album_items_relationship(
         &mut self,
-        items_rel: &models::MultiRelationship<models::AlbumsItemsResourceIdentifier>,
+        items_rel: &models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::albums_api::AlbumsItemsResourceMeta>>,
         relationship_type: &str,
     ) {
         if let Some(data) = &items_rel.data {
             for resource_id in data {
                 let resource_ref = ResourceRef {
                     id: resource_id.id.clone(),
-                    resource_type: resource_id.r#type.to_string(),
+                    resource_type: match resource_id.r#type.as_str() {
+                        "albums" => Albums,
+                        "artists" => Artists,
+                        "tracks" => Tracks,
+                        "videos" => Videos,
+                        "playlists" => Playlists,
+                        _ => panic!("Unknown resource type: {}", resource_id.r#type),
+                    },
                 };
 
                 if !self.processed_ids.contains(&resource_ref.id) {
@@ -576,7 +584,14 @@ impl ResourceWalker {
             for resource_id in data {
                 let resource_ref = ResourceRef {
                     id: resource_id.id.clone(),
-                    resource_type: resource_id.r#type.to_string(),
+                    resource_type: match resource_id.r#type.as_str() {
+                        "albums" => Albums,
+                        "artists" => Artists,
+                        "tracks" => Tracks,
+                        "videos" => Videos,
+                        "playlists" => Playlists,
+                        _ => panic!("Unknown resource type: {}", resource_id.r#type),
+                    },
                 };
 
                 if !self.processed_ids.contains(&resource_ref.id) {
