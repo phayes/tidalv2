@@ -12,30 +12,25 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ResourceIdentifier {
+pub struct ResourceIdentifier<M = ()> {
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: models::ResourceType,
+    #[serde(rename = "meta", skip_serializing_if = "Option::is_none")]
+    pub meta: Option<M>,
 }
 
-impl ResourceIdentifier {
+impl ResourceIdentifier<()> {
     pub fn new(id: String, r#type: models::ResourceType) -> ResourceIdentifier {
-        ResourceIdentifier { id, r#type }
+        ResourceIdentifier { id, r#type, meta: None }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ResourceIdentiferWithMeta<T> {
-    /// Resource id
-    #[serde(rename = "id")]
-    pub id: String,
-    #[serde(rename = "meta")]
-    pub meta: Option<T>,
-    /// Resource type
-    #[serde(rename = "type")]
-    pub r#type: String,
+impl<M> ResourceIdentifier<M> {
+    pub fn new_with_meta(id: String, r#type: models::ResourceType, meta: M) -> ResourceIdentifier<M> {
+        ResourceIdentifier { id, r#type, meta: Some(meta) }
+    }
 }
-

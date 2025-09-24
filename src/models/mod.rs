@@ -109,7 +109,7 @@ pub use self::playlist::{Playlist, PlaylistAttributes};
 pub mod provider;
 pub use self::provider::{Provider, ProviderAttributes};
 pub mod resource_identifier;
-pub use self::resource_identifier::{ResourceIdentifier, ResourceIdentiferWithMeta};
+pub use self::resource_identifier::{ResourceIdentifier};
 pub mod resource_object_object_object;
 pub use self::resource_object_object_object::ResourceObjectObjectObject;
 pub mod search_results_relationships;
@@ -435,12 +435,29 @@ impl<T> MultiRelationship<T> {
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct DataWrap<T> {
+pub struct DataWrap<T, M = ()> {
     pub data: T,
+    // Optional metadata; omit if None
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub meta: Option<M>,
 }
 
-impl<T> DataWrap<T> {
-    pub fn new(data: T) -> DataWrap<T> {
-        DataWrap { data }
+impl<T> DataWrap<T, ()> {
+    pub fn new(data: T) -> Self {
+        Self { data, meta: None }
     }
+}
+
+impl<T, M> DataWrap<T, M> {
+    pub fn new_with_meta(data: T, meta: M) -> Self {
+        Self { data, meta: Some(meta) }
+    }
+}
+
+impl<T> From<T> for DataWrap<T, ()> {
+    fn from(data: T) -> Self { DataWrap::new(data) }
+}
+
+impl<T, M> From<(T, M)> for DataWrap<T, M> {
+    fn from((data, meta): (T, M)) -> Self { DataWrap::new_with_meta(data, meta) }
 }

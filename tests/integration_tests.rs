@@ -547,21 +547,14 @@ impl ResourceWalker {
 
     fn queue_album_items_relationship(
         &mut self,
-        items_rel: &models::MultiRelationship<models::ResourceIdentiferWithMeta<crate::apis::albums_api::AlbumsItemsResourceMeta>>,
+        items_rel: &models::MultiRelationship<models::ResourceIdentifier<crate::apis::albums_api::AlbumsItemsResourceMeta>>,
         relationship_type: &str,
     ) {
         if let Some(data) = &items_rel.data {
             for resource_id in data {
                 let resource_ref = ResourceRef {
                     id: resource_id.id.clone(),
-                    resource_type: match resource_id.r#type.as_str() {
-                        "albums" => Albums,
-                        "artists" => Artists,
-                        "tracks" => Tracks,
-                        "videos" => Videos,
-                        "playlists" => Playlists,
-                        _ => panic!("Unknown resource type: {}", resource_id.r#type),
-                    },
+                    resource_type: resource_id.r#type.clone(),
                 };
 
                 if !self.processed_ids.contains(&resource_ref.id) {

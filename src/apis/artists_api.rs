@@ -449,7 +449,7 @@ pub async fn artist_track_providers(
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::ResourceIdentiferWithMeta<ArtistsTrackProvidersResourceMeta>>,
+    models::MultiRelationship<models::ResourceIdentifier<ArtistsTrackProvidersResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions

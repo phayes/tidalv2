@@ -11,15 +11,14 @@
 use super::{configuration, ApiError, Error};
 use crate::models;
 use crate::models::DataWrap;
-use serde::{Deserialize, Serialize};
 use reqwest;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserCollectionsResourceMeta {
     #[serde(rename = "addedAt")]
     added_at: String,
 }
-
 
 /// Retrieves single userCollection by id.
 ///
@@ -81,9 +80,8 @@ pub async fn user_collections_id_relationships_albums_delete(
     let payload = DataWrap::new(
         albums_to_remove
             .into_iter()
-            .map(|album_id: String| models::ResourceIdentifier {
-                id: album_id,
-                r#type: models::ResourceType::Albums,
+            .map(|album_id: String| {
+                models::ResourceIdentifier::new(album_id, models::ResourceType::Albums)
             })
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
@@ -116,7 +114,7 @@ pub async fn user_collection_albums(
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::ResourceIdentiferWithMeta<UserCollectionsResourceMeta>>,
+    models::MultiRelationship<models::ResourceIdentifier<UserCollectionsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -172,9 +170,8 @@ pub async fn user_collections_id_relationships_albums_post(
     let payload = DataWrap::new(
         albums_to_add
             .into_iter()
-            .map(|album_id: String| models::ResourceIdentifier {
-                id: album_id,
-                r#type: models::ResourceType::Albums,
+            .map(|album_id: String| {
+                models::ResourceIdentifier::new(album_id, models::ResourceType::Albums)
             })
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
@@ -205,10 +202,7 @@ pub async fn user_collections_id_relationships_artists_delete(
     let payload = DataWrap::new(
         artists_to_remove
             .into_iter()
-            .map(|artist_id: String| models::ResourceIdentifier {
-                id: artist_id,
-                r#type: models::ResourceType::Artists,
-            })
+            .map(|artist_id: String| models::ResourceIdentifier::new(artist_id, models::ResourceType::Artists))
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -240,7 +234,7 @@ pub async fn user_collection_artists(
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::ResourceIdentiferWithMeta<UserCollectionsResourceMeta>>,
+    models::MultiRelationship<models::ResourceIdentifier<UserCollectionsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -296,10 +290,7 @@ pub async fn user_collections_id_relationships_artists_post(
     let payload = DataWrap::new(
         artists_to_add
             .into_iter()
-            .map(|artist_id: String| models::ResourceIdentifier {
-                id: artist_id,
-                r#type: models::ResourceType::Artists,
-            })
+            .map(|artist_id: String| models::ResourceIdentifier::new(artist_id, models::ResourceType::Artists))
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -358,10 +349,7 @@ pub async fn user_collections_id_relationships_playlists_delete(
     let payload = DataWrap::new(
         playlists_to_remove
             .into_iter()
-            .map(|playlist_id: String| models::ResourceIdentifier {
-                id: playlist_id,
-                r#type: models::ResourceType::Playlists,
-            })
+            .map(|playlist_id: String| models::ResourceIdentifier::new(playlist_id, models::ResourceType::Playlists))
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -391,7 +379,7 @@ pub async fn user_collection_playlists(
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::ResourceIdentiferWithMeta<UserCollectionsResourceMeta>>,
+    models::MultiRelationship<models::ResourceIdentifier<UserCollectionsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -444,10 +432,7 @@ pub async fn user_collections_id_relationships_playlists_post(
     let payload = DataWrap::new(
         playlists_to_add
             .into_iter()
-            .map(|playlist_id: String| models::ResourceIdentifier {
-                id: playlist_id,
-                r#type: models::ResourceType::Playlists,
-            })
+            .map(|playlist_id: String| models::ResourceIdentifier::new(playlist_id, models::ResourceType::Playlists))
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -476,10 +461,7 @@ pub async fn user_collections_id_relationships_tracks_delete(
     let payload = DataWrap::new(
         tracks_to_remove
             .into_iter()
-            .map(|track_id: String| models::ResourceIdentifier {
-                id: track_id,
-                r#type: models::ResourceType::Tracks,
-            })
+            .map(|track_id: String| models::ResourceIdentifier::new(track_id, models::ResourceType::Tracks))
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -511,7 +493,7 @@ pub async fn user_collection_tracks(
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::ResourceIdentiferWithMeta<UserCollectionsResourceMeta>>,
+    models::MultiRelationship<models::ResourceIdentifier<UserCollectionsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -567,10 +549,7 @@ pub async fn user_collections_id_relationships_tracks_post(
     let payload = DataWrap::new(
         tracks_to_add
             .into_iter()
-            .map(|track_id: String| models::ResourceIdentifier {
-                id: track_id,
-                r#type: models::ResourceType::Tracks,
-            })
+            .map(|track_id: String| models::ResourceIdentifier::new(track_id, models::ResourceType::Tracks))
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -600,10 +579,7 @@ pub async fn user_collections_id_relationships_videos_delete(
     let payload = DataWrap::new(
         videos_to_remove
             .into_iter()
-            .map(|video_id: String| models::ResourceIdentifier {
-                id: video_id,
-                r#type: models::ResourceType::Videos,
-            })
+            .map(|video_id: String| models::ResourceIdentifier::new(video_id, models::ResourceType::Videos))
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
@@ -635,7 +611,7 @@ pub async fn user_collection_videos(
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
 ) -> Result<
-    models::MultiRelationship<models::ResourceIdentiferWithMeta<UserCollectionsResourceMeta>>,
+    models::MultiRelationship<models::ResourceIdentifier<UserCollectionsResourceMeta>>,
     Error<ApiError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -691,10 +667,7 @@ pub async fn user_collections_id_relationships_videos_post(
     let payload = DataWrap::new(
         videos_to_add
             .into_iter()
-            .map(|video_id: String| models::ResourceIdentifier {
-                id: video_id,
-                r#type: models::ResourceType::Videos,
-            })
+            .map(|video_id: String| models::ResourceIdentifier::new(video_id, models::ResourceType::Videos))
             .collect::<Vec<models::ResourceIdentifier>>(),
     );
 
