@@ -17,7 +17,7 @@ async fn test_search_result_json_deserialization() {
 
     // Test full search result deserialization
     let search_result =
-        serde_json::from_str::<models::Resource<models::SearchResult>>(&json_content);
+        serde_json::from_str::<models::Resource<models::search_result::SearchResult>>(&json_content);
     assert!(
         search_result.is_ok(),
         "Failed to deserialize search result: {:?}",

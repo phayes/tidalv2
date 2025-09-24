@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -9,7 +9,7 @@ pub struct SearchResult {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::SearchResultsRelationships>,
+    pub relationships: Option<SearchResultsRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -41,6 +41,42 @@ impl SearchResultAttributes {
         SearchResultAttributes {
             did_you_mean: None,
             tracking_id,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SearchResultsRelationships {
+    #[serde(rename = "albums")]
+    pub albums: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "artists")]
+    pub artists: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "playlists")]
+    pub playlists: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "topHits")]
+    pub top_hits: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "tracks")]
+    pub tracks: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "videos")]
+    pub videos: MultiRelationship<ResourceIdentifier>,
+}
+
+impl SearchResultsRelationships {
+    pub fn new(
+        albums: MultiRelationship<ResourceIdentifier>,
+        artists: MultiRelationship<ResourceIdentifier>,
+        playlists: MultiRelationship<ResourceIdentifier>,
+        top_hits: MultiRelationship<ResourceIdentifier>,
+        tracks: MultiRelationship<ResourceIdentifier>,
+        videos: MultiRelationship<ResourceIdentifier>,
+    ) -> SearchResultsRelationships {
+        SearchResultsRelationships {
+            albums,
+            artists,
+            playlists,
+            top_hits,
+            tracks,
+            videos,
         }
     }
 }

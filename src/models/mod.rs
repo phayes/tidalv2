@@ -13,6 +13,8 @@ pub mod genre;
 pub mod lyrics;
 pub mod playlist;
 pub mod provider;
+pub mod search_result;
+pub mod search_suggestions;
 pub mod track;
 pub mod track_file;
 pub mod track_manifest;
@@ -37,18 +39,3 @@ pub use self::errors_document::*;
 mod external_link;
 pub use self::external_link::*;
 
-/// Search Related
-mod search_results_relationships;
-pub use self::search_results_relationships::SearchResultsRelationships;
-mod search_result;
-pub use self::search_result::{SearchResult, SearchResultAttributes};
-mod search_suggestions_highlights;
-pub use self::search_suggestions_highlights::SearchSuggestionsHighlights;
-mod search_suggestions_history;
-pub use self::search_suggestions_history::SearchSuggestionsHistory;
-mod search_suggestions_relationships;
-pub use self::search_suggestions_relationships::SearchSuggestionsRelationships;
-mod search_suggestion;
-pub use self::search_suggestion::{SearchSuggestion, SearchSuggestionAttributes};
-mod search_suggestions_suggestions;
-pub use self::search_suggestions_suggestions::SearchSuggestionsSuggestions;

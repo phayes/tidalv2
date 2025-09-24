@@ -9,7 +9,7 @@
  */
 
 use super::{configuration, ApiError, Error};
-use crate::models;
+use crate::models::*;
 
 use reqwest;
 
@@ -19,7 +19,7 @@ pub async fn search_suggestion_get(
     id: &str,
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::SearchSuggestion>, Error<ApiError>> {
+) -> Result<Resource<search_suggestions::SearchSuggestion>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -70,7 +70,7 @@ pub async fn search_suggestion_direct_hits(
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;

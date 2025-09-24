@@ -158,7 +158,7 @@ async fn test_search_and_walk_resources() {
 /// Simple serial resource walking
 async fn walk_search_result(
     config: &apis::configuration::Configuration,
-    search_response: &Resource<SearchResult>,
+    search_response: &Resource<models::search_result::SearchResult>,
 ) {
     // Process relationships directly without queuing
     if let Some(relationships) = &search_response.data.relationships {
