@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -9,7 +9,7 @@ pub struct UserShare {
     #[serde(rename = "id")]
     pub id: String,
     #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::UserSharesRelationships>,
+    pub relationships: Option<UserSharesRelationships>,
     /// Resource type
     #[serde(rename = "type")]
     pub r#type: String,
@@ -36,7 +36,7 @@ pub struct UserShareAttributes {
     pub created_at: String,
     /// Links external to TIDAL API
     #[serde(rename = "externalLinks", skip_serializing_if = "Option::is_none")]
-    pub external_links: Option<Vec<models::ExternalLink>>,
+    pub external_links: Option<Vec<ExternalLink>>,
 }
 
 impl UserShareAttributes {
@@ -45,6 +45,27 @@ impl UserShareAttributes {
             code,
             created_at,
             external_links: None,
+        }
+    }
+}
+
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct UserSharesRelationships {
+    #[serde(rename = "owners")]
+    pub owners: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "sharedResources")]
+    pub shared_resources: MultiRelationship<ResourceIdentifier>,
+}
+
+impl UserSharesRelationships {
+    pub fn new(
+        owners: MultiRelationship<ResourceIdentifier>,
+        shared_resources: MultiRelationship<ResourceIdentifier>,
+    ) -> UserSharesRelationships {
+        UserSharesRelationships {
+            owners,
+            shared_resources,
         }
     }
 }

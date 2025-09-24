@@ -2,6 +2,31 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct TrackStatistics {
+    #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<TrackStatisticsAttributes>,
+    /// Resource id
+    #[serde(rename = "id")]
+    pub id: String,
+    #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
+    pub relationships: Option<TrackStatisticsRelationships>,
+    /// Resource type
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+impl TrackStatistics {
+    pub fn new(id: String, r#type: String) -> TrackStatistics {
+        TrackStatistics {
+            attributes: None,
+            id,
+            relationships: None,
+            r#type,
+        }
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TrackStatisticsAttributes {
     /// Total playbacks
     #[serde(rename = "totalPlaybacks")]
@@ -20,27 +45,16 @@ impl TrackStatisticsAttributes {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct TrackStatistics {
-    #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<TrackStatisticsAttributes>,
-    /// Resource id
-    #[serde(rename = "id")]
-    pub id: String,
-    #[serde(rename = "relationships", skip_serializing_if = "Option::is_none")]
-    pub relationships: Option<models::TrackStatisticsRelationships>,
-    /// Resource type
-    #[serde(rename = "type")]
-    pub r#type: String,
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct TrackStatisticsRelationships {
+    #[serde(rename = "owners")]
+    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
 }
 
-impl TrackStatistics {
-    pub fn new(id: String, r#type: String) -> TrackStatistics {
-        TrackStatistics {
-            attributes: None,
-            id,
-            relationships: None,
-            r#type,
-        }
+impl TrackStatisticsRelationships {
+    pub fn new(
+        owners: models::MultiRelationship<models::ResourceIdentifier>,
+    ) -> TrackStatisticsRelationships {
+        TrackStatisticsRelationships { owners }
     }
 }

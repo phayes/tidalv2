@@ -9,7 +9,8 @@
  */
 
 use super::{configuration, ApiError, Error};
-use crate::models;
+use crate::models::*;
+use crate::models::track::*;
 
 use reqwest;
 
@@ -28,7 +29,7 @@ pub async fn track_list(
     filter_owners_period_id: Option<Vec<String>>,
     filter_isrc: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<models::MultiResource<models::Track>, Error<ApiError>> {
+) -> Result<MultiResource<Track>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_page_cursor = page_cursor;
     let p_include = include;
@@ -132,7 +133,7 @@ pub async fn track_get(
     configuration: &configuration::Configuration,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::Track>, Error<ApiError>> {
+) -> Result<Resource<Track>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -177,7 +178,7 @@ pub async fn track_albums(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -207,7 +208,7 @@ pub async fn track_artists(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -237,7 +238,7 @@ pub async fn track_lyrics(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -266,7 +267,7 @@ pub async fn track_owners(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -295,7 +296,7 @@ pub async fn track_providers(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -325,7 +326,7 @@ pub async fn track_radio(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -354,7 +355,7 @@ pub async fn track_similar_tracks(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -382,7 +383,7 @@ pub async fn track_similar_tracks(
 pub async fn track_source_file(
     configuration: &configuration::Configuration,
     id: &str,
-) -> Result<models::Relationship, Error<ApiError>> {
+) -> Result<Relationship, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 
@@ -405,7 +406,7 @@ pub async fn track_source_file(
 pub async fn track_statistics(
     configuration: &configuration::Configuration,
     id: &str,
-) -> Result<models::Relationship, Error<ApiError>> {
+) -> Result<Relationship, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 

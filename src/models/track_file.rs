@@ -1,4 +1,5 @@
 use crate::models::*;
+use crate::models::track_manifest::TrackPresentation;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -33,21 +34,6 @@ impl TrackFileAttributes {
             track_presentation: None,
             url: None,
         }
-    }
-}
-
-/// Track presentation
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TrackPresentation {
-    #[serde(rename = "FULL")]
-    Full,
-    #[serde(rename = "PREVIEW")]
-    Preview,
-}
-
-impl Default for TrackPresentation {
-    fn default() -> TrackPresentation {
-        Self::Full
     }
 }
 

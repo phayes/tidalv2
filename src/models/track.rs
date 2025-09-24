@@ -220,3 +220,56 @@ impl Default for TrackKeyScale {
         Self::Unknown
     }
 }
+
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct TracksRelationships {
+    #[serde(rename = "albums")]
+    pub albums: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "artists")]
+    pub artists: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "genres")]
+    pub genres: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "lyrics")]
+    pub lyrics: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "owners")]
+    pub owners: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "providers")]
+    pub providers: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "radio")]
+    pub radio: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "similarTracks")]
+    pub similar_tracks: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "sourceFile")]
+    pub source_file: Relationship,
+    #[serde(rename = "trackStatistics")]
+    pub track_statistics: Relationship,
+}
+
+impl TracksRelationships {
+    pub fn new(
+        albums: MultiRelationship<ResourceIdentifier>,
+        artists: MultiRelationship<ResourceIdentifier>,
+        genres: MultiRelationship<ResourceIdentifier>,
+        lyrics: MultiRelationship<ResourceIdentifier>,
+        owners: MultiRelationship<ResourceIdentifier>,
+        providers: MultiRelationship<ResourceIdentifier>,
+        radio: MultiRelationship<ResourceIdentifier>,
+        similar_tracks: MultiRelationship<ResourceIdentifier>,
+        source_file: Relationship,
+        track_statistics: Relationship,
+    ) -> TracksRelationships {
+        TracksRelationships {
+            albums,
+            artists,
+            genres,
+            lyrics,
+            owners,
+            providers,
+            radio,
+            similar_tracks,
+            source_file,
+            track_statistics,
+        }
+    }
+}
