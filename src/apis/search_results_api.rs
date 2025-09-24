@@ -37,23 +37,12 @@ pub async fn search_result_get(
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("include".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
 
     configuration.execute_request(req_builder).await

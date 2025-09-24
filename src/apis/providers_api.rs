@@ -28,23 +28,12 @@ pub async fn provider_list(
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     if let Some(ref param_value) = p_filter_id {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("filter[id]".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "filter[id]",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("filter[id]".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
 
     configuration.execute_request(req_builder).await

@@ -45,80 +45,36 @@ pub async fn album_list(
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("include".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
     if let Some(ref param_value) = p_filter_owners_period_id {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("filter[owners.id]".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "filter[owners.id]",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("filter[owners.id]".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
     if let Some(ref param_value) = p_filter_id {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("filter[id]".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "filter[id]",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("filter[id]".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
     if let Some(ref param_value) = p_filter_barcode_id {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("filter[barcodeId]".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "filter[barcodeId]",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("filter[barcodeId]".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
 
     configuration.execute_request(req_builder).await
@@ -147,23 +103,12 @@ pub async fn album_get(
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("include".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
 
     configuration.execute_request(req_builder).await

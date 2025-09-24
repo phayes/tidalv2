@@ -31,23 +31,12 @@ pub async fn user_collection_get(
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
     if let Some(ref param_value) = p_include {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("include".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "include",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("include".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
 
     configuration.execute_request(req_builder).await
@@ -115,23 +104,12 @@ pub async fn user_collection_albums(
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_sort {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("sort".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "sort",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("sort".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
     req_builder = req_builder.query(&[("include", "albums")]);
 
@@ -230,23 +208,12 @@ pub async fn user_collection_artists(
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_sort {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("sort".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "sort",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("sort".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
     req_builder = req_builder.query(&[("include", "artists")]);
 
@@ -371,23 +338,12 @@ pub async fn user_collection_playlists(
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_sort {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("sort".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "sort",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("sort".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
     req_builder = req_builder.query(&[("include", "playlists")]);
 
@@ -487,23 +443,12 @@ pub async fn user_collection_tracks(
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_sort {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("sort".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "sort",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("sort".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
     req_builder = req_builder.query(&[("include", "tracks")]);
 
@@ -602,23 +547,12 @@ pub async fn user_collection_videos(
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_sort {
-        req_builder = match "multi" {
-            "multi" => req_builder.query(
-                &param_value
-                    .iter()
-                    .map(|p| ("sort".to_owned(), p.to_string()))
-                    .collect::<Vec<(std::string::String, std::string::String)>>(),
-            ),
-            _ => req_builder.query(&[(
-                "sort",
-                &param_value
-                    .iter()
-                    .map(|p| p.to_string())
-                    .collect::<Vec<String>>()
-                    .join(",")
-                    .to_string(),
-            )]),
-        };
+        req_builder = req_builder.query(
+            &param_value
+                .iter()
+                .map(|p| ("sort".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        );
     }
     req_builder = req_builder.query(&[("include", "videos")]);
 
