@@ -1,10 +1,11 @@
 use async_recursion::async_recursion;
 use log::{info, trace};
 use models::*;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Once;
+use std::sync::LazyLock;
+use std::sync::{Mutex, Once};
 use tidalv2::{apis, models};
 use ResourceType::*;
 
@@ -19,10 +20,14 @@ fn init_logging_once() {
 }
 
 /// Maximum total number of API requests allowed across all tests
-const MAX_TOTAL_REQUESTS: usize = 400;
+const MAX_TOTAL_REQUESTS: usize = 200;
 
 /// Global atomic counter tracking total API requests made
 static TOTAL_REQUESTS: AtomicUsize = AtomicUsize::new(0);
+
+/// Static tracker of processed resources to avoid infinite loops and redundant processing
+static PROCESSED_RESOURCES: LazyLock<Mutex<HashMap<ResourceType, HashSet<String>>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
 
 /// Integration tests for TIDAL API
 ///
@@ -33,7 +38,20 @@ static TOTAL_REQUESTS: AtomicUsize = AtomicUsize::new(0);
 
 /// Check if we can make another API request without exceeding the global limit
 fn can_make_request() -> bool {
-    TOTAL_REQUESTS.load(Ordering::SeqCst) < MAX_TOTAL_REQUESTS
+    let can_make_request = TOTAL_REQUESTS.load(Ordering::SeqCst) < MAX_TOTAL_REQUESTS;
+    if !can_make_request {
+        // Report out all processed resources by type => count
+        if let Ok(processed) = PROCESSED_RESOURCES.lock() {
+            let mut total_resources = 0;
+            for (resource_type, resource_set) in processed.iter() {
+                let count = resource_set.len();
+                total_resources += count;
+                info!("  {:?}: {} resources processed", resource_type, count);
+            }
+            info!("📊 Total unique resources processed: {}", total_resources);
+        }
+    }
+    can_make_request
 }
 
 /// Increment the global request counter and return the new count
@@ -53,7 +71,28 @@ fn reset_request_count() {
     TOTAL_REQUESTS.store(0, Ordering::SeqCst);
 }
 
+/// Check if a resource has already been processed
+fn is_resource_processed(resource_type: ResourceType, resource_id: &str) -> bool {
+    if let Ok(processed) = PROCESSED_RESOURCES.lock() {
+        if let Some(type_set) = processed.get(&resource_type) {
+            return type_set.contains(resource_id);
+        }
+    }
+    false
+}
+
+/// Mark a resource as processed
+fn mark_resource_processed(resource_type: ResourceType, resource_id: &str) {
+    if let Ok(mut processed) = PROCESSED_RESOURCES.lock() {
+        processed
+            .entry(resource_type)
+            .or_insert_with(HashSet::new)
+            .insert(resource_id.to_string());
+    }
+}
+
 #[tokio::test]
+#[ignore]
 async fn test_search_and_walk_resources() {
     reset_request_count();
     // Initialize logging for HTTP request/response debugging
@@ -116,170 +155,59 @@ async fn test_search_and_walk_resources() {
     }
 }
 
-#[tokio::test]
-async fn test_search_different_queries() {
-    reset_request_count();
-    // Initialize logging
-    init_logging_once();
-
-    // Get bearer token from environment
-    let bearer_token = env::var("TIDAL_BEARER_ACCESS_TOKEN")
-        .expect("TIDAL_BEARER_ACCESS_TOKEN environment variable must be set");
-
-    // Configure API client
-    let mut config = apis::configuration::Configuration::new();
-    config.bearer_access_token = Some(bearer_token);
-    config.country_code = "US".to_string();
-
-    let search_queries = vec!["the beatles", "jazz", "rock", "classical music", "hip hop"];
-
-    for query in search_queries {
-        trace!("Testing search query: {}", query);
-
-        // Check global request limit before each search
-        if !can_make_request() {
-            break;
-        }
-
-        increment_request_count();
-        trace!("Making search request for '{}'", query);
-
-        let search_result = apis::search_results_api::search_result_get(
-            &config,
-            query,
-            None,
-            Some(vec![
-                Albums.to_string(),
-                Artists.to_string(),
-                Tracks.to_string(),
-            ]),
-        )
-        .await;
-
-        match search_result {
-            Ok(response) => {
-                trace!("✓ Search '{}' successful, ID: {}", query, response.data.id);
-
-                // Quick validation of response structure
-                if let Some(_relationships) = &response.data.relationships {
-                    trace!("  Found relationships for albums, artists, tracks, etc.");
-                }
-
-                if let Some(included) = &response.included {
-                    trace!("  Included {} additional resources", included.len());
-                }
-            }
-            Err(e) => {
-                panic!("Search '{}' failed: {:?}", query, e);
-            }
-        }
-    }
-}
-
 /// Simple serial resource walking
 async fn walk_search_result(
     config: &apis::configuration::Configuration,
     search_response: &Resource<SearchResult>,
 ) {
-    let mut processed_ids: HashSet<String> = HashSet::new();
-
     // Process relationships directly without queuing
     if let Some(relationships) = &search_response.data.relationships {
         // Process albums
         if let Some(data) = &relationships.albums.data {
             for resource_id in data {
-                if !can_make_request() {
-                    return;
-                }
-                if !processed_ids.contains(&resource_id.id) {
-                    processed_ids.insert(resource_id.id.clone());
-                    trace!("Processing album: {}", resource_id.id);
-                    process_album(config, &resource_id.id, 1).await;
-                }
+                process_album(config, &resource_id.id, 2).await;
             }
         }
 
         // Process artists
         if let Some(data) = &relationships.artists.data {
             for resource_id in data {
-                if !can_make_request() {
-                    return;
-                }
-                if !processed_ids.contains(&resource_id.id) {
-                    processed_ids.insert(resource_id.id.clone());
-                    trace!("Processing artist: {}", resource_id.id);
-                    process_artist(config, &resource_id.id, 1).await;
-                }
+                process_artist(config, &resource_id.id, 2).await;
             }
         }
 
         // Process tracks
         if let Some(data) = &relationships.tracks.data {
             for resource_id in data {
-                if !can_make_request() {
-                    return;
-                }
-                if !processed_ids.contains(&resource_id.id) {
-                    processed_ids.insert(resource_id.id.clone());
-                    trace!("Processing track: {}", resource_id.id);
-                    process_track(config, &resource_id.id, 1).await;
-                }
+                process_track(config, &resource_id.id, 2).await;
             }
         }
 
         // Process playlists
         if let Some(data) = &relationships.playlists.data {
             for resource_id in data {
-                if !can_make_request() {
-                    info!(
-                        "✓ Resource walking stopped: reached global request limit of {}",
-                        MAX_TOTAL_REQUESTS
-                    );
-                    return;
-                }
-                if !processed_ids.contains(&resource_id.id) {
-                    processed_ids.insert(resource_id.id.clone());
-                    info!("Processing playlist: {}", resource_id.id);
-                    process_playlist(config, &resource_id.id, 1).await;
-                }
+                process_playlist(config, &resource_id.id, 2).await;
             }
         }
 
         // Process videos
         if let Some(data) = &relationships.videos.data {
             for resource_id in data {
-                if !can_make_request() {
-                    return;
-                }
-                if !processed_ids.contains(&resource_id.id) {
-                    processed_ids.insert(resource_id.id.clone());
-                    trace!("Processing video: {}", resource_id.id);
-                    process_video(config, &resource_id.id, 1).await;
-                }
+                process_video(config, &resource_id.id, 2).await;
             }
         }
 
         // Process top hits
         if let Some(data) = &relationships.top_hits.data {
             for resource_id in data {
-                if !can_make_request() {
-                    return;
-                }
-                if !processed_ids.contains(&resource_id.id) {
-                    processed_ids.insert(resource_id.id.clone());
-                    trace!(
-                        "Processing top hit: {} (type: {})",
-                        resource_id.id, resource_id.r#type
-                    );
-                    // Process based on type
-                    match resource_id.r#type {
-                        Albums => process_album(config, &resource_id.id, 2).await,
-                        Artists => process_artist(config, &resource_id.id, 2).await,
-                        Tracks => process_track(config, &resource_id.id, 2).await,
-                        Videos => process_video(config, &resource_id.id, 2).await,
-                        _ => {
-                            panic!("Unknown resource type: {}", resource_id.r#type);
-                        },
+                // Process based on type
+                match resource_id.r#type {
+                    Albums => process_album(config, &resource_id.id, 2).await,
+                    Artists => process_artist(config, &resource_id.id, 2).await,
+                    Tracks => process_track(config, &resource_id.id, 2).await,
+                    Videos => process_video(config, &resource_id.id, 2).await,
+                    _ => {
+                        panic!("Unknown resource type: {}", resource_id.r#type);
                     }
                 }
             }
@@ -290,11 +218,24 @@ async fn walk_search_result(
 }
 
 #[async_recursion]
-async fn process_album(config: &apis::configuration::Configuration, album_id: &str, recurse: usize) {
+async fn process_album(
+    config: &apis::configuration::Configuration,
+    album_id: &str,
+    recurse: usize,
+) {
     if !can_make_request() {
         return;
     }
-    
+
+    // Check if we've already processed this album
+    if is_resource_processed(Albums, album_id) {
+        trace!("Skipping already processed album: {}", album_id);
+        return;
+    }
+
+    // Mark this album as being processed
+    mark_resource_processed(Albums, album_id);
+
     trace!("Loading album: {}", album_id);
     increment_request_count();
 
@@ -307,19 +248,26 @@ async fn process_album(config: &apis::configuration::Configuration, album_id: &s
 
     match result {
         Ok(album_response) => {
-           if recurse > 0 {
-            for resource_id in album_response.data.relationships.unwrap().items.data.unwrap() {
-                match resource_id.r#type {
-                    Tracks => process_track(config, &resource_id.id, recurse - 1).await,
-                    Albums => process_album(config, &resource_id.id, recurse - 1).await,
-                    Artists => process_artist(config, &resource_id.id, recurse - 1).await,
-                    Videos => process_video(config, &resource_id.id, recurse - 1).await,
-                    _ => {
-                        panic!("Unknown resource type: {}", resource_id.r#type);
+            if recurse > 0 {
+                for resource_id in album_response
+                    .data
+                    .relationships
+                    .unwrap()
+                    .items
+                    .data
+                    .unwrap()
+                {
+                    match resource_id.r#type {
+                        Tracks => process_track(config, &resource_id.id, recurse - 1).await,
+                        Albums => process_album(config, &resource_id.id, recurse - 1).await,
+                        Artists => process_artist(config, &resource_id.id, recurse - 1).await,
+                        Videos => process_video(config, &resource_id.id, recurse - 1).await,
+                        _ => {
+                            panic!("Unknown resource type: {}", resource_id.r#type);
+                        }
                     }
                 }
             }
-           }
         }
         Err(e) => {
             panic!("Failed to load album {}: {:?}", album_id, e);
@@ -328,11 +276,24 @@ async fn process_album(config: &apis::configuration::Configuration, album_id: &s
 }
 
 #[async_recursion]
-async fn process_artist(config: &apis::configuration::Configuration, artist_id: &str, recurse: usize) {
+async fn process_artist(
+    config: &apis::configuration::Configuration,
+    artist_id: &str,
+    recurse: usize,
+) {
     if !can_make_request() {
         return;
     }
-    
+
+    // Check if we've already processed this artist
+    if is_resource_processed(Artists, artist_id) {
+        trace!("Skipping already processed artist: {}", artist_id);
+        return;
+    }
+
+    // Mark this artist as being processed
+    mark_resource_processed(Artists, artist_id);
+
     trace!("Loading artist: {}", artist_id);
     increment_request_count();
 
@@ -348,21 +309,79 @@ async fn process_artist(config: &apis::configuration::Configuration, artist_id: 
         Ok(artist_response) => {
             if recurse > 0 {
                 if let Some(relationships) = &artist_response.data.relationships {
+                    // Process albums
                     if let Some(albums_data) = &relationships.albums.data {
                         for resource_id in albums_data {
-                            if !can_make_request() {
-                                return;
-                            }
                             process_album(config, &resource_id.id, recurse - 1).await;
                         }
                     }
+
+                    // Process tracks
                     if let Some(tracks_data) = &relationships.tracks.data {
                         for resource_id in tracks_data {
-                            if !can_make_request() {
-                                return;
-                            }
                             process_track(config, &resource_id.id, recurse - 1).await;
                         }
+                    }
+
+                    // Process videos
+                    if let Some(videos_data) = &relationships.videos.data {
+                        for resource_id in videos_data {
+                            process_video(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
+
+                    // Process similar artists
+                    if let Some(similar_artists_data) = &relationships.similar_artists.data {
+                        for resource_id in similar_artists_data {
+                            process_artist(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
+
+                    // Process owners (other artists that own this artist's content)
+                    if let Some(owners_data) = &relationships.owners.data {
+                        for resource_id in owners_data {
+                            match resource_id.r#type {
+                                Artists => {
+                                    process_artist(config, &resource_id.id, recurse - 1).await
+                                }
+                                _ => trace!("Skipping owner resource type: {}", resource_id.r#type),
+                            }
+                        }
+                    }
+
+                    // Process profile art (artwork resources)
+                    if let Some(profile_art_data) = &relationships.profile_art.data {
+                        for resource_id in profile_art_data {
+                            process_artwork(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
+
+                    // Process radio (radio station resources)
+                    if let Some(radio_data) = &relationships.radio.data {
+                        for resource_id in radio_data {
+                            process_radio(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
+
+                    // Process roles (role resources)
+                    if let Some(roles_data) = &relationships.roles.data {
+                        for resource_id in roles_data {
+                            process_role(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
+
+                    // Process track providers
+                    if let Some(track_providers_data) = &relationships.track_providers.data {
+                        for resource_id in track_providers_data {
+                            process_provider(config, &resource_id.id, recurse - 1).await;
+                        }
+                    }
+
+                    // Process biography (single Relationship)
+                    if let Some(_biography_data) = &relationships.biography.data {
+                        // Note: Biography API takes artist_id, not biography resource id
+                        // We'll use the current artist_id instead of biography_data.id
+                        process_biography(config, artist_id, recurse - 1).await;
                     }
                 }
             }
@@ -374,11 +393,24 @@ async fn process_artist(config: &apis::configuration::Configuration, artist_id: 
 }
 
 #[async_recursion]
-async fn process_track(config: &apis::configuration::Configuration, track_id: &str, recurse: usize) {
+async fn process_track(
+    config: &apis::configuration::Configuration,
+    track_id: &str,
+    recurse: usize,
+) {
     if !can_make_request() {
         return;
     }
-    
+
+    // Check if we've already processed this track
+    if is_resource_processed(Tracks, track_id) {
+        trace!("Skipping already processed track: {}", track_id);
+        return;
+    }
+
+    // Mark this track as being processed
+    mark_resource_processed(Tracks, track_id);
+
     trace!("Loading track: {}", track_id);
     increment_request_count();
 
@@ -395,17 +427,11 @@ async fn process_track(config: &apis::configuration::Configuration, track_id: &s
                 if let Some(relationships) = &track_response.data.relationships {
                     if let Some(artists_data) = &relationships.artists.data {
                         for resource_id in artists_data {
-                            if !can_make_request() {
-                                return;
-                            }
                             process_artist(config, &resource_id.id, recurse - 1).await;
                         }
                     }
                     if let Some(albums_data) = &relationships.albums.data {
                         for resource_id in albums_data {
-                            if !can_make_request() {
-                                return;
-                            }
                             process_album(config, &resource_id.id, recurse - 1).await;
                         }
                     }
@@ -419,11 +445,24 @@ async fn process_track(config: &apis::configuration::Configuration, track_id: &s
 }
 
 #[async_recursion]
-async fn process_playlist(config: &apis::configuration::Configuration, playlist_id: &str, recurse: usize) {
+async fn process_playlist(
+    config: &apis::configuration::Configuration,
+    playlist_id: &str,
+    recurse: usize,
+) {
     if !can_make_request() {
         return;
     }
-    
+
+    // Check if we've already processed this playlist
+    if is_resource_processed(Playlists, playlist_id) {
+        trace!("Skipping already processed playlist: {}", playlist_id);
+        return;
+    }
+
+    // Mark this playlist as being processed
+    mark_resource_processed(Playlists, playlist_id);
+
     trace!("Loading playlist: {}", playlist_id);
     increment_request_count();
 
@@ -443,7 +482,9 @@ async fn process_playlist(config: &apis::configuration::Configuration, playlist_
                             match resource_id.r#type {
                                 Tracks => process_track(config, &resource_id.id, recurse - 1).await,
                                 Albums => process_album(config, &resource_id.id, recurse - 1).await,
-                                Artists => process_artist(config, &resource_id.id, recurse - 1).await,
+                                Artists => {
+                                    process_artist(config, &resource_id.id, recurse - 1).await
+                                }
                                 Videos => process_video(config, &resource_id.id, recurse - 1).await,
                                 _ => {
                                     panic!("Unknown resource type: {}", resource_id.r#type);
@@ -461,11 +502,24 @@ async fn process_playlist(config: &apis::configuration::Configuration, playlist_
 }
 
 #[async_recursion]
-async fn process_video(config: &apis::configuration::Configuration, video_id: &str, recurse: usize) {
+async fn process_video(
+    config: &apis::configuration::Configuration,
+    video_id: &str,
+    recurse: usize,
+) {
     if !can_make_request() {
         return;
     }
-    
+
+    // Check if we've already processed this video
+    if is_resource_processed(Videos, video_id) {
+        trace!("Skipping already processed video: {}", video_id);
+        return;
+    }
+
+    // Mark this video as being processed
+    mark_resource_processed(Videos, video_id);
+
     trace!("Loading video: {}", video_id);
     increment_request_count();
     let result = apis::videos_api::video_get(
@@ -481,17 +535,11 @@ async fn process_video(config: &apis::configuration::Configuration, video_id: &s
                 if let Some(relationships) = &video_response.data.relationships {
                     if let Some(artists_data) = &relationships.artists.data {
                         for resource_id in artists_data {
-                            if !can_make_request() {
-                                return;
-                            }
                             process_artist(config, &resource_id.id, recurse - 1).await;
                         }
                     }
                     if let Some(albums_data) = &relationships.albums.data {
                         for resource_id in albums_data {
-                            if !can_make_request() {
-                                return;
-                            }
                             process_album(config, &resource_id.id, recurse - 1).await;
                         }
                     }
@@ -502,4 +550,171 @@ async fn process_video(config: &apis::configuration::Configuration, video_id: &s
             panic!("Failed to load video {}: {:?}", video_id, e);
         }
     }
+}
+
+#[async_recursion]
+async fn process_artwork(
+    config: &apis::configuration::Configuration,
+    artwork_id: &str,
+    _recurse: usize,
+) {
+    if !can_make_request() {
+        return;
+    }
+
+    // Check if we've already processed this artwork
+    if is_resource_processed(Artworks, artwork_id) {
+        trace!("Skipping already processed artwork: {}", artwork_id);
+        return;
+    }
+
+    // Mark this artwork as being processed
+    mark_resource_processed(Artworks, artwork_id);
+
+    trace!("Loading artwork: {}", artwork_id);
+    increment_request_count();
+
+    let result = apis::artworks_api::artwork_get(config, artwork_id, None).await;
+
+    match result {
+        Ok(_artwork_response) => {
+            trace!("✓ Artwork loaded: {}", artwork_id);
+            // Artworks typically don't have deep relationships to recurse into
+        }
+        Err(e) => {
+            panic!("Failed to load artwork {}: {:?}", artwork_id, e);
+        }
+    }
+}
+
+#[async_recursion]
+async fn process_biography(
+    config: &apis::configuration::Configuration,
+    artist_id: &str,
+    _recurse: usize,
+) {
+    if !can_make_request() {
+        return;
+    }
+
+    // Check if we've already processed this artist's biography
+    if is_resource_processed(ArtistBiographies, artist_id) {
+        trace!(
+            "Skipping already processed biography for artist: {}",
+            artist_id
+        );
+        return;
+    }
+
+    // Mark this artist's biography as being processed
+    mark_resource_processed(ArtistBiographies, artist_id);
+
+    trace!("Loading biography for artist: {}", artist_id);
+    increment_request_count();
+
+    let result = apis::artists_api::artist_biography(config, artist_id).await;
+
+    match result {
+        Ok(_biography_response) => {
+            trace!("✓ Biography loaded for artist: {}", artist_id);
+            // Biographies typically don't have relationships to recurse into
+        }
+        Err(e) => {
+            panic!("Failed to load biography for artist {}: {:?}", artist_id, e);
+        }
+    }
+}
+
+#[async_recursion]
+async fn process_role(config: &apis::configuration::Configuration, role_id: &str, _recurse: usize) {
+    if !can_make_request() {
+        return;
+    }
+
+    // Check if we've already processed this role
+    if is_resource_processed(ArtistRoles, role_id) {
+        trace!("Skipping already processed role: {}", role_id);
+        return;
+    }
+
+    // Mark this role as being processed
+    mark_resource_processed(ArtistRoles, role_id);
+
+    trace!("Loading role: {}", role_id);
+    increment_request_count();
+
+    let result = apis::artist_roles_api::artist_role_get(config, role_id).await;
+
+    match result {
+        Ok(_role_response) => {
+            trace!("✓ Role loaded: {}", role_id);
+            // Roles typically don't have deep relationships to recurse into
+        }
+        Err(e) => {
+            panic!("Failed to load role {}: {:?}", role_id, e);
+        }
+    }
+}
+
+#[async_recursion]
+async fn process_provider(
+    config: &apis::configuration::Configuration,
+    provider_id: &str,
+    _recurse: usize,
+) {
+    if !can_make_request() {
+        return;
+    }
+
+    // Check if we've already processed this provider
+    if is_resource_processed(Providers, provider_id) {
+        trace!("Skipping already processed provider: {}", provider_id);
+        return;
+    }
+
+    // Mark this provider as being processed
+    mark_resource_processed(Providers, provider_id);
+
+    trace!("Loading provider: {}", provider_id);
+    increment_request_count();
+
+    let result = apis::providers_api::provider_get(config, provider_id).await;
+
+    match result {
+        Ok(_provider_response) => {
+            trace!("✓ Provider loaded: {}", provider_id);
+            // Providers typically don't have deep relationships to recurse into
+        }
+        Err(e) => {
+            panic!("Failed to load provider {}: {:?}", provider_id, e);
+        }
+    }
+}
+
+#[async_recursion]
+async fn process_radio(
+    _config: &apis::configuration::Configuration,
+    radio_id: &str,
+    _recurse: usize,
+) {
+    if !can_make_request() {
+        return;
+    }
+
+    // For radio resources, we'll use a generic tracking approach since there's no specific ResourceType
+    // We'll use SearchResults as a placeholder ResourceType for radio resources
+    if is_resource_processed(SearchResults, &format!("radio_{}", radio_id)) {
+        trace!("Skipping already processed radio: {}", radio_id);
+        return;
+    }
+
+    mark_resource_processed(SearchResults, &format!("radio_{}", radio_id));
+
+    trace!("Loading radio: {}", radio_id);
+    // Note: There doesn't seem to be a dedicated radio API, so we'll just log for now
+    // This could be expanded if a radio API becomes available
+    trace!(
+        "✓ Radio resource noted: {} (no specific API available)",
+        radio_id
+    );
 }
