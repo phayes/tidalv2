@@ -268,9 +268,9 @@ impl AnyResource {
     }
 }
 
-impl Into<ResourceType> for AnyResource {
-    fn into(self) -> ResourceType {
-        self.resource_type()
+impl From<AnyResource> for ResourceType {
+    fn from(val: AnyResource) -> Self {
+        val.resource_type()
     }
 }
 
