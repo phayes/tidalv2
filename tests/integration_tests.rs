@@ -718,3 +718,207 @@ async fn process_radio(
         radio_id
     );
 }
+
+#[tokio::test]
+#[ignore]
+async fn test_user_collections_and_walk() {
+    reset_request_count();
+    // Initialize logging for HTTP request/response debugging
+    init_logging_once();
+
+    // Get bearer token from environment
+    let bearer_token = env::var("TIDAL_BEARER_ACCESS_TOKEN")
+        .expect("TIDAL_BEARER_ACCESS_TOKEN environment variable must be set");
+
+    // Configure API client
+    let mut config = apis::configuration::Configuration::new();
+    config.bearer_access_token = Some(bearer_token);
+    config.country_code = "US".to_string();
+
+    info!("Starting user collections integration test");
+
+    // First, get the current user to obtain user ID
+    if !can_make_request() {
+        return;
+    }
+
+    increment_request_count();
+    let user_result = apis::users_api::user_me(&config).await;
+
+    match user_result {
+        Ok(user_response) => {
+            let user_id = &user_response.data.id;
+            info!("✓ Current user ID: {}", user_id);
+
+            // Walk user collections for different resource types
+            walk_user_collections(&config, user_id).await;
+        }
+        Err(e) => {
+            panic!("Failed to get current user: {:?}", e);
+        }
+    }
+}
+
+/// Walk through user collections for different resource types
+async fn walk_user_collections(config: &apis::configuration::Configuration, user_id: &str) {
+    info!("Starting user collections walking for user: {}", user_id);
+
+    // Process user's playlist collection
+    if can_make_request() {
+        info!("Processing user playlist collection...");
+        increment_request_count();
+
+        let playlists_result = apis::user_collections_api::user_collection_playlists(
+            config, user_id, None, // page_cursor
+            None, // sort
+        )
+        .await;
+
+        match playlists_result {
+            Ok(playlists_response) => {
+                if let Some(ref playlists_data) = playlists_response.data {
+                    info!(
+                        "✓ Found {} playlists in user collection",
+                        playlists_data.len()
+                    );
+
+                    // Walk through each playlist
+                    for playlist_resource in playlists_data {
+                        process_playlist(config, &playlist_resource.id, 2).await;
+                    }
+                } else {
+                    info!("✓ No playlists found in user collection");
+                }
+            }
+            Err(e) => {
+                panic!("Could not fetch user playlist collection: {:?}", e);
+            }
+        }
+    }
+
+    // Process user's album collection
+    if can_make_request() {
+        info!("Processing user album collection...");
+        increment_request_count();
+
+        let albums_result = apis::user_collections_api::user_collection_albums(
+            config, user_id, "US", // locale
+            None, // page_cursor
+            None, // sort
+        )
+        .await;
+
+        match albums_result {
+            Ok(albums_response) => {
+                if let Some(ref albums_data) = albums_response.data {
+                    info!("✓ Found {} albums in user collection", albums_data.len());
+
+                    // Walk through each album
+                    for album_resource in albums_data {
+                        process_album(config, &album_resource.id, 2).await;
+                    }
+                } else {
+                    info!("✓ No albums found in user collection");
+                }
+            }
+            Err(e) => {
+                panic!("Could not fetch user album collection: {:?}", e);
+            }
+        }
+    }
+
+    // Process user's artist collection
+    if can_make_request() {
+        info!("Processing user artist collection...");
+        increment_request_count();
+
+        let artists_result = apis::user_collections_api::user_collection_artists(
+            config, user_id, "US", // locale
+            None, // page_cursor
+            None, // sort
+        )
+        .await;
+
+        match artists_result {
+            Ok(artists_response) => {
+                if let Some(ref artists_data) = artists_response.data {
+                    info!("✓ Found {} artists in user collection", artists_data.len());
+
+                    // Walk through each artist
+                    for artist_resource in artists_data {
+                        process_artist(config, &artist_resource.id, 2).await;
+                    }
+                } else {
+                    info!("✓ No artists found in user collection");
+                }
+            }
+            Err(e) => {
+                panic!("Could not fetch user artist collection: {:?}", e);
+            }
+        }
+    }
+
+    // Process user's track collection
+    if can_make_request() {
+        info!("Processing user track collection...");
+        increment_request_count();
+
+        let tracks_result = apis::user_collections_api::user_collection_tracks(
+            config, user_id, "US", // locale
+            None, // page_cursor
+            None, // sort
+        )
+        .await;
+
+        match tracks_result {
+            Ok(tracks_response) => {
+                if let Some(ref tracks_data) = tracks_response.data {
+                    info!("✓ Found {} tracks in user collection", tracks_data.len());
+
+                    // Walk through each track
+                    for track_resource in tracks_data {
+                        process_track(config, &track_resource.id, 2).await;
+                    }
+                } else {
+                    info!("✓ No tracks found in user collection");
+                }
+            }
+            Err(e) => {
+                panic!("Could not fetch user track collection: {:?}", e);
+            }
+        }
+    }
+
+    // Process user's video collection
+    if can_make_request() {
+        info!("Processing user video collection...");
+        increment_request_count();
+
+        let videos_result = apis::user_collections_api::user_collection_videos(
+            config, user_id, "US", // locale
+            None, // page_cursor
+            None, // sort
+        )
+        .await;
+
+        match videos_result {
+            Ok(videos_response) => {
+                if let Some(ref videos_data) = videos_response.data {
+                    info!("✓ Found {} videos in user collection", videos_data.len());
+
+                    // Walk through each video
+                    for video_resource in videos_data {
+                        process_video(config, &video_resource.id, 2).await;
+                    }
+                } else {
+                    info!("✓ No videos found in user collection");
+                }
+            }
+            Err(e) => {
+                panic!("Could not fetch user video collection: {:?}", e);
+            }
+        }
+    }
+
+    info!("User collections walking completed");
+}
