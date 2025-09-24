@@ -52,9 +52,7 @@ pub struct TrackStatisticsRelationships {
 }
 
 impl TrackStatisticsRelationships {
-    pub fn new(
-        owners: MultiRelationship<ResourceIdentifier>,
-    ) -> TrackStatisticsRelationships {
+    pub fn new(owners: MultiRelationship<ResourceIdentifier>) -> TrackStatisticsRelationships {
         TrackStatisticsRelationships { owners }
     }
 }

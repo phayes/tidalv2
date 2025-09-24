@@ -9,8 +9,8 @@
  */
 
 use super::{configuration, ApiError, Error};
-use crate::models::*;
 use crate::models::track::*;
+use crate::models::*;
 
 use reqwest;
 

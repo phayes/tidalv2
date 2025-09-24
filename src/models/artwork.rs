@@ -37,7 +37,10 @@ pub struct ArtworkAttributes {
 }
 
 impl ArtworkAttributes {
-    pub fn new(files: Vec<artwork_file::ArtworkFile>, media_type: ArtworkMediaType) -> ArtworkAttributes {
+    pub fn new(
+        files: Vec<artwork_file::ArtworkFile>,
+        media_type: ArtworkMediaType,
+    ) -> ArtworkAttributes {
         ArtworkAttributes { files, media_type }
     }
 }
@@ -64,9 +67,7 @@ pub struct ArtworkRelationships {
 }
 
 impl ArtworkRelationships {
-    pub fn new(
-        owners: MultiRelationship<ResourceIdentifier>,
-    ) -> ArtworkRelationships {
+    pub fn new(owners: MultiRelationship<ResourceIdentifier>) -> ArtworkRelationships {
         ArtworkRelationships { owners }
     }
 }

@@ -99,7 +99,6 @@ impl Default for VideoAvailability {
     }
 }
 
-
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct VideoRelationships {
     #[serde(rename = "albums")]

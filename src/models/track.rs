@@ -221,7 +221,6 @@ impl Default for TrackKeyScale {
     }
 }
 
-
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TracksRelationships {
     #[serde(rename = "albums")]

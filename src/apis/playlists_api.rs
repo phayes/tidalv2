@@ -289,7 +289,10 @@ pub async fn playlist_items(
     configuration: &configuration::Configuration,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier<playlist::PlaylistsItemsIdentifierMeta>>, Error<ApiError>> {
+) -> Result<
+    MultiRelationship<ResourceIdentifier<playlist::PlaylistsItemsIdentifierMeta>>,
+    Error<ApiError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -352,8 +355,10 @@ pub async fn playlist_reorder_items(
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_playlist_items_relationship_reorder_operation_payload =
-        DataWrap::new_with_meta(reorder_items, playlist::PlaylistItemPosition::new(position_before));
+    let p_playlist_items_relationship_reorder_operation_payload = DataWrap::new_with_meta(
+        reorder_items,
+        playlist::PlaylistItemPosition::new(position_before),
+    );
 
     let uri_str = format!(
         "{}/playlists/{id}/relationships/items",

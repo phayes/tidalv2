@@ -1,8 +1,10 @@
 use crate::models::{
     album::Album, artist::Artist, artist_biography::ArtistBiography, artist_role::ArtistRole,
-    artwork::Artwork, genre::Genre, Links, lyrics::Lyrics, playlist::Playlist, provider::Provider, SearchResult, SearchSuggestion, track::Track,
-    track_file::TrackFile, track_manifest::TrackManifest, track_statistics::TrackStatistics, user::User, user_collection::UserCollection,
-    user_recommendation::UserRecommendation, user_share::UserShare, video::Video,
+    artwork::Artwork, genre::Genre, lyrics::Lyrics, playlist::Playlist, provider::Provider,
+    track::Track, track_file::TrackFile, track_manifest::TrackManifest,
+    track_statistics::TrackStatistics, user::User, user_collection::UserCollection,
+    user_recommendation::UserRecommendation, user_share::UserShare, video::Video, Links,
+    SearchResult, SearchSuggestion,
 };
 
 // Generic Resource struct for all single resource data documents
@@ -56,13 +58,12 @@ pub enum ResourceType {
 // AnyResource - all possible resource types
 #[derive(Clone, Debug, PartialEq)]
 pub enum AnyResource {
-
     /// Album
     Albums(Album),
 
     /// Not supported
     Appreciations(Value),
-    
+
     /// Artist Biography
     ArtistBiographies(ArtistBiography),
 
@@ -101,7 +102,7 @@ pub enum AnyResource {
 
     /// Not supported
     TrackSourceFiles(Value),
-    
+
     /// Track Statistics
     TrackStatistics(TrackStatistics),
 
@@ -112,7 +113,7 @@ pub enum AnyResource {
     UserCollections(UserCollection),
 
     /// Not supported
-    UserEntitlements(Value),  
+    UserEntitlements(Value),
 
     /// User Recommendation
     UserRecommendations(UserRecommendation),

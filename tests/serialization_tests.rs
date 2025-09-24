@@ -1,4 +1,4 @@
-use log::{trace};
+use log::trace;
 use std::collections::HashMap;
 use std::fs;
 use tidalv2::models::ResourceType::*;
