@@ -1,4 +1,4 @@
-use crate::models;
+use crate::models::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -48,12 +48,12 @@ impl TrackStatisticsAttributes {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TrackStatisticsRelationships {
     #[serde(rename = "owners")]
-    pub owners: models::MultiRelationship<models::ResourceIdentifier>,
+    pub owners: MultiRelationship<ResourceIdentifier>,
 }
 
 impl TrackStatisticsRelationships {
     pub fn new(
-        owners: models::MultiRelationship<models::ResourceIdentifier>,
+        owners: MultiRelationship<ResourceIdentifier>,
     ) -> TrackStatisticsRelationships {
         TrackStatisticsRelationships { owners }
     }

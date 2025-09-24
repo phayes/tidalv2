@@ -14,7 +14,14 @@ pub mod lyrics;
 pub mod playlist;
 pub mod provider;
 pub mod track;
+pub mod track_file;
+pub mod track_manifest;
+pub mod track_statistics;
+pub mod user;
 pub mod user_collection;
+pub mod user_recommendation;
+pub mod user_share;
+pub mod video;
 
 // Shared modules that are brought into shared scope
 mod resource;
@@ -30,27 +37,7 @@ pub use self::errors_document::*;
 mod external_link;
 pub use self::external_link::*;
 
-// TODO: Modules that need to be moved to the resource modules
-mod user;
-pub use self::user::{User, UserAttributes};
-mod video;
-pub use self::video::{Video, VideoAttributes, VideoAvailability, VideoRelationships};
-mod user_share;
-pub use self::user_share::{UserShare, UserShareAttributes};
-mod user_recommendation;
-pub use self::user_recommendation::UserRecommendation;
-mod track_manifest;
-pub use self::track_manifest::{TrackManifest, TrackManifestAttributes, TrackPresentation};
-mod track_statistics;
-pub use self::track_statistics::{TrackStatistics, TrackStatisticsAttributes};
-mod track_file;
-pub use self::track_file::{
-    TrackFile, TrackFileAttributes,
-};
-
-
-
-/// Search Related (TODO)
+/// Search Related
 mod search_results_relationships;
 pub use self::search_results_relationships::SearchResultsRelationships;
 mod search_result;

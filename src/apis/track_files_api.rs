@@ -9,7 +9,7 @@
  */
 
 use super::{configuration, ApiError, Error};
-use crate::models;
+use crate::models::*;
 
 use reqwest;
 
@@ -19,7 +19,7 @@ pub async fn track_file_get(
     id: &str,
     formats: &str,
     usage: &str,
-) -> Result<models::Resource<models::TrackFile>, Error<ApiError>> {
+) -> Result<Resource<track_file::TrackFile>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_formats = formats;

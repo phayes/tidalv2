@@ -9,7 +9,7 @@
  */
 
 use super::{configuration, ApiError, Error};
-use crate::models;
+use crate::models::*;
 use reqwest;
 
 /// Retrieves current user's user(s).
@@ -18,7 +18,7 @@ use reqwest;
 /// This endpoint takes no parameters.
 pub async fn user_me(
     configuration: &configuration::Configuration,
-) -> Result<models::Resource<models::User>, Error<ApiError>> {
+) -> Result<Resource<user::User>, Error<ApiError>> {
     let uri_str = format!("{}/users/me", configuration.base_path);
     let req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 

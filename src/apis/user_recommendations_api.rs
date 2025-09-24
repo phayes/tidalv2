@@ -9,7 +9,7 @@
  */
 
 use super::{configuration, ApiError, Error};
-use crate::models;
+use crate::models::*;
 
 use reqwest;
 
@@ -24,7 +24,7 @@ pub async fn user_recommendation_get(
     id: &str,
     locale: &str,
     include: Option<Vec<String>>,
-) -> Result<models::Resource<models::UserRecommendation>, Error<ApiError>> {
+) -> Result<Resource<user_recommendation::UserRecommendation>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
@@ -73,7 +73,7 @@ pub async fn user_recommendation_discovery_mixes(
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
@@ -107,7 +107,7 @@ pub async fn user_recommendation_my_mixes(
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;
@@ -141,7 +141,7 @@ pub async fn user_recommendation_new_arrival_mixes(
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_locale = locale;

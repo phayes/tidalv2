@@ -1,5 +1,4 @@
 use crate::models::*;
-use crate::models::track_manifest::TrackPresentation;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -19,7 +18,7 @@ pub struct TrackFileAttributes {
     pub track_audio_normalization_data: Option<audio::AudioNormalization>,
     /// Track presentation
     #[serde(rename = "trackPresentation", skip_serializing_if = "Option::is_none")]
-    pub track_presentation: Option<TrackPresentation>,
+    pub track_presentation: Option<track_manifest::TrackPresentation>,
     /// File URL
     #[serde(rename = "url", skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
