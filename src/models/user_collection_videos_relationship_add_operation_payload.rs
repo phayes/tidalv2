@@ -14,12 +14,12 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserCollectionVideosRelationshipAddOperationPayload {
     #[serde(rename = "data")]
-    pub data: Vec<models::UserCollectionVideosRelationshipAddOperationPayloadData>,
+    pub data: Vec<models::ResourceIdentifier>,
 }
 
 impl UserCollectionVideosRelationshipAddOperationPayload {
     pub fn new(
-        data: Vec<models::UserCollectionVideosRelationshipAddOperationPayloadData>,
+        data: Vec<models::ResourceIdentifier>,
     ) -> UserCollectionVideosRelationshipAddOperationPayload {
         UserCollectionVideosRelationshipAddOperationPayload { data }
     }

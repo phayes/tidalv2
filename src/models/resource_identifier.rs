@@ -11,18 +11,219 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ResourceIdentifier {
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,
     /// Resource type
     #[serde(rename = "type")]
-    pub r#type: String,
+    pub r#type: models::ResourceType,
 }
 
 impl ResourceIdentifier {
-    pub fn new(id: String, r#type: String) -> ResourceIdentifier {
+    pub fn new(id: String, r#type: models::ResourceType) -> ResourceIdentifier {
         ResourceIdentifier { id, r#type }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ResourceIdentiferWithMeta<T> {
+    pub id: String,
+    pub meta: T,
+    pub r#type: models::ResourceType,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct UserCollectionsResourceMeta {
+    #[serde(rename = "addedAt")]
+    added_at: String,
+}
+
+/// Specialized resource identifier for Artists resources
+/// Automatically sets the resource type to Artists
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ArtistsResourceIdentifier {
+    /// Resource id
+    #[serde(rename = "id")]
+    pub id: String,
+    /// Resource type - Always [`models::ResourceType::Artists`]
+    #[serde(rename = "type")]
+    pub r#type: models::ResourceType,
+}
+
+impl ArtistsResourceIdentifier {
+    pub fn new(id: String) -> ArtistsResourceIdentifier {
+        ArtistsResourceIdentifier {
+            id,
+            r#type: models::ResourceType::Artists,
+        }
+    }
+}
+
+impl Into<ResourceIdentifier> for ArtistsResourceIdentifier {
+    fn into(self) -> ResourceIdentifier {
+        ResourceIdentifier {
+            id: self.id,
+            r#type: self.r#type,
+        }
+    }
+}
+
+impl TryFrom<ResourceIdentifier> for ArtistsResourceIdentifier {
+    type Error = String;
+
+    fn try_from(resource: ResourceIdentifier) -> Result<Self, Self::Error> {
+        match resource.r#type {
+            models::ResourceType::Artists => Ok(ArtistsResourceIdentifier {
+                id: resource.id,
+                r#type: resource.r#type,
+            }),
+            _ => Err(format!(
+                "Invalid resource type for ArtistsResourceIdentifier: {:?}. Expected Artists.",
+                resource.r#type
+            )),
+        }
+    }
+}
+
+/// Specialized resource identifier for Tracks resources
+/// Automatically sets the resource type to Tracks
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct TracksResourceIdentifier {
+    /// Resource id
+    #[serde(rename = "id")]
+    pub id: String,
+    /// Resource type - Always [`models::ResourceType::Tracks`]
+    #[serde(rename = "type")]
+    pub r#type: models::ResourceType,
+}
+
+impl TracksResourceIdentifier {
+    pub fn new(id: String) -> TracksResourceIdentifier {
+        TracksResourceIdentifier {
+            id,
+            r#type: models::ResourceType::Tracks,
+        }
+    }
+}
+
+impl Into<ResourceIdentifier> for TracksResourceIdentifier {
+    fn into(self) -> ResourceIdentifier {
+        ResourceIdentifier {
+            id: self.id,
+            r#type: self.r#type,
+        }
+    }
+}
+
+impl TryFrom<ResourceIdentifier> for TracksResourceIdentifier {
+    type Error = String;
+
+    fn try_from(resource: ResourceIdentifier) -> Result<Self, Self::Error> {
+        match resource.r#type {
+            models::ResourceType::Tracks => Ok(TracksResourceIdentifier {
+                id: resource.id,
+                r#type: resource.r#type,
+            }),
+            _ => Err(format!(
+                "Invalid resource type for TracksResourceIdentifier: {:?}. Expected Tracks.",
+                resource.r#type
+            )),
+        }
+    }
+}
+
+/// Specialized resource identifier for Playlists resources
+/// Automatically sets the resource type to Playlists
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PlaylistsResourceIdentifier {
+    /// Resource id
+    #[serde(rename = "id")]
+    pub id: String,
+    /// Resource type - Always [`models::ResourceType::Playlists`]
+    #[serde(rename = "type")]
+    pub r#type: models::ResourceType,
+}
+
+impl PlaylistsResourceIdentifier {
+    pub fn new(id: String) -> PlaylistsResourceIdentifier {
+        PlaylistsResourceIdentifier {
+            id,
+            r#type: models::ResourceType::Playlists,
+        }
+    }
+}
+
+impl Into<ResourceIdentifier> for PlaylistsResourceIdentifier {
+    fn into(self) -> ResourceIdentifier {
+        ResourceIdentifier {
+            id: self.id,
+            r#type: self.r#type,
+        }
+    }
+}
+
+impl TryFrom<ResourceIdentifier> for PlaylistsResourceIdentifier {
+    type Error = String;
+
+    fn try_from(resource: ResourceIdentifier) -> Result<Self, Self::Error> {
+        match resource.r#type {
+            models::ResourceType::Playlists => Ok(PlaylistsResourceIdentifier {
+                id: resource.id,
+                r#type: resource.r#type,
+            }),
+            _ => Err(format!(
+                "Invalid resource type for PlaylistsResourceIdentifier: {:?}. Expected Playlists.",
+                resource.r#type
+            )),
+        }
+    }
+}
+
+/// Specialized resource identifier for Albums resources
+/// Automatically sets the resource type to Albums
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct AlbumsResourceIdentifier {
+    /// Resource id
+    #[serde(rename = "id")]
+    pub id: String,
+    /// Resource type - Always [`models::ResourceType::Albums`]
+    #[serde(rename = "type")]
+    pub r#type: models::ResourceType,
+}
+
+impl AlbumsResourceIdentifier {
+    pub fn new(id: String) -> AlbumsResourceIdentifier {
+        AlbumsResourceIdentifier {
+            id,
+            r#type: models::ResourceType::Albums,
+        }
+    }
+}
+
+impl Into<ResourceIdentifier> for AlbumsResourceIdentifier {
+    fn into(self) -> ResourceIdentifier {
+        ResourceIdentifier {
+            id: self.id,
+            r#type: self.r#type,
+        }
+    }
+}
+
+impl TryFrom<ResourceIdentifier> for AlbumsResourceIdentifier {
+    type Error = String;
+
+    fn try_from(resource: ResourceIdentifier) -> Result<Self, Self::Error> {
+        match resource.r#type {
+            models::ResourceType::Albums => Ok(AlbumsResourceIdentifier {
+                id: resource.id,
+                r#type: resource.r#type,
+            }),
+            _ => Err(format!(
+                "Invalid resource type for AlbumsResourceIdentifier: {:?}. Expected Albums.",
+                resource.r#type
+            )),
+        }
     }
 }

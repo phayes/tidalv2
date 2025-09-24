@@ -11,7 +11,7 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TracksRelationships {
     #[serde(rename = "albums")]
     pub albums: models::MultiRelationship<models::ResourceIdentifier>,

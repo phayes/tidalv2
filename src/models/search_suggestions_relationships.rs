@@ -11,7 +11,7 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SearchSuggestionsRelationships {
     #[serde(rename = "directHits")]
     pub direct_hits: models::MultiRelationship<models::ResourceIdentifier>,
