@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct PlaylistUpdateOperationPayloadData {
+pub struct PlaylistUpdate {
     #[serde(rename = "attributes")]
     pub attributes: models::PlaylistUpdateOperationPayloadDataAttributes,
     #[serde(rename = "id")]
@@ -22,12 +22,12 @@ pub struct PlaylistUpdateOperationPayloadData {
     pub r#type: models::ResourceType,
 }
 
-impl PlaylistUpdateOperationPayloadData {
+impl PlaylistUpdate {
     pub fn new(
         attributes: models::PlaylistUpdateOperationPayloadDataAttributes,
         id: String,
-    ) -> PlaylistUpdateOperationPayloadData {
-        PlaylistUpdateOperationPayloadData {
+    ) -> PlaylistUpdate {
+        PlaylistUpdate {
             attributes,
             id,
             r#type: models::ResourceType::Playlists,

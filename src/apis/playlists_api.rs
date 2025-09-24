@@ -10,8 +10,58 @@
 
 use super::{configuration, ApiError, Error};
 use crate::models;
+pub use models::*;
+use serde::{Deserialize, Serialize};
 
 use reqwest;
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PlaylistUpdate {
+    #[serde(rename = "attributes")]
+    pub attributes: models::PlaylistUpdateOperationPayloadDataAttributes,
+    #[serde(rename = "id")]
+    pub id: String,
+    /// Resource type - Must be [`models::ResourceType::Playlists`]
+    #[serde(rename = "type")]
+    pub r#type: models::ResourceType,
+}
+
+impl PlaylistUpdate {
+    pub fn new(
+        attributes: models::PlaylistUpdateOperationPayloadDataAttributes,
+        id: String,
+    ) -> PlaylistUpdate {
+        PlaylistUpdate {
+            attributes,
+            id,
+            r#type: models::ResourceType::Playlists,
+        }
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PlaylistItemMeta {
+    #[serde(rename = "itemId")]
+    pub item_id: String,
+}
+
+impl PlaylistItemMeta {
+    pub fn new(item_id: String) -> PlaylistItemMeta {
+        PlaylistItemMeta { item_id }
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PlaylistItemPosition {
+    #[serde(rename = "positionBefore")]
+    pub position_before: String,
+}
+
+impl PlaylistItemPosition {
+    pub fn new(position_before: String) -> PlaylistItemPosition {
+        PlaylistItemPosition { position_before }
+    }
+}
 
 /// Retrieves multiple playlists by available filters, or without if applicable.
 ///
@@ -185,14 +235,14 @@ pub async fn playlist_get(
 }
 
 /// Updates existing playlist.
-pub async fn playlist_patch(
+pub async fn playlist_update(
     configuration: &configuration::Configuration,
     id: &str,
-    playlist_update_operation_payload: Option<models::DataWrap<models::PlaylistUpdateOperationPayloadData>>,
+    playlist_update: PlaylistUpdate,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_playlist_update_operation_payload = playlist_update_operation_payload;
+    let p_playlist_update_operation_payload = DataWrap::new(playlist_update);
 
     let uri_str = format!(
         "{}/playlists/{id}",
@@ -239,31 +289,44 @@ pub async fn playlist_cover_art(
     configuration.execute_request(req_builder).await
 }
 
-/// Deletes item(s) from items relationship.
-pub async fn playlist_remove_items(
+/// Remove tracks from playlist.
+pub async fn playlist_remove_tracks(
     configuration: &configuration::Configuration,
     id: &str,
-    playlist_items_relationship_remove_operation_payload: Option<
-        models::DataWrap<Vec<models::PlaylistItemsRelationshipRemoveOperationPayloadData>>,
-    >,
+    tracks_to_remove: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_playlist_items_relationship_remove_operation_payload =
-        playlist_items_relationship_remove_operation_payload;
+    let resource_identifiers = tracks_to_remove
+        .into_iter()
+        .map(|track_id| {
+            ResourceIdentifier::new_with_meta(
+                track_id.clone(),
+                ResourceType::Tracks,
+                PlaylistItemMeta::new(track_id),
+            )
+        })
+        .collect::<Vec<ResourceIdentifier<PlaylistItemMeta>>>();
 
-    let uri_str = format!(
-        "{}/playlists/{id}/relationships/items",
-        configuration.base_path,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration
-        .client
-        .request(reqwest::Method::DELETE, &uri_str);
+    playlist_remove_items(configuration, id, resource_identifiers).await
+}
 
-    req_builder = req_builder.json(&p_playlist_items_relationship_remove_operation_payload);
+/// Remove videos from playlist.
+pub async fn playlist_remove_videos(
+    configuration: &configuration::Configuration,
+    id: &str,
+    videos_to_remove: Vec<String>,
+) -> Result<(), Error<ApiError>> {
+    let resource_identifiers = videos_to_remove
+        .into_iter()
+        .map(|video_id| {
+            ResourceIdentifier::new_with_meta(
+                video_id.clone(),
+                ResourceType::Videos,
+                PlaylistItemMeta::new(video_id),
+            )
+        })
+        .collect::<Vec<ResourceIdentifier<PlaylistItemMeta>>>();
 
-    configuration.execute_request(req_builder).await
+    playlist_remove_items(configuration, id, resource_identifiers).await
 }
 
 /// Retrieves items relationship.
@@ -296,18 +359,50 @@ pub async fn playlist_items(
     configuration.execute_request(req_builder).await
 }
 
-/// Updates items relationship.
-pub async fn playlist_update_items(
+/// Remove items from playlist.
+///
+/// # Parameters
+/// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
+/// * `items_to_remove` - List of items to remove from the playlist
+pub async fn playlist_remove_items(
     configuration: &configuration::Configuration,
     id: &str,
-    playlist_items_relationship_reorder_operation_payload: Option<
-        models::DataWrap<Vec<models::PlaylistItemsRelationshipReorderOperationPayloadData>, models::PlaylistItemsRelationshipReorderOperationPayloadMeta>,
-    >,
+    items_to_remove: Vec<models::ResourceIdentifier<PlaylistItemMeta>>,
+) -> Result<(), Error<ApiError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_id = id;
+    let p_playlist_items_relationship_remove_operation_payload = DataWrap::new(items_to_remove);
+
+    let uri_str = format!(
+        "{}/playlists/{id}/relationships/items",
+        configuration.base_path,
+        id = crate::apis::urlencode(p_id)
+    );
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::DELETE, &uri_str);
+
+    req_builder = req_builder.json(&p_playlist_items_relationship_remove_operation_payload);
+
+    configuration.execute_request(req_builder).await
+}
+
+/// Re-order items in playlist.
+///
+/// # Parameters
+/// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
+/// * `reorder_items` - Ordered list of items to re-order
+/// * `position_before` - Position before which the items will be re-ordered (e.g. "123456")
+pub async fn playlist_reorder_items(
+    configuration: &configuration::Configuration,
+    id: &str,
+    reorder_items: Vec<models::ResourceIdentifier<PlaylistItemMeta>>,
+    position_before: String,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_playlist_items_relationship_reorder_operation_payload =
-        playlist_items_relationship_reorder_operation_payload;
+        DataWrap::new_with_meta(reorder_items, PlaylistItemPosition::new(position_before));
 
     let uri_str = format!(
         "{}/playlists/{id}/relationships/items",
@@ -327,14 +422,15 @@ pub async fn playlist_update_items(
 pub async fn playlist_add_items(
     configuration: &configuration::Configuration,
     id: &str,
-    playlist_items_relationship_add_operation_payload: Option<
-        models::DataWrap<Vec<models::PlaylistItemsRelationshipAddOperationPayloadData>, models::PlaylistItemsRelationshipAddOperationPayloadMeta>,
-    >,
+    items_to_add: Vec<models::ResourceIdentifier>,
+    position_before: Option<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_playlist_items_relationship_add_operation_payload =
-        playlist_items_relationship_add_operation_payload;
+    let p_playlist_items_relationship_add_operation_payload = DataWrap::new_with_meta(
+        items_to_add,
+        position_before.map(|position_before| PlaylistItemPosition::new(position_before)),
+    );
 
     let uri_str = format!(
         "{}/playlists/{id}/relationships/items",
@@ -349,6 +445,34 @@ pub async fn playlist_add_items(
     req_builder = req_builder.json(&p_playlist_items_relationship_add_operation_payload);
 
     configuration.execute_request(req_builder).await
+}
+
+pub async fn playlist_add_videos(
+    configuration: &configuration::Configuration,
+    id: &str,
+    videos_to_add: Vec<String>,
+    position_before: Option<String>,
+) -> Result<(), Error<ApiError>> {
+    let resource_identifiers = videos_to_add
+        .into_iter()
+        .map(|video_id| ResourceIdentifier::new(video_id, ResourceType::Videos))
+        .collect::<Vec<ResourceIdentifier>>();
+
+    playlist_add_items(configuration, id, resource_identifiers, position_before).await
+}
+
+pub async fn playlist_add_tracks(
+    configuration: &configuration::Configuration,
+    id: &str,
+    tracks_to_add: Vec<String>,
+    position_before: Option<String>,
+) -> Result<(), Error<ApiError>> {
+    let resource_identifiers = tracks_to_add
+        .into_iter()
+        .map(|track_id| ResourceIdentifier::new(track_id, ResourceType::Tracks))
+        .collect::<Vec<ResourceIdentifier>>();
+
+    playlist_add_items(configuration, id, resource_identifiers, position_before).await
 }
 
 /// Retrieves owners relationship.
@@ -384,10 +508,10 @@ pub async fn playlist_owners(
 /// Creates a new playlist.
 pub async fn playlist_create(
     configuration: &configuration::Configuration,
-    playlist_create_operation_payload: Option<models::DataWrap<models::PlaylistCreateOperationPayloadData>>,
+    playlist: models::CreatePlaylist,
 ) -> Result<models::Resource<models::Playlist>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
-    let p_playlist_create_operation_payload = playlist_create_operation_payload;
+    let p_playlist_create_operation_payload = DataWrap::new(playlist);
 
     let uri_str = format!("{}/playlists", configuration.base_path);
     let mut req_builder = configuration

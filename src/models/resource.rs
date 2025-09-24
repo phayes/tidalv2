@@ -1,4 +1,9 @@
-use crate::models::{Album, Appreciation, ArtistBiography, ArtistRole, Artist, Artwork, Genre, Lyrics, Playlist, Provider, SearchResult, SearchSuggestion, TrackFile, TrackManifest, TrackSourceFile, TrackStatistics, Track, UserCollection, UserEntitlement, UserRecommendation, UserShare, User, Video, Links};
+use crate::models::{
+    Album, Appreciation, Artist, ArtistBiography, ArtistRole, Artwork, Genre, Links, Lyrics,
+    Playlist, Provider, SearchResult, SearchSuggestion, Track, TrackFile, TrackManifest,
+    TrackSourceFile, TrackStatistics, User, UserCollection, UserEntitlement, UserRecommendation,
+    UserShare, Video,
+};
 
 // Generic Resource struct for all single resource data documents
 use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize, Serializer};
@@ -343,11 +348,7 @@ impl ResourceIdentifier<()> {
 }
 
 impl<M> ResourceIdentifier<M> {
-    pub fn new_with_meta(
-        id: String,
-        r#type: ResourceType,
-        meta: M,
-    ) -> ResourceIdentifier<M> {
+    pub fn new_with_meta(id: String, r#type: ResourceType, meta: M) -> ResourceIdentifier<M> {
         ResourceIdentifier {
             id,
             r#type,
