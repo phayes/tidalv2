@@ -10,6 +10,7 @@
 
 use super::{configuration, ApiError, Error};
 use crate::models;
+use crate::models::DataWrap;
 
 use reqwest;
 
@@ -66,14 +67,19 @@ pub async fn user_collection_get(
 pub async fn user_collections_id_relationships_albums_delete(
     configuration: &configuration::Configuration,
     id: &str,
-    user_collection_albums_relationship_remove_operation_payload: Option<
-        models::UserCollectionAlbumsRelationshipRemoveOperationPayload,
-    >,
+    albums_to_remove: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_user_collection_albums_relationship_remove_operation_payload =
-        user_collection_albums_relationship_remove_operation_payload;
+    let payload = DataWrap::new(
+        albums_to_remove
+            .into_iter()
+            .map(|album_id: String| models::ResourceIdentifier {
+                id: album_id,
+                r#type: models::ResourceType::Albums,
+            })
+            .collect::<Vec<models::ResourceIdentifier>>(),
+    );
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/albums",
@@ -84,7 +90,7 @@ pub async fn user_collections_id_relationships_albums_delete(
         .client
         .request(reqwest::Method::DELETE, &uri_str);
 
-    req_builder = req_builder.json(&p_user_collection_albums_relationship_remove_operation_payload);
+    req_builder = req_builder.json(&payload);
 
     configuration.execute_request(req_builder).await
 }
@@ -152,14 +158,19 @@ pub async fn user_collection_albums(
 pub async fn user_collections_id_relationships_albums_post(
     configuration: &configuration::Configuration,
     id: &str,
-    user_collection_albums_relationship_add_operation_payload: Option<
-        models::UserCollectionAlbumsRelationshipAddOperationPayload,
-    >,
+    albums_to_add: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_user_collection_albums_relationship_add_operation_payload =
-        user_collection_albums_relationship_add_operation_payload;
+    let payload = DataWrap::new(
+        albums_to_add
+            .into_iter()
+            .map(|album_id: String| models::ResourceIdentifier {
+                id: album_id,
+                r#type: models::ResourceType::Albums,
+            })
+            .collect::<Vec<models::ResourceIdentifier>>(),
+    );
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/albums",
@@ -171,7 +182,7 @@ pub async fn user_collections_id_relationships_albums_post(
         .request(reqwest::Method::POST, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    req_builder = req_builder.json(&p_user_collection_albums_relationship_add_operation_payload);
+    req_builder = req_builder.json(&payload);
 
     configuration.execute_request(req_builder).await
 }
@@ -180,14 +191,19 @@ pub async fn user_collections_id_relationships_albums_post(
 pub async fn user_collections_id_relationships_artists_delete(
     configuration: &configuration::Configuration,
     id: &str,
-    user_collection_artists_relationship_remove_operation_payload: Option<
-        models::UserCollectionArtistsRelationshipRemoveOperationPayload,
-    >,
+    artists_to_remove: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_user_collection_artists_relationship_remove_operation_payload =
-        user_collection_artists_relationship_remove_operation_payload;
+    let payload = DataWrap::new(
+        artists_to_remove
+            .into_iter()
+            .map(|artist_id: String| models::ResourceIdentifier {
+                id: artist_id,
+                r#type: models::ResourceType::Artists,
+            })
+            .collect::<Vec<models::ResourceIdentifier>>(),
+    );
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/artists",
@@ -198,8 +214,7 @@ pub async fn user_collections_id_relationships_artists_delete(
         .client
         .request(reqwest::Method::DELETE, &uri_str);
 
-    req_builder =
-        req_builder.json(&p_user_collection_artists_relationship_remove_operation_payload);
+    req_builder = req_builder.json(&payload);
 
     configuration.execute_request(req_builder).await
 }
@@ -267,14 +282,19 @@ pub async fn user_collection_artists(
 pub async fn user_collections_id_relationships_artists_post(
     configuration: &configuration::Configuration,
     id: &str,
-    user_collection_artists_relationship_add_operation_payload: Option<
-        models::UserCollectionArtistsRelationshipAddOperationPayload,
-    >,
+    artists_to_add: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_user_collection_artists_relationship_add_operation_payload =
-        user_collection_artists_relationship_add_operation_payload;
+    let payload = DataWrap::new(
+        artists_to_add
+            .into_iter()
+            .map(|artist_id: String| models::ResourceIdentifier {
+                id: artist_id,
+                r#type: models::ResourceType::Artists,
+            })
+            .collect::<Vec<models::ResourceIdentifier>>(),
+    );
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/artists",
@@ -286,7 +306,7 @@ pub async fn user_collections_id_relationships_artists_post(
         .request(reqwest::Method::POST, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    req_builder = req_builder.json(&p_user_collection_artists_relationship_add_operation_payload);
+    req_builder = req_builder.json(&payload);
 
     configuration.execute_request(req_builder).await
 }
@@ -324,14 +344,19 @@ pub async fn user_collection_owners(
 pub async fn user_collections_id_relationships_playlists_delete(
     configuration: &configuration::Configuration,
     id: &str,
-    user_collection_playlists_relationship_remove_operation_payload: Option<
-        models::UserCollectionPlaylistsRelationshipRemoveOperationPayload,
-    >,
+    playlists_to_remove: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_user_collection_playlists_relationship_remove_operation_payload =
-        user_collection_playlists_relationship_remove_operation_payload;
+    let payload = DataWrap::new(
+        playlists_to_remove
+            .into_iter()
+            .map(|playlist_id: String| models::ResourceIdentifier {
+                id: playlist_id,
+                r#type: models::ResourceType::Playlists,
+            })
+            .collect::<Vec<models::ResourceIdentifier>>(),
+    );
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/playlists",
@@ -342,8 +367,7 @@ pub async fn user_collections_id_relationships_playlists_delete(
         .client
         .request(reqwest::Method::DELETE, &uri_str);
 
-    req_builder =
-        req_builder.json(&p_user_collection_playlists_relationship_remove_operation_payload);
+    req_builder = req_builder.json(&payload);
 
     configuration.execute_request(req_builder).await
 }
@@ -406,14 +430,19 @@ pub async fn user_collection_playlists(
 pub async fn user_collections_id_relationships_playlists_post(
     configuration: &configuration::Configuration,
     id: &str,
-    user_collection_playlists_relationship_remove_operation_payload: Option<
-        models::UserCollectionPlaylistsRelationshipRemoveOperationPayload,
-    >,
+    playlists_to_add: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_user_collection_playlists_relationship_remove_operation_payload =
-        user_collection_playlists_relationship_remove_operation_payload;
+    let payload = DataWrap::new(
+        playlists_to_add
+            .into_iter()
+            .map(|playlist_id: String| models::ResourceIdentifier {
+                id: playlist_id,
+                r#type: models::ResourceType::Playlists,
+            })
+            .collect::<Vec<models::ResourceIdentifier>>(),
+    );
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/playlists",
@@ -424,8 +453,7 @@ pub async fn user_collections_id_relationships_playlists_post(
         .client
         .request(reqwest::Method::POST, &uri_str);
 
-    req_builder =
-        req_builder.json(&p_user_collection_playlists_relationship_remove_operation_payload);
+    req_builder = req_builder.json(&payload);
 
     configuration.execute_request(req_builder).await
 }
@@ -434,14 +462,19 @@ pub async fn user_collections_id_relationships_playlists_post(
 pub async fn user_collections_id_relationships_tracks_delete(
     configuration: &configuration::Configuration,
     id: &str,
-    user_collection_tracks_relationship_remove_operation_payload: Option<
-        models::UserCollectionTracksRelationshipRemoveOperationPayload,
-    >,
+    tracks_to_remove: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_user_collection_tracks_relationship_remove_operation_payload =
-        user_collection_tracks_relationship_remove_operation_payload;
+    let payload = DataWrap::new(
+        tracks_to_remove
+            .into_iter()
+            .map(|track_id: String| models::ResourceIdentifier {
+                id: track_id,
+                r#type: models::ResourceType::Tracks,
+            })
+            .collect::<Vec<models::ResourceIdentifier>>(),
+    );
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/tracks",
@@ -452,7 +485,7 @@ pub async fn user_collections_id_relationships_tracks_delete(
         .client
         .request(reqwest::Method::DELETE, &uri_str);
 
-    req_builder = req_builder.json(&p_user_collection_tracks_relationship_remove_operation_payload);
+    req_builder = req_builder.json(&payload);
 
     configuration.execute_request(req_builder).await
 }
@@ -520,14 +553,19 @@ pub async fn user_collection_tracks(
 pub async fn user_collections_id_relationships_tracks_post(
     configuration: &configuration::Configuration,
     id: &str,
-    user_collection_tracks_relationship_add_operation_payload: Option<
-        models::UserCollectionTracksRelationshipAddOperationPayload,
-    >,
+    tracks_to_add: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_user_collection_tracks_relationship_add_operation_payload =
-        user_collection_tracks_relationship_add_operation_payload;
+    let payload = DataWrap::new(
+        tracks_to_add
+            .into_iter()
+            .map(|track_id: String| models::ResourceIdentifier {
+                id: track_id,
+                r#type: models::ResourceType::Tracks,
+            })
+            .collect::<Vec<models::ResourceIdentifier>>(),
+    );
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/tracks",
@@ -539,7 +577,7 @@ pub async fn user_collections_id_relationships_tracks_post(
         .request(reqwest::Method::POST, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    req_builder = req_builder.json(&p_user_collection_tracks_relationship_add_operation_payload);
+    req_builder = req_builder.json(&payload);
 
     configuration.execute_request(req_builder).await
 }
@@ -548,14 +586,19 @@ pub async fn user_collections_id_relationships_tracks_post(
 pub async fn user_collections_id_relationships_videos_delete(
     configuration: &configuration::Configuration,
     id: &str,
-    user_collection_videos_relationship_remove_operation_payload: Option<
-        models::UserCollectionVideosRelationshipRemoveOperationPayload,
-    >,
+    videos_to_remove: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_user_collection_videos_relationship_remove_operation_payload =
-        user_collection_videos_relationship_remove_operation_payload;
+    let payload = DataWrap::new(
+        videos_to_remove
+            .into_iter()
+            .map(|video_id: String| models::ResourceIdentifier {
+                id: video_id,
+                r#type: models::ResourceType::Videos,
+            })
+            .collect::<Vec<models::ResourceIdentifier>>(),
+    );
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/videos",
@@ -566,7 +609,7 @@ pub async fn user_collections_id_relationships_videos_delete(
         .client
         .request(reqwest::Method::DELETE, &uri_str);
 
-    req_builder = req_builder.json(&p_user_collection_videos_relationship_remove_operation_payload);
+    req_builder = req_builder.json(&payload);
 
     configuration.execute_request(req_builder).await
 }
@@ -634,14 +677,19 @@ pub async fn user_collection_videos(
 pub async fn user_collections_id_relationships_videos_post(
     configuration: &configuration::Configuration,
     id: &str,
-    user_collection_videos_relationship_add_operation_payload: Option<
-        models::UserCollectionVideosRelationshipAddOperationPayload,
-    >,
+    videos_to_add: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
-    let p_user_collection_videos_relationship_add_operation_payload =
-        user_collection_videos_relationship_add_operation_payload;
+    let payload = DataWrap::new(
+        videos_to_add
+            .into_iter()
+            .map(|video_id: String| models::ResourceIdentifier {
+                id: video_id,
+                r#type: models::ResourceType::Videos,
+            })
+            .collect::<Vec<models::ResourceIdentifier>>(),
+    );
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/videos",
@@ -653,7 +701,7 @@ pub async fn user_collections_id_relationships_videos_post(
         .request(reqwest::Method::POST, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
-    req_builder = req_builder.json(&p_user_collection_videos_relationship_add_operation_payload);
+    req_builder = req_builder.json(&payload);
 
     configuration.execute_request(req_builder).await
 }

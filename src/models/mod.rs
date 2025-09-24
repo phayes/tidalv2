@@ -117,7 +117,7 @@ pub use self::playlist::{Playlist, PlaylistAttributes};
 pub mod provider;
 pub use self::provider::{Provider, ProviderAttributes};
 pub mod resource_identifier;
-pub use self::resource_identifier::{ResourceIdentifier, ArtistsResourceIdentifier, TracksResourceIdentifier, PlaylistsResourceIdentifier, AlbumsResourceIdentifier};
+pub use self::resource_identifier::{ResourceIdentifier};
 pub mod resource_object_object_object;
 pub use self::resource_object_object_object::ResourceObjectObjectObject;
 pub mod search_results_relationships;
@@ -150,24 +150,6 @@ pub mod tracks_relationships;
 pub use self::tracks_relationships::TracksRelationships;
 pub mod track;
 pub use self::track::{Track, TrackAttributes};
-pub mod user_collection_albums_relationship_add_operation_payload;
-pub use self::user_collection_albums_relationship_add_operation_payload::UserCollectionAlbumsRelationshipAddOperationPayload;
-pub mod user_collection_albums_relationship_remove_operation_payload;
-pub use self::user_collection_albums_relationship_remove_operation_payload::UserCollectionAlbumsRelationshipRemoveOperationPayload;
-pub mod user_collection_artists_relationship_add_operation_payload;
-pub use self::user_collection_artists_relationship_add_operation_payload::UserCollectionArtistsRelationshipAddOperationPayload;
-pub mod user_collection_artists_relationship_remove_operation_payload;
-pub use self::user_collection_artists_relationship_remove_operation_payload::UserCollectionArtistsRelationshipRemoveOperationPayload;
-pub mod user_collection_playlists_relationship_remove_operation_payload;
-pub use self::user_collection_playlists_relationship_remove_operation_payload::UserCollectionPlaylistsRelationshipRemoveOperationPayload;
-pub mod user_collection_tracks_relationship_add_operation_payload;
-pub use self::user_collection_tracks_relationship_add_operation_payload::UserCollectionTracksRelationshipAddOperationPayload;
-pub mod user_collection_tracks_relationship_remove_operation_payload;
-pub use self::user_collection_tracks_relationship_remove_operation_payload::UserCollectionTracksRelationshipRemoveOperationPayload;
-pub mod user_collection_videos_relationship_add_operation_payload;
-pub use self::user_collection_videos_relationship_add_operation_payload::UserCollectionVideosRelationshipAddOperationPayload;
-pub mod user_collection_videos_relationship_remove_operation_payload;
-pub use self::user_collection_videos_relationship_remove_operation_payload::UserCollectionVideosRelationshipRemoveOperationPayload;
 pub mod user_collections_albums_resource_identifier;
 pub use self::user_collections_albums_resource_identifier::UserCollectionsAlbumsResourceIdentifier;
 pub mod user_collections_albums_resource_identifier_meta;
@@ -476,5 +458,16 @@ impl<T> MultiRelationship<T> {
             included: None,
             links,
         }
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct DataWrap<T> {
+    pub data: T,
+}
+
+impl<T> DataWrap<T> {
+    pub fn new(data: T) -> DataWrap<T> {
+        DataWrap { data }
     }
 }
