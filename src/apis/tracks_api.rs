@@ -40,7 +40,9 @@ pub async fn track_list(
     let uri_str = format!("{}/tracks", configuration.base_path_api);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
@@ -101,7 +103,9 @@ pub async fn track_get(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     if let Some(ref param_value) = p_include {
         req_builder = req_builder.query(
             &param_value
@@ -135,7 +139,9 @@ pub async fn track_albums(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     req_builder = req_builder.query(&[("include", "albums")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
@@ -165,7 +171,9 @@ pub async fn track_artists(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     req_builder = req_builder.query(&[("include", "artists")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
@@ -253,7 +261,9 @@ pub async fn track_providers(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     req_builder = req_builder.query(&[("include", "providers")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
@@ -312,7 +322,9 @@ pub async fn track_similar_tracks(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     req_builder = req_builder.query(&[("include", "similarTracks")]);
     if let Some(ref param_value) = p_page_cursor {
         req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);

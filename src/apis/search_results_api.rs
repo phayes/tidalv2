@@ -32,7 +32,9 @@ pub async fn search_result_get(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -72,7 +74,9 @@ pub async fn search_result_albums(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -108,7 +112,9 @@ pub async fn search_result_artists(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -144,7 +150,9 @@ pub async fn search_result_playlists(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -180,7 +188,9 @@ pub async fn search_result_top_hits(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -216,7 +226,9 @@ pub async fn search_result_tracks(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
@@ -252,7 +264,9 @@ pub async fn search_result_videos(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     if let Some(ref param_value) = p_explicit_filter {
         req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }

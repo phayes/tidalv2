@@ -37,7 +37,9 @@ pub async fn user_recommendation_get(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     if let Some(ref param_value) = p_include {
         req_builder = req_builder.query(
@@ -75,7 +77,9 @@ pub async fn user_recommendation_discovery_mixes(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     req_builder = req_builder.query(&[("include", "discoveryMixes")]);
     if let Some(ref param_value) = p_page_cursor {
@@ -109,7 +113,9 @@ pub async fn user_recommendation_my_mixes(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     req_builder = req_builder.query(&[("include", "myMixes")]);
     if let Some(ref param_value) = p_page_cursor {
@@ -143,7 +149,9 @@ pub async fn user_recommendation_new_arrival_mixes(
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
     req_builder = req_builder.query(&[("include", "newArrivalMixes")]);
     if let Some(ref param_value) = p_page_cursor {

@@ -145,25 +145,13 @@ pub struct TidalClient {
     pub (crate) client_id: String,
     pub (crate) base_path_api: String,
     pub (crate) base_path_auth: String,
+    pub (crate) user_agent: Option<String>,
 
 
     pub (crate) authz: ArcSwapOption<Authz>,
     pub (crate) authz_update_semaphore: Semaphore,
     pub (crate) country_code: Option<String>,
     pub (crate) on_authz_refresh_callback: Option<AuthzCallback>,
-}
-
-
-#[derive(Debug, Clone)]
-pub struct TidalClient {
-    pub base_path: String,
-    pub user_agent: Option<String>,
-    pub client: reqwest::Client,
-    pub basic_auth: Option<BasicAuth>,
-    pub oauth_access_token: Option<String>,
-    pub bearer_access_token: Option<String>,
-    pub api_key: Option<ApiKey>,
-    pub country_code: String,
 }
 
 pub type BasicAuth = (String, Option<String>);
