@@ -32,7 +32,7 @@ pub async fn user_recommendation_get(
 
     let uri_str = format!(
         "{}/userRecommendations/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -70,7 +70,7 @@ pub async fn user_recommendation_discovery_mixes(
 
     let uri_str = format!(
         "{}/userRecommendations/{id}/relationships/discoveryMixes",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -104,7 +104,7 @@ pub async fn user_recommendation_my_mixes(
 
     let uri_str = format!(
         "{}/userRecommendations/{id}/relationships/myMixes",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -138,7 +138,7 @@ pub async fn user_recommendation_new_arrival_mixes(
 
     let uri_str = format!(
         "{}/userRecommendations/{id}/relationships/newArrivalMixes",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);

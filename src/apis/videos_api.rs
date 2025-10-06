@@ -30,7 +30,7 @@ pub async fn video_list(
     let p_filter_isrc = filter_isrc;
     let p_filter_id = filter_id;
 
-    let uri_str = format!("{}/videos", configuration.base_path);
+    let uri_str = format!("{}/videos", configuration.base_path_api);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
@@ -74,7 +74,7 @@ pub async fn video_get(
 
     let uri_str = format!(
         "{}/videos/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -108,7 +108,7 @@ pub async fn video_albums(
 
     let uri_str = format!(
         "{}/videos/{id}/relationships/albums",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -138,7 +138,7 @@ pub async fn video_artists(
 
     let uri_str = format!(
         "{}/videos/{id}/relationships/artists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -168,7 +168,7 @@ pub async fn video_providers(
 
     let uri_str = format!(
         "{}/videos/{id}/relationships/providers",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -198,7 +198,7 @@ pub async fn video_thumbnail_art(
 
     let uri_str = format!(
         "{}/videos/{id}/relationships/thumbnailArt",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);

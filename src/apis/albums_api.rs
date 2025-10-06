@@ -37,7 +37,7 @@ pub async fn album_list(
     let p_filter_id = filter_id;
     let p_filter_barcode_id = filter_barcode_id;
 
-    let uri_str = format!("{}/albums", configuration.base_path);
+    let uri_str = format!("{}/albums", configuration.base_path_api);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
@@ -96,12 +96,14 @@ pub async fn album_get(
 
     let uri_str = format!(
         "{}/albums/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
+    if let Some(country_code) = &configuration.country_code {
+        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+    }
     if let Some(ref param_value) = p_include {
         req_builder = req_builder.query(
             &param_value
@@ -130,7 +132,7 @@ pub async fn album_artists(
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/artists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -160,7 +162,7 @@ pub async fn album_cover_art(
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/coverArt",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -191,7 +193,7 @@ pub async fn album_items(
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/items",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -221,7 +223,7 @@ pub async fn album_owners(
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/owners",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -250,7 +252,7 @@ pub async fn album_providers(
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/providers",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -280,7 +282,7 @@ pub async fn album_similar_albums(
 
     let uri_str = format!(
         "{}/albums/{id}/relationships/similarAlbums",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);

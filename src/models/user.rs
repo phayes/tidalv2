@@ -61,3 +61,59 @@ impl UserAttributes {
         }
     }
 }
+
+/// Represents a tidal user as returned by the authroization endpoint.
+/// This is used to identify the authenticated user.
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct AuthzUser {
+    /// Whether the user has accepted the End User License Agreement
+    #[serde(rename = "acceptedEULA")]
+    pub accepted_eula: bool,
+    /// Whether an account link has been created
+    pub account_link_created: bool,
+    /// User's address (if provided)
+    pub address: Option<String>,
+    /// Apple ID associated with the account (if any)
+    pub apple_uid: Option<String>,
+    /// Channel ID associated with the user
+    pub channel_id: u64,
+    /// User's city (if provided)
+    pub city: Option<String>,
+    /// User's country code (e.g., "US", "GB")
+    pub country_code: String,
+    /// Unix timestamp when the account was created
+    pub created: u64,
+    /// User's email address
+    pub email: String,
+    /// Whether the email address has been verified
+    pub email_verified: bool,
+    /// Facebook UID associated with the account (if any)
+    pub facebook_uid: Option<u64>,
+    /// User's first name (if provided)
+    pub first_name: Option<String>,
+    /// User's full name (if provided)
+    pub full_name: Option<String>,
+    /// Google UID associated with the account
+    pub google_uid: String,
+    /// User's last name (if provided)
+    pub last_name: Option<String>,
+    /// Whether this is a new user account
+    pub new_user: bool,
+    /// User's nickname (if provided)
+    pub nickname: Option<String>,
+    /// Parent ID associated with the user
+    pub parent_id: u64,
+    /// User's phone number (if provided)
+    pub phone_number: Option<String>,
+    /// User's postal code (if provided)
+    pub postalcode: Option<String>,
+    /// Unix timestamp when the account was last updated
+    pub updated: u64,
+    /// User's US state (if provided and in US)
+    pub us_state: Option<String>,
+    /// Unique user ID
+    pub user_id: u64,
+    /// User's username
+    pub username: String,
+}

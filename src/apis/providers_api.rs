@@ -24,7 +24,7 @@ pub async fn provider_list(
     // add a prefix to parameters to efficiently prevent name collisions
     let p_filter_id = filter_id;
 
-    let uri_str = format!("{}/providers", configuration.base_path);
+    let uri_str = format!("{}/providers", configuration.base_path_api);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     if let Some(ref param_value) = p_filter_id {
@@ -52,7 +52,7 @@ pub async fn provider_get(
 
     let uri_str = format!(
         "{}/providers/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);

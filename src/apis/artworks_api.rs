@@ -27,7 +27,7 @@ pub async fn artwork_list(
     let p_include = include;
     let p_filter_id = filter_id;
 
-    let uri_str = format!("{}/artworks", configuration.base_path);
+    let uri_str = format!("{}/artworks", configuration.base_path_api);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
@@ -63,7 +63,7 @@ pub async fn artwork_get(
 
     let uri_str = format!(
         "{}/artworks/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -93,7 +93,7 @@ pub async fn artwork_owners(
 
     let uri_str = format!(
         "{}/artworks/{id}/relationships/owners",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);

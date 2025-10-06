@@ -33,7 +33,7 @@ pub async fn track_manifest_get(
 
     let uri_str = format!(
         "{}/trackManifests/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);

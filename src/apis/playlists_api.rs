@@ -37,7 +37,7 @@ pub async fn playlist_list(
     let p_filter_owners_period_id = filter_owners_period_id;
     let p_filter_id = filter_id;
 
-    let uri_str = format!("{}/playlists", configuration.base_path);
+    let uri_str = format!("{}/playlists", configuration.base_path_api);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
@@ -90,7 +90,7 @@ pub async fn playlist_delete(
 
     let uri_str = format!(
         "{}/playlists/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let req_builder = configuration
@@ -112,7 +112,7 @@ pub async fn playlist_get(
 
     let uri_str = format!(
         "{}/playlists/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -142,7 +142,7 @@ pub async fn playlist_update(
 
     let uri_str = format!(
         "{}/playlists/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -171,7 +171,7 @@ pub async fn playlist_cover_art(
 
     let uri_str = format!(
         "{}/playlists/{id}/relationships/coverArt",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -244,7 +244,7 @@ pub async fn playlist_items(
 
     let uri_str = format!(
         "{}/playlists/{id}/relationships/items",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -274,7 +274,7 @@ pub async fn playlist_remove_items(
 
     let uri_str = format!(
         "{}/playlists/{id}/relationships/items",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -307,7 +307,7 @@ pub async fn playlist_reorder_items(
 
     let uri_str = format!(
         "{}/playlists/{id}/relationships/items",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -335,7 +335,7 @@ pub async fn playlist_add_items(
 
     let uri_str = format!(
         "{}/playlists/{id}/relationships/items",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -392,7 +392,7 @@ pub async fn playlist_owners(
 
     let uri_str = format!(
         "{}/playlists/{id}/relationships/owners",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -414,7 +414,7 @@ pub async fn playlist_create(
     // add a prefix to parameters to efficiently prevent name collisions
     let p_playlist_create_operation_payload = DataWrap::new(playlist);
 
-    let uri_str = format!("{}/playlists", configuration.base_path);
+    let uri_str = format!("{}/playlists", configuration.base_path_api);
     let mut req_builder = configuration
         .client
         .request(reqwest::Method::POST, &uri_str);

@@ -30,12 +30,6 @@ mod resource;
 pub use resource::*;
 mod links;
 pub use self::links::*;
-mod error_object;
-pub use self::error_object::*;
-mod error_object_source;
-pub use self::error_object_source::*;
-mod errors_document;
-pub use self::errors_document::*;
 mod external_link;
 pub use self::external_link::*;
 

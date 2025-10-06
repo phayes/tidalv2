@@ -27,7 +27,7 @@ pub async fn search_result_get(
 
     let uri_str = format!(
         "{}/searchResults/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -67,7 +67,7 @@ pub async fn search_result_albums(
 
     let uri_str = format!(
         "{}/searchResults/{id}/relationships/albums",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -103,7 +103,7 @@ pub async fn search_result_artists(
 
     let uri_str = format!(
         "{}/searchResults/{id}/relationships/artists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -139,7 +139,7 @@ pub async fn search_result_playlists(
 
     let uri_str = format!(
         "{}/searchResults/{id}/relationships/playlists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -175,7 +175,7 @@ pub async fn search_result_top_hits(
 
     let uri_str = format!(
         "{}/searchResults/{id}/relationships/topHits",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -211,7 +211,7 @@ pub async fn search_result_tracks(
 
     let uri_str = format!(
         "{}/searchResults/{id}/relationships/tracks",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -247,7 +247,7 @@ pub async fn search_result_videos(
 
     let uri_str = format!(
         "{}/searchResults/{id}/relationships/videos",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);

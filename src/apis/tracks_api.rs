@@ -37,7 +37,7 @@ pub async fn track_list(
     let p_filter_isrc = filter_isrc;
     let p_filter_id = filter_id;
 
-    let uri_str = format!("{}/tracks", configuration.base_path);
+    let uri_str = format!("{}/tracks", configuration.base_path_api);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
@@ -96,7 +96,7 @@ pub async fn track_get(
 
     let uri_str = format!(
         "{}/tracks/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -130,7 +130,7 @@ pub async fn track_albums(
 
     let uri_str = format!(
         "{}/tracks/{id}/relationships/albums",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -160,7 +160,7 @@ pub async fn track_artists(
 
     let uri_str = format!(
         "{}/tracks/{id}/relationships/artists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -190,7 +190,7 @@ pub async fn track_lyrics(
 
     let uri_str = format!(
         "{}/tracks/{id}/relationships/lyrics",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -219,7 +219,7 @@ pub async fn track_owners(
 
     let uri_str = format!(
         "{}/tracks/{id}/relationships/owners",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -248,7 +248,7 @@ pub async fn track_providers(
 
     let uri_str = format!(
         "{}/tracks/{id}/relationships/providers",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -278,7 +278,7 @@ pub async fn track_radio(
 
     let uri_str = format!(
         "{}/tracks/{id}/relationships/radio",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -307,7 +307,7 @@ pub async fn track_similar_tracks(
 
     let uri_str = format!(
         "{}/tracks/{id}/relationships/similarTracks",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -334,7 +334,7 @@ pub async fn track_source_file(
 
     let uri_str = format!(
         "{}/tracks/{id}/relationships/sourceFile",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -357,7 +357,7 @@ pub async fn track_statistics(
 
     let uri_str = format!(
         "{}/tracks/{id}/relationships/trackStatistics",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);

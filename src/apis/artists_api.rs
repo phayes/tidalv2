@@ -41,7 +41,7 @@ pub async fn artist_list(
     let p_filter_id = filter_id;
     let p_collapse_by = collapse_by;
 
-    let uri_str = format!("{}/artists", configuration.base_path);
+    let uri_str = format!("{}/artists", configuration.base_path_api);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = req_builder.query(&[("countryCode", &configuration.country_code.to_string())]);
@@ -95,7 +95,7 @@ pub async fn artist_get(
 
     let uri_str = format!(
         "{}/artists/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -132,7 +132,7 @@ pub async fn artist_albums(
 
     let uri_str = format!(
         "{}/artists/{id}/relationships/albums",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -159,7 +159,7 @@ pub async fn artist_biography(
 
     let uri_str = format!(
         "{}/artists/{id}/relationships/biography",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -184,7 +184,7 @@ pub async fn artist_owners(
 
     let uri_str = format!(
         "{}/artists/{id}/relationships/owners",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -218,7 +218,7 @@ pub async fn artist_profile_art(
 
     let uri_str = format!(
         "{}/artists/{id}/relationships/profileArt",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -253,7 +253,7 @@ pub async fn artist_radio(
 
     let uri_str = format!(
         "{}/artists/{id}/relationships/radio",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -288,7 +288,7 @@ pub async fn artist_roles(
 
     let uri_str = format!(
         "{}/artists/{id}/relationships/roles",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -322,7 +322,7 @@ pub async fn artist_similar_artists(
 
     let uri_str = format!(
         "{}/artists/{id}/relationships/similarArtists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -358,7 +358,7 @@ pub async fn artist_track_providers(
 
     let uri_str = format!(
         "{}/artists/{id}/relationships/trackProviders",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -394,7 +394,7 @@ pub async fn artist_tracks(
 
     let uri_str = format!(
         "{}/artists/{id}/relationships/tracks",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -430,7 +430,7 @@ pub async fn artist_videos(
 
     let uri_str = format!(
         "{}/artists/{id}/relationships/videos",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);

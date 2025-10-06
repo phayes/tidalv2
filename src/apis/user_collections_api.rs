@@ -23,7 +23,7 @@ pub async fn user_collection_get(
 
     let uri_str = format!(
         "{}/userCollections/{id}",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -59,7 +59,7 @@ pub async fn user_collections_id_relationships_albums_delete(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/albums",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -93,7 +93,7 @@ pub async fn user_collection_albums(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/albums",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -133,7 +133,7 @@ pub async fn user_collections_id_relationships_albums_post(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/albums",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -163,7 +163,7 @@ pub async fn user_collections_id_relationships_artists_delete(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/artists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -197,7 +197,7 @@ pub async fn user_collection_artists(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/artists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -237,7 +237,7 @@ pub async fn user_collections_id_relationships_artists_post(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/artists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -266,7 +266,7 @@ pub async fn user_collection_owners(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/owners",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -298,7 +298,7 @@ pub async fn user_collections_id_relationships_playlists_delete(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/playlists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -329,7 +329,7 @@ pub async fn user_collection_playlists(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/playlists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -369,7 +369,7 @@ pub async fn user_collections_id_relationships_playlists_post(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/playlists",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -398,7 +398,7 @@ pub async fn user_collections_id_relationships_tracks_delete(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/tracks",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -432,7 +432,7 @@ pub async fn user_collection_tracks(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/tracks",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -472,7 +472,7 @@ pub async fn user_collections_id_relationships_tracks_post(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/tracks",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -502,7 +502,7 @@ pub async fn user_collections_id_relationships_videos_delete(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/videos",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
@@ -536,7 +536,7 @@ pub async fn user_collection_videos(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/videos",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -576,7 +576,7 @@ pub async fn user_collections_id_relationships_videos_post(
 
     let uri_str = format!(
         "{}/userCollections/{id}/relationships/videos",
-        configuration.base_path,
+        configuration.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
     let mut req_builder = configuration
