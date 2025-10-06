@@ -4,11 +4,19 @@ pub use error::*;
 use std::fmt;
 
 #[derive(Debug, Clone)]
-pub struct ResponseContent<T> {
+pub struct ResponseContent {
     pub status: reqwest::StatusCode,
     pub content: String,
-    pub entity: Option<T>,
+    pub entity: Option<serde_json::Value>,
 }
+
+impl fmt::Display for ResponseContent {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "HTTP {} - {}", self.status, self.content)
+    }
+}
+
+impl std::error::Error for ResponseContent {}
 
 // Common API Error Types - these replace the duplicated error enums across all API files
 use crate::models;

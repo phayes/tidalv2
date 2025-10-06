@@ -19,7 +19,7 @@ pub async fn search_result_get(
     id: &str,
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<Resource<search_result::SearchResult>, Error<ApiError>> {
+) -> Result<Resource<search_result::SearchResult>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -61,7 +61,7 @@ pub async fn search_result_albums(
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -99,7 +99,7 @@ pub async fn search_result_artists(
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -137,7 +137,7 @@ pub async fn search_result_playlists(
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -175,7 +175,7 @@ pub async fn search_result_top_hits(
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -213,7 +213,7 @@ pub async fn search_result_tracks(
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -251,7 +251,7 @@ pub async fn search_result_videos(
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;

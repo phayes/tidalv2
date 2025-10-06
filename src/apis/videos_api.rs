@@ -24,7 +24,7 @@ pub async fn video_list(
     include: Option<Vec<String>>,
     filter_isrc: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<MultiResource<video::Video>, Error<ApiError>> {
+) -> Result<MultiResource<video::Video>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_isrc = filter_isrc;
@@ -69,7 +69,7 @@ pub async fn video_get(
     configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<Resource<video::Video>, Error<ApiError>> {
+) -> Result<Resource<video::Video>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -105,7 +105,7 @@ pub async fn video_albums(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -137,7 +137,7 @@ pub async fn video_artists(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -169,7 +169,7 @@ pub async fn video_providers(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -201,7 +201,7 @@ pub async fn video_thumbnail_art(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;

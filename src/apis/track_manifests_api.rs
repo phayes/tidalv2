@@ -22,7 +22,7 @@ pub async fn track_manifest_get(
     uri_scheme: &str,
     usage: &str,
     adaptive: &str,
-) -> Result<Resource<track_manifest::TrackManifest>, Error<ApiError>> {
+) -> Result<Resource<track_manifest::TrackManifest>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_manifest_type = manifest_type;

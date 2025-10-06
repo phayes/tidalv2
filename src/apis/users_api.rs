@@ -18,7 +18,7 @@ use reqwest;
 /// This endpoint takes no parameters.
 pub async fn user_me(
     configuration: &configuration::TidalClient,
-) -> Result<Resource<user::User>, Error<ApiError>> {
+) -> Result<Resource<user::User>, Error> {
     let uri_str = format!("{}/users/me", configuration.base_path_api);
     let req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 

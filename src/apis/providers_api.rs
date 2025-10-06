@@ -20,7 +20,7 @@ use reqwest;
 pub async fn provider_list(
     configuration: &configuration::TidalClient,
     filter_id: Option<Vec<String>>,
-) -> Result<MultiResource<provider::Provider>, Error<ApiError>> {
+) -> Result<MultiResource<provider::Provider>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_filter_id = filter_id;
 
@@ -46,7 +46,7 @@ pub async fn provider_list(
 pub async fn provider_get(
     configuration: &configuration::TidalClient,
     id: &str,
-) -> Result<Resource<provider::Provider>, Error<ApiError>> {
+) -> Result<Resource<provider::Provider>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 

@@ -19,7 +19,7 @@ pub async fn search_suggestion_get(
     id: &str,
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<Resource<search_suggestions::SearchSuggestion>, Error<ApiError>> {
+) -> Result<Resource<search_suggestions::SearchSuggestion>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;
@@ -61,7 +61,7 @@ pub async fn search_suggestion_direct_hits(
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_explicit_filter = explicit_filter;

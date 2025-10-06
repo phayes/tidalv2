@@ -99,13 +99,12 @@ async fn test_search_and_walk_resources() {
     init_logging_once();
 
     // Get bearer token from environment
-    let bearer_token = env::var("TIDAL_BEARER_ACCESS_TOKEN")
-        .expect("TIDAL_BEARER_ACCESS_TOKEN environment variable must be set");
+    let client_id: String = env::var("TIDAL_CLIENT_ID")
+        .expect("TIDAL_CLIENT_ID environment variable must be set");
 
     // Configure API client
-    let mut config = apis::configuration::TidalClient::new();
-    config.bearer_access_token = Some(bearer_token);
-    config.country_code = "US".to_string();
+    let mut client = apis::configuration::TidalClient::new(client_id);
+    client.set_country_code("US".to_string());
 
     // Perform search for a popular query
     let search_query = "taylor swift";
@@ -118,7 +117,7 @@ async fn test_search_and_walk_resources() {
 
     increment_request_count();
     let search_result = apis::search_results_api::search_result_get(
-        &config,
+        &client,
         search_query,
         None, // explicit_filter
         Some(vec![
@@ -146,7 +145,7 @@ async fn test_search_and_walk_resources() {
             }
 
             // Walk through search result relationships using simple serial approach
-            walk_search_result(&config, &search_response).await;
+            walk_search_result(&client, &search_response).await;
         }
         Err(e) => {
             panic!("Search failed: {:?}", e);
@@ -156,7 +155,7 @@ async fn test_search_and_walk_resources() {
 
 /// Simple serial resource walking
 async fn walk_search_result(
-    config: &apis::configuration::TidalClient,
+    client: &apis::configuration::TidalClient,
     search_response: &Resource<models::search_result::SearchResult>,
 ) {
     // Process relationships directly without queuing
@@ -164,35 +163,35 @@ async fn walk_search_result(
         // Process albums
         if let Some(data) = &relationships.albums.data {
             for resource_id in data {
-                process_album(config, &resource_id.id, 2).await;
+                process_album(client, &resource_id.id, 2).await;
             }
         }
 
         // Process artists
         if let Some(data) = &relationships.artists.data {
             for resource_id in data {
-                process_artist(config, &resource_id.id, 2).await;
+                process_artist(client, &resource_id.id, 2).await;
             }
         }
 
         // Process tracks
         if let Some(data) = &relationships.tracks.data {
             for resource_id in data {
-                process_track(config, &resource_id.id, 2).await;
+                process_track(client, &resource_id.id, 2).await;
             }
         }
 
         // Process playlists
         if let Some(data) = &relationships.playlists.data {
             for resource_id in data {
-                process_playlist(config, &resource_id.id, 2).await;
+                process_playlist(client, &resource_id.id, 2).await;
             }
         }
 
         // Process videos
         if let Some(data) = &relationships.videos.data {
             for resource_id in data {
-                process_video(config, &resource_id.id, 2).await;
+                process_video(client, &resource_id.id, 2).await;
             }
         }
 
@@ -201,10 +200,10 @@ async fn walk_search_result(
             for resource_id in data {
                 // Process based on type
                 match resource_id.r#type {
-                    Albums => process_album(config, &resource_id.id, 2).await,
-                    Artists => process_artist(config, &resource_id.id, 2).await,
-                    Tracks => process_track(config, &resource_id.id, 2).await,
-                    Videos => process_video(config, &resource_id.id, 2).await,
+                    Albums => process_album(client, &resource_id.id, 2).await,
+                    Artists => process_artist(client, &resource_id.id, 2).await,
+                    Tracks => process_track(client, &resource_id.id, 2).await,
+                    Videos => process_video(client, &resource_id.id, 2).await,
                     _ => {
                         panic!("Unknown resource type: {}", resource_id.r#type);
                     }
@@ -218,7 +217,7 @@ async fn walk_search_result(
 
 #[async_recursion]
 async fn process_album(
-    config: &apis::configuration::TidalClient,
+    client: &apis::configuration::TidalClient,
     album_id: &str,
     recurse: usize,
 ) {
@@ -239,7 +238,7 @@ async fn process_album(
     increment_request_count();
 
     let result = apis::albums_api::album_get(
-        config,
+        client,
         album_id,
         Some(vec![Artists.to_string(), "items".to_string()]),
     )
@@ -257,10 +256,10 @@ async fn process_album(
                     .unwrap()
                 {
                     match resource_id.r#type {
-                        Tracks => process_track(config, &resource_id.id, recurse - 1).await,
-                        Albums => process_album(config, &resource_id.id, recurse - 1).await,
-                        Artists => process_artist(config, &resource_id.id, recurse - 1).await,
-                        Videos => process_video(config, &resource_id.id, recurse - 1).await,
+                        Tracks => process_track(client, &resource_id.id, recurse - 1).await,
+                        Albums => process_album(client, &resource_id.id, recurse - 1).await,
+                        Artists => process_artist(client, &resource_id.id, recurse - 1).await,
+                        Videos => process_video(client, &resource_id.id, recurse - 1).await,
                         _ => {
                             panic!("Unknown resource type: {}", resource_id.r#type);
                         }
@@ -276,7 +275,7 @@ async fn process_album(
 
 #[async_recursion]
 async fn process_artist(
-    config: &apis::configuration::TidalClient,
+    client: &apis::configuration::TidalClient,
     artist_id: &str,
     recurse: usize,
 ) {
@@ -297,7 +296,7 @@ async fn process_artist(
     increment_request_count();
 
     let result = apis::artists_api::artist_get(
-        config,
+        client,
         artist_id,
         Some(vec![Albums.to_string(), Tracks.to_string()]),
         Some("FINGERPRINT".to_string()),
@@ -311,28 +310,28 @@ async fn process_artist(
                     // Process albums
                     if let Some(albums_data) = &relationships.albums.data {
                         for resource_id in albums_data {
-                            process_album(config, &resource_id.id, recurse - 1).await;
+                            process_album(client, &resource_id.id, recurse - 1).await;
                         }
                     }
 
                     // Process tracks
                     if let Some(tracks_data) = &relationships.tracks.data {
                         for resource_id in tracks_data {
-                            process_track(config, &resource_id.id, recurse - 1).await;
+                            process_track(client, &resource_id.id, recurse - 1).await;
                         }
                     }
 
                     // Process videos
                     if let Some(videos_data) = &relationships.videos.data {
                         for resource_id in videos_data {
-                            process_video(config, &resource_id.id, recurse - 1).await;
+                            process_video(client, &resource_id.id, recurse - 1).await;
                         }
                     }
 
                     // Process similar artists
                     if let Some(similar_artists_data) = &relationships.similar_artists.data {
                         for resource_id in similar_artists_data {
-                            process_artist(config, &resource_id.id, recurse - 1).await;
+                            process_artist(client, &resource_id.id, recurse - 1).await;
                         }
                     }
 
@@ -341,7 +340,7 @@ async fn process_artist(
                         for resource_id in owners_data {
                             match resource_id.r#type {
                                 Artists => {
-                                    process_artist(config, &resource_id.id, recurse - 1).await
+                                    process_artist(client, &resource_id.id, recurse - 1).await
                                 }
                                 _ => trace!("Skipping owner resource type: {}", resource_id.r#type),
                             }
@@ -351,28 +350,28 @@ async fn process_artist(
                     // Process profile art (artwork resources)
                     if let Some(profile_art_data) = &relationships.profile_art.data {
                         for resource_id in profile_art_data {
-                            process_artwork(config, &resource_id.id, recurse - 1).await;
+                            process_artwork(client, &resource_id.id, recurse - 1).await;
                         }
                     }
 
                     // Process radio (radio station resources)
                     if let Some(radio_data) = &relationships.radio.data {
                         for resource_id in radio_data {
-                            process_radio(config, &resource_id.id, recurse - 1).await;
+                            process_radio(client, &resource_id.id, recurse - 1).await;
                         }
                     }
 
                     // Process roles (role resources)
                     if let Some(roles_data) = &relationships.roles.data {
                         for resource_id in roles_data {
-                            process_role(config, &resource_id.id, recurse - 1).await;
+                            process_role(client, &resource_id.id, recurse - 1).await;
                         }
                     }
 
                     // Process track providers
                     if let Some(track_providers_data) = &relationships.track_providers.data {
                         for resource_id in track_providers_data {
-                            process_provider(config, &resource_id.id, recurse - 1).await;
+                            process_provider(client, &resource_id.id, recurse - 1).await;
                         }
                     }
 
@@ -380,7 +379,7 @@ async fn process_artist(
                     if let Some(_biography_data) = &relationships.biography.data {
                         // Note: Biography API takes artist_id, not biography resource id
                         // We'll use the current artist_id instead of biography_data.id
-                        process_biography(config, artist_id, recurse - 1).await;
+                        process_biography(client, artist_id, recurse - 1).await;
                     }
                 }
             }
@@ -393,7 +392,7 @@ async fn process_artist(
 
 #[async_recursion]
 async fn process_track(
-    config: &apis::configuration::TidalClient,
+    client: &apis::configuration::TidalClient,
     track_id: &str,
     recurse: usize,
 ) {
@@ -414,7 +413,7 @@ async fn process_track(
     increment_request_count();
 
     let result = apis::tracks_api::track_get(
-        config,
+        client,
         track_id,
         Some(vec![Artists.to_string(), Albums.to_string()]),
     )
@@ -426,12 +425,12 @@ async fn process_track(
                 if let Some(relationships) = &track_response.data.relationships {
                     if let Some(artists_data) = &relationships.artists.data {
                         for resource_id in artists_data {
-                            process_artist(config, &resource_id.id, recurse - 1).await;
+                            process_artist(client, &resource_id.id, recurse - 1).await;
                         }
                     }
                     if let Some(albums_data) = &relationships.albums.data {
                         for resource_id in albums_data {
-                            process_album(config, &resource_id.id, recurse - 1).await;
+                            process_album(client, &resource_id.id, recurse - 1).await;
                         }
                     }
                 }
@@ -445,7 +444,7 @@ async fn process_track(
 
 #[async_recursion]
 async fn process_playlist(
-    config: &apis::configuration::TidalClient,
+    client: &apis::configuration::TidalClient,
     playlist_id: &str,
     recurse: usize,
 ) {
@@ -466,7 +465,7 @@ async fn process_playlist(
     increment_request_count();
 
     let result =
-        apis::playlists_api::playlist_get(config, playlist_id, Some(vec!["items".to_string()]))
+        apis::playlists_api::playlist_get(client, playlist_id, Some(vec!["items".to_string()]))
             .await;
 
     match result {
@@ -479,12 +478,12 @@ async fn process_playlist(
                                 return;
                             }
                             match resource_id.r#type {
-                                Tracks => process_track(config, &resource_id.id, recurse - 1).await,
-                                Albums => process_album(config, &resource_id.id, recurse - 1).await,
+                                Tracks => process_track(client, &resource_id.id, recurse - 1).await,
+                                Albums => process_album(client, &resource_id.id, recurse - 1).await,
                                 Artists => {
-                                    process_artist(config, &resource_id.id, recurse - 1).await
+                                    process_artist(client, &resource_id.id, recurse - 1).await
                                 }
-                                Videos => process_video(config, &resource_id.id, recurse - 1).await,
+                                Videos => process_video(client, &resource_id.id, recurse - 1).await,
                                 _ => {
                                     panic!("Unknown resource type: {}", resource_id.r#type);
                                 }
@@ -502,7 +501,7 @@ async fn process_playlist(
 
 #[async_recursion]
 async fn process_video(
-    config: &apis::configuration::TidalClient,
+    client: &apis::configuration::TidalClient,
     video_id: &str,
     recurse: usize,
 ) {
@@ -522,7 +521,7 @@ async fn process_video(
     trace!("Loading video: {}", video_id);
     increment_request_count();
     let result = apis::videos_api::video_get(
-        config,
+        client,
         video_id,
         Some(vec![Artists.to_string(), Albums.to_string()]),
     )
@@ -534,12 +533,12 @@ async fn process_video(
                 if let Some(relationships) = &video_response.data.relationships {
                     if let Some(artists_data) = &relationships.artists.data {
                         for resource_id in artists_data {
-                            process_artist(config, &resource_id.id, recurse - 1).await;
+                            process_artist(client, &resource_id.id, recurse - 1).await;
                         }
                     }
                     if let Some(albums_data) = &relationships.albums.data {
                         for resource_id in albums_data {
-                            process_album(config, &resource_id.id, recurse - 1).await;
+                            process_album(client, &resource_id.id, recurse - 1).await;
                         }
                     }
                 }
@@ -553,7 +552,7 @@ async fn process_video(
 
 #[async_recursion]
 async fn process_artwork(
-    config: &apis::configuration::TidalClient,
+    client: &apis::configuration::TidalClient,
     artwork_id: &str,
     _recurse: usize,
 ) {
@@ -573,7 +572,7 @@ async fn process_artwork(
     trace!("Loading artwork: {}", artwork_id);
     increment_request_count();
 
-    let result = apis::artworks_api::artwork_get(config, artwork_id, None).await;
+    let result = apis::artworks_api::artwork_get(client, artwork_id, None).await;
 
     match result {
         Ok(_artwork_response) => {
@@ -588,7 +587,7 @@ async fn process_artwork(
 
 #[async_recursion]
 async fn process_biography(
-    config: &apis::configuration::TidalClient,
+    client: &apis::configuration::TidalClient,
     artist_id: &str,
     _recurse: usize,
 ) {
@@ -611,7 +610,7 @@ async fn process_biography(
     trace!("Loading biography for artist: {}", artist_id);
     increment_request_count();
 
-    let result = apis::artists_api::artist_biography(config, artist_id).await;
+    let result = apis::artists_api::artist_biography(client, artist_id).await;
 
     match result {
         Ok(_biography_response) => {
@@ -625,7 +624,7 @@ async fn process_biography(
 }
 
 #[async_recursion]
-async fn process_role(config: &apis::configuration::TidalClient, role_id: &str, _recurse: usize) {
+async fn process_role(client: &apis::configuration::TidalClient, role_id: &str, _recurse: usize) {
     if !can_make_request() {
         return;
     }
@@ -642,7 +641,7 @@ async fn process_role(config: &apis::configuration::TidalClient, role_id: &str, 
     trace!("Loading role: {}", role_id);
     increment_request_count();
 
-    let result = apis::artist_roles_api::artist_role_get(config, role_id).await;
+    let result = apis::artist_roles_api::artist_role_get(client, role_id).await;
 
     match result {
         Ok(_role_response) => {
@@ -657,7 +656,7 @@ async fn process_role(config: &apis::configuration::TidalClient, role_id: &str, 
 
 #[async_recursion]
 async fn process_provider(
-    config: &apis::configuration::TidalClient,
+    client: &apis::configuration::TidalClient,
     provider_id: &str,
     _recurse: usize,
 ) {
@@ -677,7 +676,7 @@ async fn process_provider(
     trace!("Loading provider: {}", provider_id);
     increment_request_count();
 
-    let result = apis::providers_api::provider_get(config, provider_id).await;
+    let result = apis::providers_api::provider_get(client, provider_id).await;
 
     match result {
         Ok(_provider_response) => {
@@ -692,7 +691,7 @@ async fn process_provider(
 
 #[async_recursion]
 async fn process_radio(
-    _config: &apis::configuration::TidalClient,
+    _client: &apis::configuration::TidalClient,
     radio_id: &str,
     _recurse: usize,
 ) {
@@ -726,13 +725,12 @@ async fn test_user_collections_and_walk() {
     init_logging_once();
 
     // Get bearer token from environment
-    let bearer_token = env::var("TIDAL_BEARER_ACCESS_TOKEN")
-        .expect("TIDAL_BEARER_ACCESS_TOKEN environment variable must be set");
+    let bearer_token = env::var("TIDAL_CLIENT_ID")
+        .expect("TIDAL_CLIENT_ID environment variable must be set");
 
     // Configure API client
-    let mut config = apis::configuration::TidalClient::new();
-    config.bearer_access_token = Some(bearer_token);
-    config.country_code = "US".to_string();
+    let mut client = apis::configuration::TidalClient::new(client_id);
+    client.set_country_code("US".to_string());
 
     info!("Starting user collections integration test");
 
@@ -742,7 +740,7 @@ async fn test_user_collections_and_walk() {
     }
 
     increment_request_count();
-    let user_result = apis::users_api::user_me(&config).await;
+    let user_result = apis::users_api::user_me(&client).await;
 
     match user_result {
         Ok(user_response) => {
@@ -750,7 +748,7 @@ async fn test_user_collections_and_walk() {
             info!("✓ Current user ID: {}", user_id);
 
             // Walk user collections for different resource types
-            walk_user_collections(&config, user_id).await;
+            walk_user_collections(&client, user_id).await;
         }
         Err(e) => {
             panic!("Failed to get current user: {:?}", e);
@@ -759,7 +757,7 @@ async fn test_user_collections_and_walk() {
 }
 
 /// Walk through user collections for different resource types
-async fn walk_user_collections(config: &apis::configuration::TidalClient, user_id: &str) {
+async fn walk_user_collections(client: &apis::configuration::TidalClient, user_id: &str) {
     info!("Starting user collections walking for user: {}", user_id);
 
     // Process user's playlist collection
@@ -768,7 +766,7 @@ async fn walk_user_collections(config: &apis::configuration::TidalClient, user_i
         increment_request_count();
 
         let playlists_result = apis::user_collections_api::user_collection_playlists(
-            config, user_id, None, // page_cursor
+            client, user_id, None, // page_cursor
             None, // sort
         )
         .await;
@@ -783,7 +781,7 @@ async fn walk_user_collections(config: &apis::configuration::TidalClient, user_i
 
                     // Walk through each playlist
                     for playlist_resource in playlists_data {
-                        process_playlist(config, &playlist_resource.id, 2).await;
+                        process_playlist(client, &playlist_resource.id, 2).await;
                     }
                 } else {
                     info!("✓ No playlists found in user collection");
@@ -801,7 +799,7 @@ async fn walk_user_collections(config: &apis::configuration::TidalClient, user_i
         increment_request_count();
 
         let albums_result = apis::user_collections_api::user_collection_albums(
-            config, user_id, "US", // locale
+            client, user_id, "US", // locale
             None, // page_cursor
             None, // sort
         )
@@ -814,7 +812,7 @@ async fn walk_user_collections(config: &apis::configuration::TidalClient, user_i
 
                     // Walk through each album
                     for album_resource in albums_data {
-                        process_album(config, &album_resource.id, 2).await;
+                        process_album(client, &album_resource.id, 2).await;
                     }
                 } else {
                     info!("✓ No albums found in user collection");
@@ -832,7 +830,7 @@ async fn walk_user_collections(config: &apis::configuration::TidalClient, user_i
         increment_request_count();
 
         let artists_result = apis::user_collections_api::user_collection_artists(
-            config, user_id, "US", // locale
+            client, user_id, "US", // locale
             None, // page_cursor
             None, // sort
         )
@@ -845,7 +843,7 @@ async fn walk_user_collections(config: &apis::configuration::TidalClient, user_i
 
                     // Walk through each artist
                     for artist_resource in artists_data {
-                        process_artist(config, &artist_resource.id, 2).await;
+                        process_artist(client, &artist_resource.id, 2).await;
                     }
                 } else {
                     info!("✓ No artists found in user collection");
@@ -863,7 +861,7 @@ async fn walk_user_collections(config: &apis::configuration::TidalClient, user_i
         increment_request_count();
 
         let tracks_result = apis::user_collections_api::user_collection_tracks(
-            config, user_id, "US", // locale
+            client, user_id, "US", // locale
             None, // page_cursor
             None, // sort
         )
@@ -876,7 +874,7 @@ async fn walk_user_collections(config: &apis::configuration::TidalClient, user_i
 
                     // Walk through each track
                     for track_resource in tracks_data {
-                        process_track(config, &track_resource.id, 2).await;
+                        process_track(client, &track_resource.id, 2).await;
                     }
                 } else {
                     info!("✓ No tracks found in user collection");
@@ -894,7 +892,7 @@ async fn walk_user_collections(config: &apis::configuration::TidalClient, user_i
         increment_request_count();
 
         let videos_result = apis::user_collections_api::user_collection_videos(
-            config, user_id, "US", // locale
+            client, user_id, "US", // locale
             None, // page_cursor
             None, // sort
         )
@@ -907,7 +905,7 @@ async fn walk_user_collections(config: &apis::configuration::TidalClient, user_i
 
                     // Walk through each video
                     for video_resource in videos_data {
-                        process_video(config, &video_resource.id, 2).await;
+                        process_video(client, &video_resource.id, 2).await;
                     }
                 } else {
                     info!("✓ No videos found in user collection");

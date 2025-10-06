@@ -15,7 +15,7 @@ pub async fn user_collection_get(
     user_id: &str,
     locale: &str,
     include: Option<Vec<String>>,
-) -> Result<Resource<UserCollection>, Error<ApiError>> {
+) -> Result<Resource<UserCollection>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let p_locale = locale;
@@ -49,7 +49,7 @@ pub async fn user_collections_id_relationships_albums_delete(
     configuration: &configuration::TidalClient,
     user_id: &str,
     albums_to_remove: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let payload = DataWrap::new(
@@ -86,7 +86,7 @@ pub async fn user_collection_albums(
     locale: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier<UserCollectionsResourceMeta>>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier<UserCollectionsResourceMeta>>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let p_locale = locale;
@@ -125,7 +125,7 @@ pub async fn user_collections_id_relationships_albums_post(
     configuration: &configuration::TidalClient,
     user_id: &str,
     albums_to_add: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let payload = DataWrap::new(
@@ -157,7 +157,7 @@ pub async fn user_collections_id_relationships_artists_delete(
     configuration: &configuration::TidalClient,
     user_id: &str,
     artists_to_remove: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let payload = DataWrap::new(
@@ -194,7 +194,7 @@ pub async fn user_collection_artists(
     locale: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier<UserCollectionsResourceMeta>>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier<UserCollectionsResourceMeta>>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let p_locale = locale;
@@ -233,7 +233,7 @@ pub async fn user_collections_id_relationships_artists_post(
     configuration: &configuration::TidalClient,
     user_id: &str,
     artists_to_add: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let payload = DataWrap::new(
@@ -269,7 +269,7 @@ pub async fn user_collection_owners(
     configuration: &configuration::TidalClient,
     user_id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let p_page_cursor = page_cursor;
@@ -294,7 +294,7 @@ pub async fn user_collections_id_relationships_playlists_delete(
     configuration: &configuration::TidalClient,
     user_id: &str,
     playlists_to_remove: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let payload = DataWrap::new(
@@ -331,7 +331,7 @@ pub async fn user_collection_playlists(
     user_id: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier<UserCollectionsResourceMeta>>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier<UserCollectionsResourceMeta>>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let p_page_cursor = page_cursor;
@@ -365,7 +365,7 @@ pub async fn user_collections_id_relationships_playlists_post(
     configuration: &configuration::TidalClient,
     user_id: &str,
     playlists_to_add: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let payload = DataWrap::new(
@@ -396,7 +396,7 @@ pub async fn user_collections_id_relationships_tracks_delete(
     configuration: &configuration::TidalClient,
     user_id: &str,
     tracks_to_remove: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let payload = DataWrap::new(
@@ -433,7 +433,7 @@ pub async fn user_collection_tracks(
     locale: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier<UserCollectionsResourceMeta>>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier<UserCollectionsResourceMeta>>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let p_locale = locale;
@@ -472,7 +472,7 @@ pub async fn user_collections_id_relationships_tracks_post(
     configuration: &configuration::TidalClient,
     user_id: &str,
     tracks_to_add: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let payload = DataWrap::new(
@@ -504,7 +504,7 @@ pub async fn user_collections_id_relationships_videos_delete(
     configuration: &configuration::TidalClient,
     user_id: &str,
     videos_to_remove: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let payload = DataWrap::new(
@@ -541,7 +541,7 @@ pub async fn user_collection_videos(
     locale: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier<UserCollectionsResourceMeta>>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier<UserCollectionsResourceMeta>>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let p_locale = locale;
@@ -580,7 +580,7 @@ pub async fn user_collections_id_relationships_videos_post(
     configuration: &configuration::TidalClient,
     user_id: &str,
     videos_to_add: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = user_id;
     let payload = DataWrap::new(

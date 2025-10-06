@@ -19,7 +19,7 @@ pub async fn track_file_get(
     id: &str,
     formats: &str,
     usage: &str,
-) -> Result<Resource<track_file::TrackFile>, Error<ApiError>> {
+) -> Result<Resource<track_file::TrackFile>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_formats = formats;

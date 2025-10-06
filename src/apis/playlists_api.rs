@@ -29,7 +29,7 @@ pub async fn playlist_list(
     include: Option<Vec<String>>,
     filter_owners_period_id: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<MultiResource<playlist::Playlist>, Error<ApiError>> {
+) -> Result<MultiResource<playlist::Playlist>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_page_cursor = page_cursor;
     let p_sort = sort;
@@ -86,7 +86,7 @@ pub async fn playlist_list(
 pub async fn playlist_delete(
     configuration: &configuration::TidalClient,
     id: &str,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 
@@ -107,7 +107,7 @@ pub async fn playlist_get(
     configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<Resource<playlist::Playlist>, Error<ApiError>> {
+) -> Result<Resource<playlist::Playlist>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -139,7 +139,7 @@ pub async fn playlist_update(
     configuration: &configuration::TidalClient,
     id: &str,
     update: playlist::UpdatePlaylist,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_playlist_update_operation_payload = DataWrap::new(update);
@@ -170,7 +170,7 @@ pub async fn playlist_cover_art(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -198,7 +198,7 @@ pub async fn playlist_remove_tracks(
     configuration: &configuration::TidalClient,
     id: &str,
     tracks_to_remove: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     let resource_identifiers = tracks_to_remove
         .into_iter()
         .map(|track_id| {
@@ -218,7 +218,7 @@ pub async fn playlist_remove_videos(
     configuration: &configuration::TidalClient,
     id: &str,
     videos_to_remove: Vec<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     let resource_identifiers = videos_to_remove
         .into_iter()
         .map(|video_id| {
@@ -244,7 +244,7 @@ pub async fn playlist_items(
     page_cursor: Option<&str>,
 ) -> Result<
     MultiRelationship<ResourceIdentifier<playlist::PlaylistsItemsIdentifierMeta>>,
-    Error<ApiError>,
+    Error,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -277,7 +277,7 @@ pub async fn playlist_remove_items(
     configuration: &configuration::TidalClient,
     id: &str,
     items_to_remove: Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_playlist_items_relationship_remove_operation_payload = DataWrap::new(items_to_remove);
@@ -307,7 +307,7 @@ pub async fn playlist_reorder_items(
     id: &str,
     reorder_items: Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>,
     position_before: String,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_playlist_items_relationship_reorder_operation_payload = DataWrap::new_with_meta(
@@ -335,7 +335,7 @@ pub async fn playlist_add_items(
     id: &str,
     items_to_add: Vec<models::ResourceIdentifier>,
     position_before: Option<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_playlist_items_relationship_add_operation_payload = DataWrap::new_with_meta(
@@ -365,7 +365,7 @@ pub async fn playlist_add_videos(
     id: &str,
     videos_to_add: Vec<String>,
     position_before: Option<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     let resource_identifiers = videos_to_add
         .into_iter()
         .map(|video_id| ResourceIdentifier::new(video_id, ResourceType::Videos))
@@ -379,7 +379,7 @@ pub async fn playlist_add_tracks(
     id: &str,
     tracks_to_add: Vec<String>,
     position_before: Option<String>,
-) -> Result<(), Error<ApiError>> {
+) -> Result<(), Error> {
     let resource_identifiers = tracks_to_add
         .into_iter()
         .map(|track_id| ResourceIdentifier::new(track_id, ResourceType::Tracks))
@@ -397,7 +397,7 @@ pub async fn playlist_owners(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
+) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -424,7 +424,7 @@ pub async fn playlist_owners(
 pub async fn playlist_create(
     configuration: &configuration::TidalClient,
     playlist: playlist::CreatePlaylist,
-) -> Result<Resource<playlist::Playlist>, Error<ApiError>> {
+) -> Result<Resource<playlist::Playlist>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_playlist_create_operation_payload = DataWrap::new(playlist);
 

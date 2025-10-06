@@ -22,7 +22,7 @@ pub async fn artwork_list(
     configuration: &configuration::TidalClient,
     include: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<MultiResource<artwork::Artwork>, Error<ApiError>> {
+) -> Result<MultiResource<artwork::Artwork>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_id = filter_id;
@@ -58,7 +58,7 @@ pub async fn artwork_get(
     configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<Resource<artwork::Artwork>, Error<ApiError>> {
+) -> Result<Resource<artwork::Artwork>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -90,7 +90,7 @@ pub async fn artwork_owners(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;

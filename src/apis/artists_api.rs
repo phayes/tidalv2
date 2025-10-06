@@ -34,7 +34,7 @@ pub async fn artist_list(
     collapse_by: Option<String>,
     filter_handle: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
-) -> Result<MultiResource<artist::Artist>, Error<ApiError>> {
+) -> Result<MultiResource<artist::Artist>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_include = include;
     let p_filter_handle = filter_handle;
@@ -89,7 +89,7 @@ pub async fn artist_get(
     id: &str,
     include: Option<Vec<String>>,
     collapse_by: Option<String>,
-) -> Result<Resource<artist::Artist>, Error<ApiError>> {
+) -> Result<Resource<artist::Artist>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -129,7 +129,7 @@ pub async fn artist_albums(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -159,7 +159,7 @@ pub async fn artist_albums(
 pub async fn artist_biography(
     configuration: &configuration::TidalClient,
     id: &str,
-) -> Result<Relationship, Error<ApiError>> {
+) -> Result<Relationship, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
 
@@ -184,7 +184,7 @@ pub async fn artist_owners(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -218,7 +218,7 @@ pub async fn artist_profile_art(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -255,7 +255,7 @@ pub async fn artist_radio(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -292,7 +292,7 @@ pub async fn artist_roles(
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -326,7 +326,7 @@ pub async fn artist_similar_artists(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -363,7 +363,7 @@ pub async fn artist_track_providers(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier<ArtistsTrackProvidersResourceMeta>>, Error<ApiError>>
+) -> Result<MultiRelationship<ResourceIdentifier<ArtistsTrackProvidersResourceMeta>>, Error>
 {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -399,7 +399,7 @@ pub async fn artist_tracks(
     collapse_by: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_collapse_by = collapse_by;
@@ -438,7 +438,7 @@ pub async fn artist_videos(
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;

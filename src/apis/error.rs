@@ -9,7 +9,7 @@ use std::fmt::Display;
 /// This enum covers all possible error conditions including network issues,
 /// API errors, authentication problems, and streaming issues.
 #[derive(Debug, thiserror::Error)]
-pub enum Error<T> {
+pub enum Error {
     /// HTTP request failed (network issues, timeouts, etc.)
     #[error("HTTP request failed: {0}")]
     Http(#[from] reqwest::Error),
@@ -22,7 +22,7 @@ pub enum Error<T> {
     Io(#[from] std::io::Error),
 
     #[error("Response error: {0}")]
-    ResponseError(#[from] ResponseContent<T>),
+    ResponseError(#[from] ResponseContent),
 
     /// Tidal API returned an error response
     #[error("Tidal V1 API error: {0}")]

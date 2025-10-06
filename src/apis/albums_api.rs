@@ -29,7 +29,7 @@ pub async fn album_list(
     filter_owners_period_id: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
     filter_barcode_id: Option<Vec<String>>,
-) -> Result<MultiResource<album::Album>, Error<ApiError>> {
+) -> Result<MultiResource<album::Album>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_page_cursor = page_cursor;
     let p_include = include;
@@ -91,7 +91,7 @@ pub async fn album_get(
     configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
-) -> Result<Resource<album::Album>, Error<ApiError>> {
+) -> Result<Resource<album::Album>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_include = include;
@@ -127,7 +127,7 @@ pub async fn album_artists(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -159,7 +159,7 @@ pub async fn album_cover_art(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -191,7 +191,7 @@ pub async fn album_items(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>, Error<ApiError>>
+) -> Result<MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>, Error>
 {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -224,7 +224,7 @@ pub async fn album_owners(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -253,7 +253,7 @@ pub async fn album_providers(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
@@ -285,7 +285,7 @@ pub async fn album_similar_albums(
     configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
+) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_page_cursor = page_cursor;
