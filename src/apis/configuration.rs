@@ -11,9 +11,10 @@
 pub(crate) static TIDAL_AUTH_API_BASE_URL: &str = "https://auth.tidal.com/v1";
 pub(crate) static TIDAL_V1_API_BASE_URL: &str = "https://api.tidal.com/v1";
 pub(crate) static TIDAL_V2_API_BASE_URL: &str = "https://openapi.tidal.com/v2";
-pub(crate) static TIDAL_USER_AGENT: &str = "Mozilla/5.0 (Linux; Android 12; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.114 Safari/537.36";
+pub(crate) static TIDAL_USER_AGENT: &str = "rust-crate:tidalv2";
 
-use crate::apis::{ApiError, ContentType, Error, ResponseContent};
+use crate::apis::TidalV1Error;
+use crate::apis::{Error, TidalError, TidalUnknownError};
 use arc_swap::ArcSwapOption;
 use async_recursion::async_recursion;
 use log::{debug, info, trace};
@@ -21,9 +22,8 @@ use serde::de::{DeserializeOwned, Error as _};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use std::sync::Arc;
-use tokio::sync::{Semaphore, SemaphorePermit};
-use crate::apis::TidalV1Error;
 use strum_macros::{AsRefStr, EnumString};
+use tokio::sync::{Semaphore, SemaphorePermit};
 
 /// Callback function type for handling authorization token refresh events.
 ///
@@ -144,7 +144,7 @@ pub struct TidalClient {
     pub(crate) client_id: String,
     pub(crate) base_path_api: String,
     pub(crate) base_path_auth: String,
-    pub(crate) user_agent: Option<String>,
+    pub(crate) user_agent: String,
     pub(crate) authz: ArcSwapOption<Authz>,
     pub(crate) authz_update_semaphore: Semaphore,
     pub(crate) country_code: Option<String>,
@@ -179,7 +179,7 @@ impl TidalClient {
             on_authz_refresh_callback: None,
             base_path_api: TIDAL_V2_API_BASE_URL.to_string(),
             base_path_auth: TIDAL_AUTH_API_BASE_URL.to_string(),
-            user_agent: Some(TIDAL_USER_AGENT.to_string()),
+            user_agent: TIDAL_USER_AGENT.to_string(),
             locale: None,
             device_type: None,
         }
@@ -308,6 +308,11 @@ impl TidalClient {
     /// ```
     pub fn with_country_code(mut self, country_code: String) -> Self {
         self.country_code = Some(country_code);
+        self
+    }
+
+    pub fn with_user_agent(mut self, user_agent: String) -> Self {
+        self.user_agent = user_agent;
         self
     }
 
@@ -534,7 +539,7 @@ impl TidalClient {
             );
         }
 
-        req = req.header(reqwest::header::USER_AGENT, "Mozilla/5.0 (Linux; Android 12; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.114 Safari/537.36");
+        req = req.header(reqwest::header::USER_AGENT, &self.user_agent);
 
         if let Some(params) = params.as_ref() {
             match method {
@@ -572,11 +577,11 @@ impl TidalClient {
                         log::warn!("JSON deserialization error: {}", e);
                         log::warn!("Response: {}", error_message);
                     }
-                    return Err(Error::TidalV1Error(TidalV1Error {
+                    return Err(Error::TidalError(TidalError::TidalV1Error(TidalV1Error {
                         status: status.as_u16(),
                         sub_status: 0,
                         user_message: error_message.to_string(),
-                    }));
+                    })));
                 }
             }
         };
@@ -598,11 +603,11 @@ impl TidalClient {
                         log::warn!("JSON deserialization error: {}", e);
                         log::warn!("Response: {}", problem_value_pretty);
                     }
-                    return Err(Error::TidalV1Error(TidalV1Error {
+                    return Err(Error::TidalError(TidalError::TidalV1Error(TidalV1Error {
                         status: status.as_u16(),
                         sub_status: 0,
                         user_message: e.to_string(),
-                    }));
+                    })));
                 }
             };
 
@@ -617,11 +622,11 @@ impl TidalClient {
                         log::warn!("JSON deserialization error of TidalV1Error: {}", e);
                         log::warn!("Response: {}", problem_value_pretty);
                     }
-                    return Err(Error::TidalV1Error(TidalV1Error {
+                    return Err(Error::TidalError(TidalError::TidalV1Error(TidalV1Error {
                         status: status.as_u16(),
                         sub_status: 0,
                         user_message: e.to_string(),
-                    }));
+                    })));
                 }
             };
 
@@ -638,7 +643,7 @@ impl TidalClient {
                 log::warn!("TIDAL API Error: {}", pretty_err);
             }
 
-            Err(Error::TidalV1Error(tidal_err))
+            Err(Error::TidalError(TidalError::TidalV1Error(tidal_err)))
         }
     }
 
@@ -760,75 +765,41 @@ impl TidalClient {
     /// Execute HTTP request and parse response into the specified type T
     /// This centralizes all request execution, response handling, and deserialization
     /// Also applies authentication headers (bearer token, user agent, etc.) automatically
+    #[async_recursion]
     pub async fn execute_request<T: DeserializeOwned>(
         &self,
         req_builder: reqwest::RequestBuilder,
     ) -> Result<T, Error> {
-        let resp = self.execute_request_raw(req_builder).await?;
-
-        let status = resp.status();
-        let content_type = resp
-            .headers()
-            .get("content-type")
-            .and_then(|v| v.to_str().ok())
-            .unwrap_or("application/octet-stream");
-        let content_type = ContentType::from(content_type);
-
-        if !status.is_client_error() && !status.is_server_error() {
-            let content = resp.text().await?;
-            trace!("Response content: {}", content);
-            match content_type {
-                ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-                ContentType::Text => {
-                    let type_name = std::any::type_name::<T>();
-                    Err(Error::from(serde_json::Error::custom(format!(
-                        "Received `text/plain` content type response that cannot be converted to `{}`",
-                        type_name
-                    ))))
-                }
-                ContentType::Unsupported(unknown_type) => {
-                    let type_name = std::any::type_name::<T>();
-                    Err(Error::from(serde_json::Error::custom(format!(
-                        "Received `{unknown_type}` content type response that cannot be converted to `{}`",
-                        type_name
-                    ))))
-                }
-            }
-        } else {
-            let content = resp.text().await?;
-            trace!("Response content: {}", content);
-            let entity: Option<serde_json::Value> = serde_json::from_str(&content).ok();
-            Err(Error::ResponseError(ResponseContent {
-                status,
-                content,
-                entity,
-            }))
-        }
-    }
-
-    /// Execute HTTP request with comprehensive logging and authentication (raw response)
-    /// This centralizes all request execution and adds logging for headers, url, method, and response code
-    /// Also applies authentication headers (bearer token, user agent, etc.) automatically
-    async fn execute_request_raw(
-        &self,
-        mut req_builder: reqwest::RequestBuilder,
-    ) -> Result<reqwest::Response, reqwest::Error> {
         // Apply authentication and headers before building the request
-        if let Some(ref user_agent) = self.user_agent {
-            req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+        let mut req_builder = req_builder.header(reqwest::header::USER_AGENT, &self.user_agent);
+
+        if let Some(authz) = self.get_authz() {
+            req_builder = req_builder.header(
+                reqwest::header::AUTHORIZATION,
+                &format!("Bearer {}", authz.access_token),
+            );
         }
 
-        let req = req_builder.build()?;
+        let req = req_builder.try_clone().unwrap().build()?;
 
         let method = req.method().clone();
         let url = req.url().clone();
 
-        debug!("HTTP Request - Method: {}, URL: {}", method, url);
+        debug!("Tidal API HTTP Request - Method: {}, URL: {}", method, url);
 
-        let response = self.client.execute(req).await?;
+        let resp = self.client.execute(req).await?;
 
-        let status = response.status();
-        let response_headers = response.headers().clone();
+        let etag: Option<String> = resp.headers().get("ETag").map(|etag| {
+            let etag = etag.to_str().expect("Invalid ETag header").to_string();
+
+            match serde_json::from_str::<String>(&etag) {
+                Ok(etag) => etag,
+                Err(_) => etag,
+            }
+        });
+
+        let status = resp.status();
+        let response_headers = resp.headers().clone();
 
         info!(
             "HTTP Response - Method: {}, URL: {}, Status: {}",
@@ -836,7 +807,90 @@ impl TidalClient {
         );
         debug!("HTTP Response Headers: {:?}", response_headers);
 
-        Ok(response)
+        let status = resp.status();
+        let body = resp.bytes().await?;
+
+        // Parse it into a value
+        let mut value: serde_json::Value = if body.is_empty() {
+            serde_json::Value::Null
+        } else {
+            match serde_json::from_slice(&body) {
+                Ok(value) => value,
+                Err(e) => {
+                    let error_message = String::from_utf8_lossy(&body);
+                    if log::log_enabled!(log::Level::Warn) {
+                        log::warn!("Requested URL: {}", url);
+                        log::warn!("JSON deserialization error: {}", e);
+                        log::warn!("Response: {}", error_message);
+                    }
+                    return Err(Error::TidalError(TidalError::UnknownError(TidalUnknownError {
+                        status: status.as_u16(),
+                        message: error_message.to_string(),
+                    })));
+                }
+            }
+        };
+
+        if status.is_success() {
+            // If we have an etag, add it to the response, if the value doesn't already exist
+            if let Some(etag) = etag {
+                if value.get("etag").is_none() {
+                    value["etag"] = serde_json::Value::String(etag);
+                }
+            }
+
+            let resp: T = match serde_json::from_value(value.clone()) {
+                Ok(t) => t,
+                Err(e) => {
+                    if log::log_enabled!(log::Level::Warn) {
+                        let problem_value_pretty = serde_json::to_string_pretty(&value).unwrap();
+                        log::warn!("Requested URL: {}", url);
+                        log::warn!("JSON deserialization error: {}", e);
+                        log::warn!("Response: {}", problem_value_pretty);
+                    }
+                    return Err(Error::TidalError(TidalError::UnknownError(TidalUnknownError {
+                        status: status.as_u16(),
+                        message: e.to_string(),
+                    })));
+                }
+            };
+
+            Ok(resp)
+        } else {
+            let tidal_err = match serde_json::from_value::<TidalError>(value.clone()) {
+                Ok(e) => e,
+                Err(e) => {
+                    if log::log_enabled!(log::Level::Warn) {
+                        let problem_value_pretty = serde_json::to_string_pretty(&value).unwrap();
+                        log::warn!("Requested URL: {}", url);
+                        log::warn!("JSON deserialization error of TidalV1Error: {}", e);
+                        log::warn!("Response: {}", problem_value_pretty);
+                    }
+                    return Err(Error::TidalError(TidalError::UnknownError(TidalUnknownError {
+                        status: status.as_u16(),
+                        message: e.to_string(),
+                    })));
+                }
+            };
+
+            // If it's 401, we need to refresh the authz and try again
+            if let TidalError::TidalV1Error(tidal_v1_error) = &tidal_err {
+                if tidal_v1_error.sub_status == 11003 {
+                    debug!("Got Tidal Expired token, safe to refresh");
+                    // Expired token, safe to refresh
+                    self.refresh_authz().await?;
+                    return self.execute_request(req_builder).await;
+                }
+            }
+
+            if log::log_enabled!(log::Level::Warn) {
+                let pretty_err = serde_json::to_string_pretty(&tidal_err).unwrap();
+                log::warn!("Requested URL: {}", url);
+                log::warn!("TIDAL API Error: {}", pretty_err);
+            }
+
+            Err(Error::TidalError(tidal_err))
+        }
     }
 }
 
@@ -890,7 +944,6 @@ impl Authz {
         }
     }
 }
-
 
 /// Device type for API requests.
 ///

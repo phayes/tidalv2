@@ -725,7 +725,7 @@ async fn test_user_collections_and_walk() {
     init_logging_once();
 
     // Get bearer token from environment
-    let bearer_token = env::var("TIDAL_CLIENT_ID")
+    let client_id = env::var("TIDAL_CLIENT_ID")
         .expect("TIDAL_CLIENT_ID environment variable must be set");
 
     // Configure API client

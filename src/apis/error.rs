@@ -1,7 +1,6 @@
 use std::error;
 use serde::{Deserialize, Serialize};
 use crate::models;
-use crate::apis::ResponseContent;
 use std::fmt::Display;
 
 /// Errors that can occur when using the TidalRS library.
@@ -21,12 +20,9 @@ pub enum Error {
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 
-    #[error("Response error: {0}")]
-    ResponseError(#[from] ResponseContent),
-
     /// Tidal API returned an error response
-    #[error("Tidal V1 API error: {0}")]
-    TidalV1Error(TidalV1Error),
+    #[error("Tidal Error: {0}")]
+    TidalError(TidalError),
 
     /// No authorization token available for refresh
     #[error("No authz token available to refresh client authorization")]
@@ -49,87 +45,33 @@ pub enum Error {
     UserAuthenticationRequired,
 }
 
-/// Standard API error type used by most endpoints
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum ApiError {
-    Status400(ErrorsDocument),
-    Status404(ErrorsDocument),
-    Status405(ErrorsDocument),
-    Status406(ErrorsDocument),
-    Status415(ErrorsDocument),
-    Status429(),
-    Status500(ErrorsDocument),
-    UnknownValue(serde_json::Value),
+pub enum TidalError {
+    TidalV2Error(TidalV2Error),
+    TidalV1Error(TidalV1Error),
+    UnknownError(TidalUnknownError),
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ErrorsDocument {
-    /// Array of error objects
-    #[serde(rename = "errors", skip_serializing_if = "Option::is_none")]
-    pub errors: Option<Vec<ErrorObject>>,
-    #[serde(rename = "links", skip_serializing_if = "Option::is_none")]
-    pub links: Option<models::Links>,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TidalUnknownError {
+    pub status: u16,
+    pub message: String,
 }
 
-impl ErrorsDocument {
-    pub fn new() -> ErrorsDocument {
-        ErrorsDocument {
-            errors: None,
-            links: None,
-        }
+impl Display for TidalUnknownError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Status: {}, Message: {}", self.status, self.message)
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ErrorObject {
-    /// application-specific error code
-    #[serde(rename = "code", skip_serializing_if = "Option::is_none")]
-    pub code: Option<String>,
-    /// human-readable explanation specific to this occurrence of the problem
-    #[serde(rename = "detail", skip_serializing_if = "Option::is_none")]
-    pub detail: Option<String>,
-    /// unique identifier for this particular occurrence of the problem
-    #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-    #[serde(rename = "source", skip_serializing_if = "Option::is_none")]
-    pub source: Option<ErrorObjectSource>,
-    /// HTTP status code applicable to this problem
-    #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
-}
-
-impl ErrorObject {
-    pub fn new() -> ErrorObject {
-        ErrorObject {
-            code: None,
-            detail: None,
-            id: None,
-            source: None,
-            status: None,
-        }
-    }
-}
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ErrorObjectSource {
-    /// string indicating the name of a single request header which caused the error
-    #[serde(rename = "header", skip_serializing_if = "Option::is_none")]
-    pub header: Option<String>,
-    /// string indicating which URI query parameter caused the error.
-    #[serde(rename = "parameter", skip_serializing_if = "Option::is_none")]
-    pub parameter: Option<String>,
-    /// a JSON Pointer (RFC6901) to the value in the request document that caused the error
-    #[serde(rename = "pointer", skip_serializing_if = "Option::is_none")]
-    pub pointer: Option<String>,
-}
-
-impl ErrorObjectSource {
-    pub fn new() -> ErrorObjectSource {
-        ErrorObjectSource {
-            header: None,
-            parameter: None,
-            pointer: None,
+impl Display for TidalError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            TidalError::TidalV1Error(err) => write!(f, "{}", err),
+            TidalError::TidalV2Error(err) => write!(f, "{}", err),
+            TidalError::UnknownError(err) => write!(f, "{}", err),
         }
     }
 }
@@ -191,5 +133,86 @@ impl Display for TidalV1Error {
             "Tidal API error: {} {} {}",
             self.status, self.sub_status, self.user_message
         )
+    }
+}
+
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct TidalV2Error {
+    /// Array of error objects
+    #[serde(rename = "errors", skip_serializing_if = "Option::is_none")]
+    pub errors: Option<Vec<ErrorObject>>,
+    #[serde(rename = "links", skip_serializing_if = "Option::is_none")]
+    pub links: Option<models::Links>,
+}
+
+impl TidalV2Error {
+    pub fn new() -> TidalV2Error {
+        TidalV2Error {
+            errors: None,
+            links: None,
+        }
+    }
+}
+
+impl Display for TidalV2Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match serde_json::to_string_pretty(self) {
+            Ok(json) => write!(f, "Tidal V2 API error: {}", json),
+            Err(_) => write!(f, "Tidal V2 API error: failed to serialize error details"),
+        }
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ErrorObject {
+    /// application-specific error code
+    #[serde(rename = "code", skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+    /// human-readable explanation specific to this occurrence of the problem
+    #[serde(rename = "detail", skip_serializing_if = "Option::is_none")]
+    pub detail: Option<String>,
+    /// unique identifier for this particular occurrence of the problem
+    #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(rename = "source", skip_serializing_if = "Option::is_none")]
+    pub source: Option<ErrorObjectSource>,
+    /// HTTP status code applicable to this problem
+    #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+}
+
+impl ErrorObject {
+    pub fn new() -> ErrorObject {
+        ErrorObject {
+            code: None,
+            detail: None,
+            id: None,
+            source: None,
+            status: None,
+        }
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ErrorObjectSource {
+    /// string indicating the name of a single request header which caused the error
+    #[serde(rename = "header", skip_serializing_if = "Option::is_none")]
+    pub header: Option<String>,
+    /// string indicating which URI query parameter caused the error.
+    #[serde(rename = "parameter", skip_serializing_if = "Option::is_none")]
+    pub parameter: Option<String>,
+    /// a JSON Pointer (RFC6901) to the value in the request document that caused the error
+    #[serde(rename = "pointer", skip_serializing_if = "Option::is_none")]
+    pub pointer: Option<String>,
+}
+
+impl ErrorObjectSource {
+    pub fn new() -> ErrorObjectSource {
+        ErrorObjectSource {
+            header: None,
+            parameter: None,
+            pointer: None,
+        }
     }
 }

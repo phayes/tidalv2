@@ -1,4 +1,4 @@
-use super::{configuration, ApiError, Error};
+use super::{configuration, Error};
 use crate::models::user_collection::*;
 use crate::models::*;
 use reqwest;
