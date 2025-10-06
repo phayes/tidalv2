@@ -259,8 +259,8 @@ impl Serialize for AnyResource {
 pub struct Resource<T> {
     #[serde(rename = "data")]
     pub data: T,
-    #[serde(rename = "included", skip_serializing_if = "Option::is_none")]
-    pub included: Option<Vec<AnyResource>>,
+    #[serde(rename = "included", skip_serializing_if = "Vec::is_empty", default)]
+    pub included: Vec<AnyResource>,
     #[serde(rename = "links")]
     pub links: Links,
 }
@@ -269,7 +269,7 @@ impl<T> Resource<T> {
     pub fn new(data: T, links: Links) -> Resource<T> {
         Resource {
             data,
-            included: None,
+            included: Vec::new(),
             links,
         }
     }
@@ -280,8 +280,8 @@ impl<T> Resource<T> {
 pub struct MultiResource<T> {
     #[serde(rename = "data")]
     pub data: Vec<T>,
-    #[serde(rename = "included", skip_serializing_if = "Option::is_none")]
-    pub included: Option<Vec<AnyResource>>,
+    #[serde(rename = "included", skip_serializing_if = "Vec::is_empty", default)]
+    pub included: Vec<AnyResource>,
     #[serde(rename = "links")]
     pub links: Links,
 }
@@ -290,7 +290,7 @@ impl<T> MultiResource<T> {
     pub fn new(data: Vec<T>, links: Links) -> MultiResource<T> {
         MultiResource {
             data,
-            included: None,
+            included: Vec::new(),
             links,
         }
     }
@@ -301,8 +301,8 @@ impl<T> MultiResource<T> {
 pub struct Relationship {
     #[serde(rename = "data", skip_serializing_if = "Option::is_none")]
     pub data: Option<ResourceIdentifier>,
-    #[serde(rename = "included", skip_serializing_if = "Option::is_none")]
-    pub included: Option<Vec<AnyResource>>,
+    #[serde(rename = "included", skip_serializing_if = "Vec::is_empty", default)]
+    pub included: Vec<AnyResource>,
     #[serde(rename = "links")]
     pub links: Links,
 }
@@ -311,7 +311,7 @@ impl Relationship {
     pub fn new(links: Links) -> Relationship {
         Relationship {
             data: None,
-            included: None,
+            included: Vec::new(),
             links,
         }
     }
@@ -322,8 +322,8 @@ impl Relationship {
 pub struct MultiRelationship<T> {
     #[serde(rename = "data", skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<T>>,
-    #[serde(rename = "included", skip_serializing_if = "Option::is_none")]
-    pub included: Option<Vec<AnyResource>>,
+    #[serde(rename = "included", skip_serializing_if = "Vec::is_empty", default)]
+    pub included: Vec<AnyResource>,
     #[serde(rename = "links")]
     pub links: Links,
 }
@@ -332,7 +332,7 @@ impl<T> MultiRelationship<T> {
     pub fn new(links: Links) -> MultiRelationship<T> {
         MultiRelationship {
             data: None,
-            included: None,
+            included: Vec::new(),
             links,
         }
     }
