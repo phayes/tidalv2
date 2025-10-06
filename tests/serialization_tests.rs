@@ -32,8 +32,7 @@ async fn test_search_result_json_deserialization() {
     // assert_eq!(search_response.data.r#type, "searchResults");
 
     // Verify attributes exist
-    assert!(search_response.data.attributes.is_some());
-    let attributes = search_response.data.attributes.as_ref().unwrap();
+    let attributes = &search_response.data.attributes;
     assert_eq!(attributes.did_you_mean.as_ref().unwrap(), "taylor swift");
 
     // Verify relationships exist
@@ -54,11 +53,10 @@ async fn test_search_result_json_deserialization() {
 
     // Most importantly, verify that the included array deserializes correctly
     assert!(
-        search_response.included.is_some(),
-        "Included array should be present"
+        !search_response.included.is_empty(),
+        "Included array should not be empty"
     );
-    let included = search_response.included.as_ref().unwrap();
-    assert!(!included.is_empty(), "Included array should not be empty");
+    let included = &search_response.included;
 
     trace!(
         "Successfully deserialized search result with {} included resources",
@@ -114,8 +112,7 @@ async fn test_album_json_deserialization() {
     assert_eq!(album.r#type, "albums");
 
     // Verify attributes exist and have expected values
-    assert!(album.attributes.is_some());
-    let attributes = album.attributes.as_ref().unwrap();
+    let attributes = &album.attributes;
     assert_eq!(attributes.title, "4:44");
     assert_eq!(attributes.barcode_id, "00854242007552");
     assert_eq!(attributes.duration, "PT46M17S");
@@ -194,8 +191,7 @@ async fn test_artist_json_deserialization() {
     assert_eq!(artist.r#type, "artists");
 
     // Verify attributes exist and have expected values
-    assert!(artist.attributes.is_some());
-    let attributes = artist.attributes.as_ref().unwrap();
+    let attributes = &artist.attributes;
     assert_eq!(attributes.name, "JAY Z");
     assert_eq!(attributes.handle.as_ref().unwrap(), "jayz");
     assert_eq!(attributes.popularity, 0.56);
@@ -263,4 +259,30 @@ async fn test_artist_json_deserialization() {
     }
 
     trace!("Successfully deserialized artist: {}", attributes.name);
+}
+
+#[test]
+fn test_included_vec_serialization() {
+    use tidalv2::models::{Links, Resource};
+    
+    // Test with empty included vec - should not serialize "included" field
+    let resource_empty = Resource {
+        data: "test".to_string(),
+        included: Vec::new(),
+        links: Links::new("http://example.com/self".to_string()),
+    };
+    
+    let json_empty = serde_json::to_string(&resource_empty).unwrap();
+    assert!(!json_empty.contains("included"), "Empty included vec should not be serialized");
+    
+    // Test deserialization without "included" field - should default to empty vec
+    let json_no_included = r#"{"data":"test","links":{"self":"http://example.com/self"}}"#;
+    let deserialized: Resource<String> = serde_json::from_str(json_no_included).unwrap();
+    assert!(deserialized.included.is_empty(), "Missing included field should deserialize to empty vec");
+    assert_eq!(deserialized.data, "test");
+    
+    // Test deserialization with explicit empty array
+    let json_empty_array = r#"{"data":"test","included":[],"links":{"self":"http://example.com/self"}}"#;
+    let deserialized2: Resource<String> = serde_json::from_str(json_empty_array).unwrap();
+    assert!(deserialized2.included.is_empty(), "Empty included array should deserialize to empty vec");
 }

@@ -1,4 +1,4 @@
-use tidalv2::{apis::configuration::Configuration, apis::providers_api};
+use tidalv2::{apis::configuration::TidalClient, apis::providers_api};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -13,7 +13,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!();
 
     // Create a configuration with a bearer token for testing
-    let mut config = Configuration::default();
+    let mut config = TidalClient::default();
     config.bearer_access_token = Some("test-bearer-token-12345".to_string());
 
     // Make a simple API call - this will demonstrate the logging

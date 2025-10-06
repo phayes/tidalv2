@@ -103,7 +103,7 @@ async fn test_search_and_walk_resources() {
         .expect("TIDAL_BEARER_ACCESS_TOKEN environment variable must be set");
 
     // Configure API client
-    let mut config = apis::configuration::Configuration::new();
+    let mut config = apis::configuration::TidalClient::new();
     config.bearer_access_token = Some(bearer_token);
     config.country_code = "US".to_string();
 
@@ -139,11 +139,10 @@ async fn test_search_and_walk_resources() {
                 search_response.data.id
             );
 
-            if let Some(attributes) = &search_response.data.attributes {
-                trace!("Search tracking ID: {}", attributes.tracking_id);
-                if let Some(did_you_mean) = &attributes.did_you_mean {
-                    trace!("Did you mean: {}", did_you_mean);
-                }
+            let attributes = &search_response.data.attributes;
+            trace!("Search tracking ID: {}", attributes.tracking_id);
+            if let Some(did_you_mean) = &attributes.did_you_mean {
+                trace!("Did you mean: {}", did_you_mean);
             }
 
             // Walk through search result relationships using simple serial approach
@@ -157,7 +156,7 @@ async fn test_search_and_walk_resources() {
 
 /// Simple serial resource walking
 async fn walk_search_result(
-    config: &apis::configuration::Configuration,
+    config: &apis::configuration::TidalClient,
     search_response: &Resource<models::search_result::SearchResult>,
 ) {
     // Process relationships directly without queuing
@@ -219,7 +218,7 @@ async fn walk_search_result(
 
 #[async_recursion]
 async fn process_album(
-    config: &apis::configuration::Configuration,
+    config: &apis::configuration::TidalClient,
     album_id: &str,
     recurse: usize,
 ) {
@@ -277,7 +276,7 @@ async fn process_album(
 
 #[async_recursion]
 async fn process_artist(
-    config: &apis::configuration::Configuration,
+    config: &apis::configuration::TidalClient,
     artist_id: &str,
     recurse: usize,
 ) {
@@ -394,7 +393,7 @@ async fn process_artist(
 
 #[async_recursion]
 async fn process_track(
-    config: &apis::configuration::Configuration,
+    config: &apis::configuration::TidalClient,
     track_id: &str,
     recurse: usize,
 ) {
@@ -446,7 +445,7 @@ async fn process_track(
 
 #[async_recursion]
 async fn process_playlist(
-    config: &apis::configuration::Configuration,
+    config: &apis::configuration::TidalClient,
     playlist_id: &str,
     recurse: usize,
 ) {
@@ -503,7 +502,7 @@ async fn process_playlist(
 
 #[async_recursion]
 async fn process_video(
-    config: &apis::configuration::Configuration,
+    config: &apis::configuration::TidalClient,
     video_id: &str,
     recurse: usize,
 ) {
@@ -554,7 +553,7 @@ async fn process_video(
 
 #[async_recursion]
 async fn process_artwork(
-    config: &apis::configuration::Configuration,
+    config: &apis::configuration::TidalClient,
     artwork_id: &str,
     _recurse: usize,
 ) {
@@ -589,7 +588,7 @@ async fn process_artwork(
 
 #[async_recursion]
 async fn process_biography(
-    config: &apis::configuration::Configuration,
+    config: &apis::configuration::TidalClient,
     artist_id: &str,
     _recurse: usize,
 ) {
@@ -626,7 +625,7 @@ async fn process_biography(
 }
 
 #[async_recursion]
-async fn process_role(config: &apis::configuration::Configuration, role_id: &str, _recurse: usize) {
+async fn process_role(config: &apis::configuration::TidalClient, role_id: &str, _recurse: usize) {
     if !can_make_request() {
         return;
     }
@@ -658,7 +657,7 @@ async fn process_role(config: &apis::configuration::Configuration, role_id: &str
 
 #[async_recursion]
 async fn process_provider(
-    config: &apis::configuration::Configuration,
+    config: &apis::configuration::TidalClient,
     provider_id: &str,
     _recurse: usize,
 ) {
@@ -693,7 +692,7 @@ async fn process_provider(
 
 #[async_recursion]
 async fn process_radio(
-    _config: &apis::configuration::Configuration,
+    _config: &apis::configuration::TidalClient,
     radio_id: &str,
     _recurse: usize,
 ) {
@@ -731,7 +730,7 @@ async fn test_user_collections_and_walk() {
         .expect("TIDAL_BEARER_ACCESS_TOKEN environment variable must be set");
 
     // Configure API client
-    let mut config = apis::configuration::Configuration::new();
+    let mut config = apis::configuration::TidalClient::new();
     config.bearer_access_token = Some(bearer_token);
     config.country_code = "US".to_string();
 
@@ -760,7 +759,7 @@ async fn test_user_collections_and_walk() {
 }
 
 /// Walk through user collections for different resource types
-async fn walk_user_collections(config: &apis::configuration::Configuration, user_id: &str) {
+async fn walk_user_collections(config: &apis::configuration::TidalClient, user_id: &str) {
     info!("Starting user collections walking for user: {}", user_id);
 
     // Process user's playlist collection

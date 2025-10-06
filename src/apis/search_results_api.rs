@@ -15,7 +15,7 @@ use reqwest;
 
 /// Retrieves single searchResult by id.
 pub async fn search_result_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
@@ -55,7 +55,7 @@ pub async fn search_result_get(
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn search_result_albums(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
@@ -91,7 +91,7 @@ pub async fn search_result_albums(
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn search_result_artists(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
@@ -127,7 +127,7 @@ pub async fn search_result_artists(
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn search_result_playlists(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
@@ -163,7 +163,7 @@ pub async fn search_result_playlists(
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn search_result_top_hits(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
@@ -199,7 +199,7 @@ pub async fn search_result_top_hits(
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn search_result_tracks(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
@@ -235,7 +235,7 @@ pub async fn search_result_tracks(
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn search_result_videos(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,

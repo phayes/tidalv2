@@ -29,7 +29,7 @@ pub struct ArtistsTrackProvidersResourceMeta {
 /// * `filter_handle` - Artist handle (e.g. "jayz")
 /// * `filter_id` - Artist id (e.g. "1566")
 pub async fn artist_list(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     include: Option<Vec<String>>,
     collapse_by: Option<String>,
     filter_handle: Option<Vec<String>>,
@@ -83,7 +83,7 @@ pub async fn artist_list(
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos (e.g. "albums")
 /// * `collapse_by` - Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based entry fingerprints while collapsing by ID always returns all available items. (e.g. "FINGERPRINT")
 pub async fn artist_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
     collapse_by: Option<String>,
@@ -122,7 +122,7 @@ pub async fn artist_get(
 /// * `id` - Artist id (e.g. "1566")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn artist_albums(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -151,7 +151,7 @@ pub async fn artist_albums(
 /// # Parameters
 /// * `id` - Artist id (e.g. "1566")
 pub async fn artist_biography(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
 ) -> Result<Relationship, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -172,7 +172,7 @@ pub async fn artist_biography(
 
 /// Retrieves owners relationship.
 pub async fn artist_owners(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
@@ -206,7 +206,7 @@ pub async fn artist_owners(
 
 /// Retrieves profileArt relationship.
 pub async fn artist_profile_art(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
@@ -241,7 +241,7 @@ pub async fn artist_profile_art(
 
 /// Retrieves radio relationship.
 pub async fn artist_radio(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
@@ -276,7 +276,7 @@ pub async fn artist_radio(
 
 /// Retrieves roles relationship.
 pub async fn artist_roles(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
     page_cursor: Option<&str>,
@@ -310,7 +310,7 @@ pub async fn artist_roles(
 
 /// Retrieves similarArtists relationship.
 pub async fn artist_similar_artists(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
@@ -345,7 +345,7 @@ pub async fn artist_similar_artists(
 
 /// Retrieves trackProviders relationship.
 pub async fn artist_track_providers(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
@@ -380,7 +380,7 @@ pub async fn artist_track_providers(
 
 /// Retrieves tracks relationship.
 pub async fn artist_tracks(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     collapse_by: &str,
     page_cursor: Option<&str>,
@@ -418,7 +418,7 @@ pub async fn artist_tracks(
 
 /// Retrieves videos relationship.
 pub async fn artist_videos(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,

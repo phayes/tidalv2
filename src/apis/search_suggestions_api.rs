@@ -15,7 +15,7 @@ use reqwest;
 
 /// Retrieves single searchSuggestion by id.
 pub async fn search_suggestion_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     explicit_filter: Option<&str>,
     include: Option<Vec<String>>,
@@ -55,7 +55,7 @@ pub async fn search_suggestion_get(
 /// * `explicit_filter` - Explicit filter (e.g. "INCLUDE/EXCLUDE")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn search_suggestion_direct_hits(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,

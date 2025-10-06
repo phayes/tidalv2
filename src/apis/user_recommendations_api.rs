@@ -20,7 +20,7 @@ use reqwest;
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes (e.g. "discoveryMixes")
 pub async fn user_recommendation_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     locale: &str,
     include: Option<Vec<String>>,
@@ -58,7 +58,7 @@ pub async fn user_recommendation_get(
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn user_recommendation_discovery_mixes(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
@@ -92,7 +92,7 @@ pub async fn user_recommendation_discovery_mixes(
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn user_recommendation_my_mixes(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
@@ -126,7 +126,7 @@ pub async fn user_recommendation_my_mixes(
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn user_recommendation_new_arrival_mixes(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,

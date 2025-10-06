@@ -18,7 +18,7 @@ use reqwest;
 /// # Parameters
 /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "1")
 pub async fn artist_role_list(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     filter_id: Option<Vec<String>>,
 ) -> Result<MultiResource<artist_role::ArtistRole>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -44,7 +44,7 @@ pub async fn artist_role_list(
 /// # Parameters
 /// * `id` - Artist role id (e.g. "1")
 pub async fn artist_role_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
 ) -> Result<Resource<artist_role::ArtistRole>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions

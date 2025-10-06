@@ -23,7 +23,7 @@ use reqwest;
 /// * `filter_id` - Album id (e.g. "251380836")
 /// * `filter_barcode_id` - Barcode Id (e.g. "196589525444")
 pub async fn album_list(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
     filter_owners_period_id: Option<Vec<String>>,
@@ -86,7 +86,7 @@ pub async fn album_list(
 /// * `id` - Album id (e.g. "251380836")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums (e.g. "artists")
 pub async fn album_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
 ) -> Result<Resource<album::Album>, Error<ApiError>> {
@@ -120,7 +120,7 @@ pub async fn album_get(
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn album_artists(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -150,7 +150,7 @@ pub async fn album_artists(
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn album_cover_art(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -180,7 +180,7 @@ pub async fn album_cover_art(
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn album_items(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>, Error<ApiError>>
@@ -211,7 +211,7 @@ pub async fn album_items(
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn album_owners(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -240,7 +240,7 @@ pub async fn album_owners(
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn album_providers(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -270,7 +270,7 @@ pub async fn album_providers(
 /// * `id` - Album id (e.g. "251380836")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn album_similar_albums(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {

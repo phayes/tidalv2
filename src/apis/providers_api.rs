@@ -18,7 +18,7 @@ use reqwest;
 /// # Parameters
 /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "771")
 pub async fn provider_list(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     filter_id: Option<Vec<String>>,
 ) -> Result<MultiResource<provider::Provider>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -44,7 +44,7 @@ pub async fn provider_list(
 /// # Parameters
 /// * `id` - Provider id (e.g. "771")
 pub async fn provider_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
 ) -> Result<Resource<provider::Provider>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions

@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SearchResult {
-    #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<SearchResultAttributes>,
+    #[serde(rename = "attributes", default)]
+    pub attributes: SearchResultAttributes,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,
@@ -18,7 +18,7 @@ pub struct SearchResult {
 impl SearchResult {
     pub fn new(id: String, r#type: String) -> SearchResult {
         SearchResult {
-            attributes: None,
+            attributes: SearchResultAttributes::default(),
             id,
             relationships: None,
             r#type,

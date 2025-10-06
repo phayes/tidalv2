@@ -23,7 +23,7 @@ use serde::{Deserialize, Serialize};
 /// * `filter_owners_period_id` - User id (e.g. "123456")
 /// * `filter_id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
 pub async fn playlist_list(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
     include: Option<Vec<String>>,
@@ -82,7 +82,7 @@ pub async fn playlist_list(
 
 /// Deletes existing playlist.
 pub async fn playlist_delete(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
 ) -> Result<(), Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -102,7 +102,7 @@ pub async fn playlist_delete(
 
 /// Retrieves single playlist by id.
 pub async fn playlist_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
 ) -> Result<Resource<playlist::Playlist>, Error<ApiError>> {
@@ -132,7 +132,7 @@ pub async fn playlist_get(
 
 /// Updates existing playlist.
 pub async fn playlist_update(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     update: playlist::UpdatePlaylist,
 ) -> Result<(), Error<ApiError>> {
@@ -161,7 +161,7 @@ pub async fn playlist_update(
 /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn playlist_cover_art(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
@@ -187,7 +187,7 @@ pub async fn playlist_cover_art(
 
 /// Remove tracks from playlist.
 pub async fn playlist_remove_tracks(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     tracks_to_remove: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
@@ -207,7 +207,7 @@ pub async fn playlist_remove_tracks(
 
 /// Remove videos from playlist.
 pub async fn playlist_remove_videos(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     videos_to_remove: Vec<String>,
 ) -> Result<(), Error<ApiError>> {
@@ -231,7 +231,7 @@ pub async fn playlist_remove_videos(
 /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn playlist_items(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<
@@ -264,7 +264,7 @@ pub async fn playlist_items(
 /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
 /// * `items_to_remove` - List of items to remove from the playlist
 pub async fn playlist_remove_items(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     items_to_remove: Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>,
 ) -> Result<(), Error<ApiError>> {
@@ -293,7 +293,7 @@ pub async fn playlist_remove_items(
 /// * `reorder_items` - Ordered list of items to re-order
 /// * `position_before` - Position before which the items will be re-ordered (e.g. "123456")
 pub async fn playlist_reorder_items(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     reorder_items: Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>,
     position_before: String,
@@ -321,7 +321,7 @@ pub async fn playlist_reorder_items(
 
 /// Adds item(s) to items relationship.
 pub async fn playlist_add_items(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     items_to_add: Vec<models::ResourceIdentifier>,
     position_before: Option<String>,
@@ -349,7 +349,7 @@ pub async fn playlist_add_items(
 }
 
 pub async fn playlist_add_videos(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     videos_to_add: Vec<String>,
     position_before: Option<String>,
@@ -363,7 +363,7 @@ pub async fn playlist_add_videos(
 }
 
 pub async fn playlist_add_tracks(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     tracks_to_add: Vec<String>,
     position_before: Option<String>,
@@ -382,7 +382,7 @@ pub async fn playlist_add_tracks(
 /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn playlist_owners(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error<ApiError>> {
@@ -408,7 +408,7 @@ pub async fn playlist_owners(
 
 /// Creates a new playlist.
 pub async fn playlist_create(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     playlist: playlist::CreatePlaylist,
 ) -> Result<Resource<playlist::Playlist>, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions

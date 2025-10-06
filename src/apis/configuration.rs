@@ -13,7 +13,7 @@ use log::{debug, info, trace};
 use serde::de::{DeserializeOwned, Error as _};
 
 #[derive(Debug, Clone)]
-pub struct Configuration {
+pub struct TidalClient {
     pub base_path: String,
     pub user_agent: Option<String>,
     pub client: reqwest::Client,
@@ -32,9 +32,9 @@ pub struct ApiKey {
     pub key: String,
 }
 
-impl Configuration {
-    pub fn new() -> Configuration {
-        Configuration::default()
+impl TidalClient {
+    pub fn new() -> TidalClient {
+        TidalClient::default()
     }
 
     /// Execute HTTP request and parse response into the specified type T
@@ -141,9 +141,9 @@ impl Configuration {
     }
 }
 
-impl Default for Configuration {
+impl Default for TidalClient {
     fn default() -> Self {
-        Configuration {
+        TidalClient {
             base_path: "https://openapi.tidal.com/v2".to_owned(),
             user_agent: Some("OpenAPI-Generator/0.1.76/rust".to_owned()),
             client: reqwest::Client::new(),

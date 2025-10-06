@@ -60,8 +60,8 @@ impl Default for TrackPresentation {
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TrackManifest {
-    #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<TrackManifestAttributes>,
+    #[serde(rename = "attributes", default)]
+    pub attributes: TrackManifestAttributes,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,
@@ -73,7 +73,7 @@ pub struct TrackManifest {
 impl TrackManifest {
     pub fn new(id: String, r#type: String) -> TrackManifest {
         TrackManifest {
-            attributes: None,
+            attributes: TrackManifestAttributes::default(),
             id,
             r#type,
         }

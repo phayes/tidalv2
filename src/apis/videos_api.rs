@@ -20,7 +20,7 @@ use reqwest;
 /// * `filter_isrc` - Allows to filter the collection of resources based on isrc attribute value (e.g. "USSM21600755")
 /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "75623239")
 pub async fn video_list(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     include: Option<Vec<String>>,
     filter_isrc: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
@@ -64,7 +64,7 @@ pub async fn video_list(
 
 /// Retrieves single video by id.
 pub async fn video_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
 ) -> Result<Resource<video::Video>, Error<ApiError>> {
@@ -98,7 +98,7 @@ pub async fn video_get(
 /// * `id` - Video id (e.g. "75623239")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn video_albums(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -128,7 +128,7 @@ pub async fn video_albums(
 /// * `id` - Video id (e.g. "75623239")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn video_artists(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -158,7 +158,7 @@ pub async fn video_artists(
 /// * `id` - Video id (e.g. "75623239")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn video_providers(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -188,7 +188,7 @@ pub async fn video_providers(
 /// * `id` - Video id (e.g. "75623239")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn video_thumbnail_art(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {

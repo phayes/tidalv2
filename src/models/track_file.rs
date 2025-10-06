@@ -38,8 +38,8 @@ impl TrackFileAttributes {
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TrackFile {
-    #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<TrackFileAttributes>,
+    #[serde(rename = "attributes", default)]
+    pub attributes: TrackFileAttributes,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,
@@ -51,7 +51,7 @@ pub struct TrackFile {
 impl TrackFile {
     pub fn new(id: String, r#type: String) -> TrackFile {
         TrackFile {
-            attributes: None,
+            attributes: TrackFileAttributes::default(),
             id,
             r#type,
         }

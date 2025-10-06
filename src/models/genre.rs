@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Genre {
-    #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<GenreAttributes>,
+    #[serde(rename = "attributes", default)]
+    pub attributes: GenreAttributes,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,
@@ -16,7 +16,7 @@ pub struct Genre {
 impl Genre {
     pub fn new(id: String, r#type: String) -> Genre {
         Genre {
-            attributes: None,
+            attributes: GenreAttributes::default(),
             id,
             r#type,
         }

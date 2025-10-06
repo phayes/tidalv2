@@ -15,7 +15,7 @@ use reqwest;
 
 /// Retrieves single trackManifest by id.
 pub async fn track_manifest_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     manifest_type: &str,
     formats: &str,

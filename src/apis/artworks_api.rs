@@ -19,7 +19,7 @@ use reqwest;
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
 /// * `filter_id` - Artwork id (e.g. "550e8400-e29b-41d4-a716-446655440000")
 pub async fn artwork_list(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     include: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
 ) -> Result<MultiResource<artwork::Artwork>, Error<ApiError>> {
@@ -53,7 +53,7 @@ pub async fn artwork_list(
 
 /// Retrieves single artwork by id.
 pub async fn artwork_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
 ) -> Result<Resource<artwork::Artwork>, Error<ApiError>> {
@@ -83,7 +83,7 @@ pub async fn artwork_get(
 
 /// Retrieves owners relationship.
 pub async fn artwork_owners(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {

@@ -15,7 +15,7 @@ use reqwest;
 
 /// Retrieves single trackFile by id.
 pub async fn track_file_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     formats: &str,
     usage: &str,

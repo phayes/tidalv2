@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Artwork {
-    #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<ArtworkAttributes>,
+    #[serde(rename = "attributes", default)]
+    pub attributes: ArtworkAttributes,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,
@@ -18,7 +18,7 @@ pub struct Artwork {
 impl Artwork {
     pub fn new(id: String, r#type: String) -> Artwork {
         Artwork {
-            attributes: None,
+            attributes: ArtworkAttributes::default(),
             id,
             relationships: None,
             r#type,

@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserRecommendation {
-    #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<serde_json::Value>,
+    #[serde(rename = "attributes", default)]
+    pub attributes: serde_json::Value,
     /// Resource id
     #[serde(rename = "id")]
     pub id: String,
@@ -18,7 +18,7 @@ pub struct UserRecommendation {
 impl UserRecommendation {
     pub fn new(id: String, r#type: String) -> UserRecommendation {
         UserRecommendation {
-            attributes: None,
+            attributes: serde_json::Value::default(),
             id,
             relationships: None,
             r#type,

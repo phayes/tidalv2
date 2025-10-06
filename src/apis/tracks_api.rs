@@ -23,7 +23,7 @@ use reqwest;
 /// * `filter_isrc` - International Standard Recording Code (ISRC) (e.g. "QMJMT1701237")
 /// * `filter_id` - A Tidal catalogue ID (e.g. "75413016")
 pub async fn track_list(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
     filter_owners_period_id: Option<Vec<String>>,
@@ -86,7 +86,7 @@ pub async fn track_list(
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, sourceFile, trackStatistics (e.g. "albums")
 pub async fn track_get(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     include: Option<Vec<String>>,
 ) -> Result<Resource<Track>, Error<ApiError>> {
@@ -120,7 +120,7 @@ pub async fn track_get(
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn track_albums(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -150,7 +150,7 @@ pub async fn track_albums(
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn track_artists(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -180,7 +180,7 @@ pub async fn track_artists(
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn track_lyrics(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -209,7 +209,7 @@ pub async fn track_lyrics(
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn track_owners(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -238,7 +238,7 @@ pub async fn track_owners(
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn track_providers(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -268,7 +268,7 @@ pub async fn track_providers(
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn track_radio(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -297,7 +297,7 @@ pub async fn track_radio(
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn track_similar_tracks(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error<ApiError>> {
@@ -326,7 +326,7 @@ pub async fn track_similar_tracks(
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 pub async fn track_source_file(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
 ) -> Result<Relationship, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -349,7 +349,7 @@ pub async fn track_source_file(
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 pub async fn track_statistics(
-    configuration: &configuration::Configuration,
+    configuration: &configuration::TidalClient,
     id: &str,
 ) -> Result<Relationship, Error<ApiError>> {
     // add a prefix to parameters to efficiently prevent name collisions
