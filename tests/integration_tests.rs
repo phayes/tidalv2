@@ -20,7 +20,7 @@ fn init_logging_once() {
 }
 
 /// Maximum total number of API requests allowed across all tests
-const MAX_TOTAL_REQUESTS: usize = 200;
+const MAX_TOTAL_REQUESTS: usize = 50;
 
 /// Global atomic counter tracking total API requests made
 static TOTAL_REQUESTS: AtomicUsize = AtomicUsize::new(0);
@@ -31,10 +31,17 @@ static PROCESSED_RESOURCES: LazyLock<Mutex<HashMap<ResourceType, HashSet<String>
 
 /// Integration tests for TIDAL API
 ///
-/// These tests require TIDAL_BEARER_ACCESS_TOKEN environment variable to be set.
-/// The tests perform read-only operations to validate API parsing and resource walking.
+/// These tests require the following environment variables to be set:
+/// - TIDAL_CLIENT_ID: Your Tidal API client ID
+/// - TIDAL_CLIENT_SECRET: Your Tidal API client secret (optional, for some operations)
+/// - TIDAL_REFRESH_TOKEN: Refresh token for automatic token renewal (required)
+/// - TIDAL_ACCESS_TOKEN: Valid access token for API authentication (optional, will be generated from refresh token if not provided)
 ///
-/// Run with: cargo test --test integration_tests -- --nocapture
+/// The tests perform read-only operations to validate API parsing and resource walking.
+/// Note: These tests are marked with #[ignore] and require the --ignored flag to run.
+///
+/// Run with: cargo test --ignored -- --nocapture
+/// Or run specific tests: cargo test test_search_and_walk_resources --ignored -- --nocapture
 
 /// Check if we can make another API request without exceeding the global limit
 fn can_make_request() -> bool {
@@ -98,12 +105,28 @@ async fn test_search_and_walk_resources() {
     // Initialize logging for HTTP request/response debugging
     init_logging_once();
 
-    // Get bearer token from environment
+    // Get required environment variables
     let client_id: String = env::var("TIDAL_CLIENT_ID")
         .expect("TIDAL_CLIENT_ID environment variable must be set");
-
-    // Configure API client
-    let mut client = apis::configuration::TidalClient::new(client_id);
+    
+    let refresh_token = env::var("TIDAL_REFRESH_TOKEN")
+        .expect("TIDAL_REFRESH_TOKEN environment variable must be set");
+    
+    // Get optional access token (client will generate one if not provided)
+    let access_token = env::var("TIDAL_ACCESS_TOKEN")
+        .unwrap_or_else(|_| String::new()); // Empty string if not provided
+    
+    // Configure API client with authentication
+    let authz = apis::configuration::Authz::new(
+        access_token,
+        refresh_token,
+        0, // user_id will be updated when we get user info
+        Some("US".to_string()),
+    );
+    
+    let mut client = apis::configuration::TidalClient::new(client_id)
+        .with_authz(authz);
+    
     client.set_country_code("US".to_string());
 
     // Perform search for a popular query
@@ -204,6 +227,7 @@ async fn walk_search_result(
                     Artists => process_artist(client, &resource_id.id, 2).await,
                     Tracks => process_track(client, &resource_id.id, 2).await,
                     Videos => process_video(client, &resource_id.id, 2).await,
+                    Playlists => process_playlist(client, &resource_id.id, 2).await,
                     _ => {
                         panic!("Unknown resource type: {}", resource_id.r#type);
                     }
@@ -724,12 +748,28 @@ async fn test_user_collections_and_walk() {
     // Initialize logging for HTTP request/response debugging
     init_logging_once();
 
-    // Get bearer token from environment
+    // Get required environment variables
     let client_id = env::var("TIDAL_CLIENT_ID")
         .expect("TIDAL_CLIENT_ID environment variable must be set");
-
-    // Configure API client
-    let mut client = apis::configuration::TidalClient::new(client_id);
+    
+    let refresh_token = env::var("TIDAL_REFRESH_TOKEN")
+        .expect("TIDAL_REFRESH_TOKEN environment variable must be set");
+    
+    // Get optional access token (client will generate one if not provided)
+    let access_token = env::var("TIDAL_ACCESS_TOKEN")
+        .unwrap_or_else(|_| String::new()); // Empty string if not provided
+    
+    // Configure API client with authentication
+    let authz = apis::configuration::Authz::new(
+        access_token,
+        refresh_token,
+        0, // user_id will be updated when we get user info
+        Some("US".to_string()),
+    );
+    
+    let mut client = apis::configuration::TidalClient::new(client_id)
+        .with_authz(authz);
+    
     client.set_country_code("US".to_string());
 
     info!("Starting user collections integration test");
