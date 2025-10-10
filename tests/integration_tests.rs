@@ -1,12 +1,11 @@
 use async_recursion::async_recursion;
 use log::{info, trace};
-use models::*;
+use tidalv2::models::*;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::LazyLock;
 use std::sync::{Mutex, Once};
-use tidalv2::{apis, models};
 use ResourceType::*;
 
 /// Ensure logging is only initialized once across all tests
@@ -117,7 +116,7 @@ async fn test_search_and_walk_resources() {
         .unwrap_or_else(|_| String::new()); // Empty string if not provided
     
     // Configure API client with authentication
-    let authz = apis::client::Authz::new(
+    let authz = tidalv2::client::Authz::new(
         access_token,
         refresh_token,
         0, // user_id will be updated when we get user info
@@ -125,7 +124,7 @@ async fn test_search_and_walk_resources() {
         u64::MAX, // expires_timestamp - set to far future for testing
     );
     
-    let mut client = apis::client::TidalClient::new(client_id)
+    let mut client = tidalv2::client::TidalClient::new(client_id)
         .with_authz(authz);
     
     client.set_country_code("US".to_string());
@@ -178,8 +177,8 @@ async fn test_search_and_walk_resources() {
 
 /// Simple serial resource walking
 async fn walk_search_result(
-    client: &apis::client::TidalClient,
-    search_response: &Resource<models::search_result::SearchResult>,
+    client: &tidalv2::client::TidalClient,
+    search_response: &Resource<tidalv2::models::search_result::SearchResult>,
 ) {
     // Process relationships directly without queuing
     if let Some(relationships) = &search_response.data.relationships {
@@ -241,7 +240,7 @@ async fn walk_search_result(
 
 #[async_recursion]
 async fn process_album(
-    client: &apis::client::TidalClient,
+    client: &tidalv2::client::TidalClient,
     album_id: &str,
     recurse: usize,
 ) {
@@ -298,7 +297,7 @@ async fn process_album(
 
 #[async_recursion]
 async fn process_artist(
-    client: &apis::client::TidalClient,
+    client: &tidalv2::client::TidalClient,
     artist_id: &str,
     recurse: usize,
 ) {
@@ -414,7 +413,7 @@ async fn process_artist(
 
 #[async_recursion]
 async fn process_track(
-    client: &apis::client::TidalClient,
+    client: &tidalv2::client::TidalClient,
     track_id: &str,
     recurse: usize,
 ) {
@@ -465,7 +464,7 @@ async fn process_track(
 
 #[async_recursion]
 async fn process_playlist(
-    client: &apis::client::TidalClient,
+    client: &tidalv2::client::TidalClient,
     playlist_id: &str,
     recurse: usize,
 ) {
@@ -522,7 +521,7 @@ async fn process_playlist(
 
 #[async_recursion]
 async fn process_video(
-    client: &apis::client::TidalClient,
+    client: &tidalv2::client::TidalClient,
     video_id: &str,
     recurse: usize,
 ) {
@@ -572,7 +571,7 @@ async fn process_video(
 
 #[async_recursion]
 async fn process_artwork(
-    client: &apis::client::TidalClient,
+    client: &tidalv2::client::TidalClient,
     artwork_id: &str,
     _recurse: usize,
 ) {
@@ -607,7 +606,7 @@ async fn process_artwork(
 
 #[async_recursion]
 async fn process_biography(
-    client: &apis::client::TidalClient,
+    client: &tidalv2::client::TidalClient,
     artist_id: &str,
     _recurse: usize,
 ) {
@@ -644,7 +643,7 @@ async fn process_biography(
 }
 
 #[async_recursion]
-async fn process_role(client: &apis::client::TidalClient, role_id: &str, _recurse: usize) {
+async fn process_role(client: &tidalv2::client::TidalClient, role_id: &str, _recurse: usize) {
     if !can_make_request() {
         return;
     }
@@ -676,7 +675,7 @@ async fn process_role(client: &apis::client::TidalClient, role_id: &str, _recurs
 
 #[async_recursion]
 async fn process_provider(
-    client: &apis::client::TidalClient,
+    client: &tidalv2::client::TidalClient,
     provider_id: &str,
     _recurse: usize,
 ) {
@@ -711,7 +710,7 @@ async fn process_provider(
 
 #[async_recursion]
 async fn process_radio(
-    _client: &apis::client::TidalClient,
+    _client: &tidalv2::client::TidalClient,
     radio_id: &str,
     _recurse: usize,
 ) {
@@ -756,7 +755,7 @@ async fn test_user_collections_and_walk() {
         .unwrap_or_else(|_| String::new()); // Empty string if not provided
     
     // Configure API client with authentication
-    let authz = apis::client::Authz::new(
+    let authz = tidalv2::client::Authz::new(
         access_token,
         refresh_token,
         0, // user_id will be updated when we get user info
@@ -764,7 +763,7 @@ async fn test_user_collections_and_walk() {
         u64::MAX, // expires_timestamp - set to far future for testing
     );
     
-    let mut client = apis::client::TidalClient::new(client_id)
+    let mut client = tidalv2::client::TidalClient::new(client_id)
         .with_authz(authz);
     
     client.set_country_code("US".to_string());
@@ -794,7 +793,7 @@ async fn test_user_collections_and_walk() {
 }
 
 /// Walk through user collections for different resource types
-async fn walk_user_collections(client: &apis::client::TidalClient, user_id: &str) {
+async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &str) {
     info!("Starting user collections walking for user: {}", user_id);
 
     // Process user's playlist collection

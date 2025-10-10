@@ -13,8 +13,8 @@ pub(crate) static TIDAL_V1_API_BASE_URL: &str = "https://api.tidal.com/v1";
 pub(crate) static TIDAL_V2_API_BASE_URL: &str = "https://openapi.tidal.com/v2";
 pub(crate) static TIDAL_USER_AGENT: &str = "rust-crate:tidalv2";
 
-use crate::apis::TidalV1Error;
-use crate::apis::{Error, TidalError, TidalUnknownError};
+use crate::error::TidalV1Error;
+use crate::error::{Error, TidalError, TidalUnknownError};
 use arc_swap::ArcSwapOption;
 use async_recursion::async_recursion;
 use log::{debug, info, trace};

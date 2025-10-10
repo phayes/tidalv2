@@ -8,8 +8,12 @@ extern crate serde_json;
 extern crate serde_repr;
 extern crate url;
 
-pub mod apis;
+pub(crate) mod apis;
 pub mod models;
+pub mod error;
+pub mod client;
+
+pub use client::TidalClient;
 
 #[cfg(feature = "tidalrs")]
 pub mod tidalrs;
