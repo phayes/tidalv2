@@ -13,33 +13,34 @@ use crate::models::*;
 
 use reqwest;
 
-/// Retrieves single searchResult by id.
-pub async fn search_result_get(
-    configuration: &client::TidalClient,
-    id: &str,
-    explicit_filter: Option<&str>,
-    include: Option<Vec<String>>,
-) -> Result<Resource<search_result::SearchResult>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_explicit_filter = explicit_filter;
-    let p_include = include;
+impl client::TidalClient {
+    /// Retrieves single searchResult by id.
+        pub async fn search_result_get(
+        &self,
+        id: &str,
+        explicit_filter: Option<&str>,
+        include: Option<Vec<String>>,
+    ) -> Result<Resource<search_result::SearchResult>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_explicit_filter = explicit_filter;
+        let p_include = include;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/searchResults/{id}",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_explicit_filter {
-        req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
+        if let Some(ref param_value) = p_explicit_filter {
+            req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("include".to_owned(), p.to_string()))
@@ -47,8 +48,8 @@ pub async fn search_result_get(
         );
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves albums relationship.
 ///
@@ -56,37 +57,37 @@ pub async fn search_result_get(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_result_albums(
-    configuration: &client::TidalClient,
+    pub async fn search_result_albums(
+    &self,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_explicit_filter = explicit_filter;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_explicit_filter = explicit_filter;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/searchResults/{id}/relationships/albums",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_explicit_filter {
-        req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
+        if let Some(ref param_value) = p_explicit_filter {
+            req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("include", "albums")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "albums")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves artists relationship.
 ///
@@ -94,37 +95,37 @@ pub async fn search_result_albums(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_result_artists(
-    configuration: &client::TidalClient,
+    pub async fn search_result_artists(
+    &self,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_explicit_filter = explicit_filter;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_explicit_filter = explicit_filter;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/searchResults/{id}/relationships/artists",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_explicit_filter {
-        req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
+        if let Some(ref param_value) = p_explicit_filter {
+            req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("include", "artists")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "artists")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves playlists relationship.
 ///
@@ -132,37 +133,37 @@ pub async fn search_result_artists(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_result_playlists(
-    configuration: &client::TidalClient,
+    pub async fn search_result_playlists(
+    &self,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_explicit_filter = explicit_filter;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_explicit_filter = explicit_filter;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/searchResults/{id}/relationships/playlists",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_explicit_filter {
-        req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
+        if let Some(ref param_value) = p_explicit_filter {
+            req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("include", "playlists")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "playlists")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves topHits relationship.
 ///
@@ -170,37 +171,37 @@ pub async fn search_result_playlists(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_result_top_hits(
-    configuration: &client::TidalClient,
+    pub async fn search_result_top_hits(
+    &self,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_explicit_filter = explicit_filter;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_explicit_filter = explicit_filter;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/searchResults/{id}/relationships/topHits",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_explicit_filter {
-        req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
+        if let Some(ref param_value) = p_explicit_filter {
+            req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("include", "topHits")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "topHits")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves tracks relationship.
 ///
@@ -208,37 +209,37 @@ pub async fn search_result_top_hits(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_result_tracks(
-    configuration: &client::TidalClient,
+    pub async fn search_result_tracks(
+    &self,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_explicit_filter = explicit_filter;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_explicit_filter = explicit_filter;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/searchResults/{id}/relationships/tracks",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_explicit_filter {
-        req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
+        if let Some(ref param_value) = p_explicit_filter {
+            req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("include", "tracks")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "tracks")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves videos relationship.
 ///
@@ -246,34 +247,35 @@ pub async fn search_result_tracks(
 /// * `id` - Search query (e.g. "moon")
 /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_result_videos(
-    configuration: &client::TidalClient,
+    pub async fn search_result_videos(
+    &self,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_explicit_filter = explicit_filter;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_explicit_filter = explicit_filter;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/searchResults/{id}/relationships/videos",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_explicit_filter {
-        req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
+        if let Some(ref param_value) = p_explicit_filter {
+            req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("include", "videos")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "videos")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
+    }
 }

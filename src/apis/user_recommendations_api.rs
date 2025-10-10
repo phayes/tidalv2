@@ -13,36 +13,37 @@ use crate::models::*;
 
 use reqwest;
 
-/// Retrieves single userRecommendation by id.
-///
-/// # Parameters
-/// * `id` - User id (e.g. "123456")
-/// * `locale` - BCP47 locale code (e.g. "en-US")
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes (e.g. "discoveryMixes")
-pub async fn user_recommendation_get(
-    configuration: &client::TidalClient,
-    id: &str,
-    locale: &str,
-    include: Option<Vec<String>>,
-) -> Result<Resource<user_recommendation::UserRecommendation>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_locale = locale;
-    let p_include = include;
+impl client::TidalClient {
+    /// Retrieves single userRecommendation by id.
+    ///
+    /// # Parameters
+    /// * `id` - User id (e.g. "123456")
+    /// * `locale` - BCP47 locale code (e.g. "en-US")
+    /// * `include` - Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes (e.g. "discoveryMixes")
+        pub async fn user_recommendation_get(
+        &self,
+        id: &str,
+        locale: &str,
+        include: Option<Vec<String>>,
+    ) -> Result<Resource<user_recommendation::UserRecommendation>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_locale = locale;
+        let p_include = include;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/userRecommendations/{id}",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
-    if let Some(ref param_value) = p_include {
-        req_builder = req_builder.query(
+        req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("include".to_owned(), p.to_string()))
@@ -50,8 +51,8 @@ pub async fn user_recommendation_get(
         );
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves discoveryMixes relationship.
 ///
@@ -59,35 +60,35 @@ pub async fn user_recommendation_get(
 /// * `id` - User id (e.g. "123456")
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn user_recommendation_discovery_mixes(
-    configuration: &client::TidalClient,
+    pub async fn user_recommendation_discovery_mixes(
+    &self,
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_locale = locale;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_locale = locale;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/userRecommendations/{id}/relationships/discoveryMixes",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
-    req_builder = req_builder.query(&[("include", "discoveryMixes")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
+        req_builder = req_builder.query(&[("include", "discoveryMixes")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves myMixes relationship.
 ///
@@ -95,35 +96,35 @@ pub async fn user_recommendation_discovery_mixes(
 /// * `id` - User id (e.g. "123456")
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn user_recommendation_my_mixes(
-    configuration: &client::TidalClient,
+    pub async fn user_recommendation_my_mixes(
+    &self,
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_locale = locale;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_locale = locale;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/userRecommendations/{id}/relationships/myMixes",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
-    req_builder = req_builder.query(&[("include", "myMixes")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
+        req_builder = req_builder.query(&[("include", "myMixes")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves newArrivalMixes relationship.
 ///
@@ -131,32 +132,33 @@ pub async fn user_recommendation_my_mixes(
 /// * `id` - User id (e.g. "123456")
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn user_recommendation_new_arrival_mixes(
-    configuration: &client::TidalClient,
+    pub async fn user_recommendation_new_arrival_mixes(
+    &self,
     id: &str,
     locale: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_locale = locale;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_locale = locale;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/userRecommendations/{id}/relationships/newArrivalMixes",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
-    req_builder = req_builder.query(&[("include", "newArrivalMixes")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
+        req_builder = req_builder.query(&[("include", "newArrivalMixes")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
+    }
 }

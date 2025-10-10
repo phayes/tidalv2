@@ -13,33 +13,34 @@ use crate::models::*;
 
 use reqwest;
 
-/// Retrieves single searchSuggestion by id.
-pub async fn search_suggestion_get(
-    configuration: &client::TidalClient,
-    id: &str,
-    explicit_filter: Option<&str>,
-    include: Option<Vec<String>>,
-) -> Result<Resource<search_suggestions::SearchSuggestion>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_explicit_filter = explicit_filter;
-    let p_include = include;
+impl client::TidalClient {
+    /// Retrieves single searchSuggestion by id.
+        pub async fn search_suggestion_get(
+        &self,
+        id: &str,
+        explicit_filter: Option<&str>,
+        include: Option<Vec<String>>,
+    ) -> Result<Resource<search_suggestions::SearchSuggestion>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_explicit_filter = explicit_filter;
+        let p_include = include;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/searchSuggestions/{id}",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_explicit_filter {
-        req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
+        if let Some(ref param_value) = p_explicit_filter {
+            req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("include".to_owned(), p.to_string()))
@@ -47,8 +48,8 @@ pub async fn search_suggestion_get(
         );
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves directHits relationship.
 ///
@@ -56,34 +57,35 @@ pub async fn search_suggestion_get(
 /// * `id` - Search suggestion id
 /// * `explicit_filter` - Explicit filter (e.g. "INCLUDE/EXCLUDE")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn search_suggestion_direct_hits(
-    configuration: &client::TidalClient,
+    pub async fn search_suggestion_direct_hits(
+    &self,
     id: &str,
     explicit_filter: Option<&str>,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_explicit_filter = explicit_filter;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_explicit_filter = explicit_filter;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/searchSuggestions/{id}/relationships/directHits",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_explicit_filter {
-        req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
+        if let Some(ref param_value) = p_explicit_filter {
+            req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("include", "directHits")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "directHits")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
+    }
 }

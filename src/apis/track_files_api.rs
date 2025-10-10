@@ -13,27 +13,29 @@ use crate::models::*;
 
 use reqwest;
 
-/// Retrieves single trackFile by id.
-pub async fn track_file_get(
-    configuration: &client::TidalClient,
-    id: &str,
-    formats: &str,
-    usage: &str,
-) -> Result<Resource<track_file::TrackFile>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_formats = formats;
-    let p_usage = usage;
+impl client::TidalClient {
+    /// Retrieves single trackFile by id.
+    pub async fn track_file_get(
+        &self,
+        id: &str,
+        formats: &str,
+        usage: &str,
+    ) -> Result<Resource<track_file::TrackFile>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_formats = formats;
+        let p_usage = usage;
 
-    let uri_str = format!(
-        "{}/trackFiles/{id}",
-        configuration.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!(
+            "{}/trackFiles/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("formats", &p_formats.to_string())]);
-    req_builder = req_builder.query(&[("usage", &p_usage.to_string())]);
+        req_builder = req_builder.query(&[("formats", &p_formats.to_string())]);
+        req_builder = req_builder.query(&[("usage", &p_usage.to_string())]);
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
+    }
 }

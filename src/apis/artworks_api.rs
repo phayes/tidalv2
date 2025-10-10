@@ -13,36 +13,37 @@ use crate::models::*;
 
 use reqwest;
 
-/// Retrieves multiple artworks by available filters, or without if applicable.
-///
-/// # Parameters
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
-/// * `filter_id` - Artwork id (e.g. "550e8400-e29b-41d4-a716-446655440000")
-pub async fn artwork_list(
-    configuration: &client::TidalClient,
-    include: Option<Vec<String>>,
-    filter_id: Option<Vec<String>>,
-) -> Result<MultiResource<artwork::Artwork>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_include = include;
-    let p_filter_id = filter_id;
+impl client::TidalClient {
+    /// Retrieves multiple artworks by available filters, or without if applicable.
+    ///
+    /// # Parameters
+    /// * `include` - Allows the client to customize which related resources should be returned. Available options: owners (e.g. "owners")
+    /// * `filter_id` - Artwork id (e.g. "550e8400-e29b-41d4-a716-446655440000")
+        pub async fn artwork_list(
+        &self,
+        include: Option<Vec<String>>,
+        filter_id: Option<Vec<String>>,
+    ) -> Result<MultiResource<artwork::Artwork>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_include = include;
+        let p_filter_id = filter_id;
 
-    let uri_str = format!("{}/artworks", configuration.base_path_api);
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!("{}/artworks", self.base_path_api);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("include".to_owned(), p.to_string()))
                 .collect::<Vec<(std::string::String, std::string::String)>>(),
         );
     }
-    if let Some(ref param_value) = p_filter_id {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_filter_id {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("filter[id]".to_owned(), p.to_string()))
@@ -50,31 +51,31 @@ pub async fn artwork_list(
         );
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves single artwork by id.
-pub async fn artwork_get(
-    configuration: &client::TidalClient,
+    pub async fn artwork_get(
+    &self,
     id: &str,
     include: Option<Vec<String>>,
 ) -> Result<Resource<artwork::Artwork>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_include = include;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_include = include;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/artworks/{id}",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("include".to_owned(), p.to_string()))
@@ -82,30 +83,31 @@ pub async fn artwork_get(
         );
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves owners relationship.
-pub async fn artwork_owners(
-    configuration: &client::TidalClient,
+    pub async fn artwork_owners(
+    &self,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/artworks/{id}/relationships/owners",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("include", "owners")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "owners")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
+    }
 }

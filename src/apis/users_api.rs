@@ -12,15 +12,17 @@ use super::{client, Error};
 use crate::models::*;
 use reqwest;
 
-/// Retrieves current user's user(s).
-///
-/// # Parameters
-/// This endpoint takes no parameters.
-pub async fn user_me(
-    configuration: &client::TidalClient,
-) -> Result<Resource<user::User>, Error> {
-    let uri_str = format!("{}/users/me", configuration.base_path_api);
-    let req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+impl client::TidalClient {
+    /// Retrieves current user's user(s).
+    ///
+    /// # Parameters
+    /// This endpoint takes no parameters.
+    pub async fn user_me(
+        &self,
+    ) -> Result<Resource<user::User>, Error> {
+        let uri_str = format!("{}/users/me", self.base_path_api);
+        let req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
+    }
 }

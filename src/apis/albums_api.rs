@@ -14,296 +14,298 @@ use serde::{Deserialize, Serialize};
 
 use reqwest;
 
-/// Retrieves multiple albums by available filters, or without if applicable.
-///
-/// # Parameters
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums (e.g. "artists")
-/// * `filter_owners_period_id` - User id (e.g. "123456")
-/// * `filter_id` - Album id (e.g. "251380836")
-/// * `filter_barcode_id` - Barcode Id (e.g. "196589525444")
-pub async fn album_list(
-    configuration: &client::TidalClient,
-    page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
-    filter_owners_period_id: Option<Vec<String>>,
-    filter_id: Option<Vec<String>>,
-    filter_barcode_id: Option<Vec<String>>,
-) -> Result<MultiResource<album::Album>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_page_cursor = page_cursor;
-    let p_include = include;
-    let p_filter_owners_period_id = filter_owners_period_id;
-    let p_filter_id = filter_id;
-    let p_filter_barcode_id = filter_barcode_id;
+impl client::TidalClient {
+    /// Retrieves multiple albums by available filters, or without if applicable.
+    ///
+    /// # Parameters
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// * `include` - Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums (e.g. "artists")
+    /// * `filter_owners_period_id` - User id (e.g. "123456")
+    /// * `filter_id` - Album id (e.g. "251380836")
+    /// * `filter_barcode_id` - Barcode Id (e.g. "196589525444")
+    pub async fn album_list(
+        &self,
+        page_cursor: Option<&str>,
+        include: Option<Vec<String>>,
+        filter_owners_period_id: Option<Vec<String>>,
+        filter_id: Option<Vec<String>>,
+        filter_barcode_id: Option<Vec<String>>,
+    ) -> Result<MultiResource<album::Album>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_page_cursor = page_cursor;
+        let p_include = include;
+        let p_filter_owners_period_id = filter_owners_period_id;
+        let p_filter_id = filter_id;
+        let p_filter_barcode_id = filter_barcode_id;
 
-    let uri_str = format!("{}/albums", configuration.base_path_api);
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!("{}/albums", self.base_path_api);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-    if let Some(ref param_value) = p_include {
-        req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        }
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        }
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
+        if let Some(ref param_value) = p_filter_owners_period_id {
+            req_builder = req_builder.query(
+                &param_value
+                    .iter()
+                    .map(|p| ("filter[owners.id]".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
+        if let Some(ref param_value) = p_filter_id {
+            req_builder = req_builder.query(
+                &param_value
+                    .iter()
+                    .map(|p| ("filter[id]".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
+        if let Some(ref param_value) = p_filter_barcode_id {
+            req_builder = req_builder.query(
+                &param_value
+                    .iter()
+                    .map(|p| ("filter[barcodeId]".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
+
+        self.execute_request(req_builder).await
+}
+
+    /// Retrieves single album by id.
+    ///
+    /// # Parameters
+    /// * `id` - Album id (e.g. "251380836")
+    /// * `include` - Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums (e.g. "artists")
+    pub async fn album_get(
+        &self,
+        id: &str,
+        include: Option<Vec<String>>,
+    ) -> Result<Resource<album::Album>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_include = include;
+
+        let uri_str = format!(
+            "{}/albums/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
         );
-    }
-    if let Some(ref param_value) = p_filter_owners_period_id {
-        req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("filter[owners.id]".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
+
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        }
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
+
+        self.execute_request(req_builder).await
+}
+
+    /// Retrieves artists relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Album id (e.g. "251380836")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    pub async fn album_artists(
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
+
+        let uri_str = format!(
+            "{}/albums/{id}/relationships/artists",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
         );
-    }
-    if let Some(ref param_value) = p_filter_id {
-        req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("filter[id]".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
+
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        }
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        }
+        req_builder = req_builder.query(&[("include", "artists")]);
+
+        self.execute_request(req_builder).await
+}
+
+    /// Retrieves coverArt relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Album id (e.g. "251380836")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    pub async fn album_cover_art(
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
+
+        let uri_str = format!(
+            "{}/albums/{id}/relationships/coverArt",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
         );
-    }
-    if let Some(ref param_value) = p_filter_barcode_id {
-        req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("filter[barcodeId]".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
+
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        }
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        }
+        req_builder = req_builder.query(&[("include", "coverArt")]);
+
+        self.execute_request(req_builder).await
+}
+
+    /// Retrieves items relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Album id (e.g. "251380836")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    pub async fn album_items(
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>, Error>
+    {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
+
+        let uri_str = format!(
+            "{}/albums/{id}/relationships/items",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
         );
-    }
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    configuration.execute_request(req_builder).await
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        }
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        }
+        req_builder = req_builder.query(&[("include", "items")]);
+
+        self.execute_request(req_builder).await
 }
 
-/// Retrieves single album by id.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums (e.g. "artists")
-pub async fn album_get(
-    configuration: &client::TidalClient,
-    id: &str,
-    include: Option<Vec<String>>,
-) -> Result<Resource<album::Album>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_include = include;
+    /// Retrieves owners relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Album id (e.g. "251380836")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    pub async fn album_owners(
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
-        "{}/albums/{id}",
-        configuration.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
-
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
-    if let Some(ref param_value) = p_include {
-        req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        let uri_str = format!(
+            "{}/albums/{id}/relationships/owners",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
         );
-    }
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    configuration.execute_request(req_builder).await
+        req_builder = req_builder.query(&[("include", "owners")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        }
+
+        self.execute_request(req_builder).await
 }
 
-/// Retrieves artists relationship.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn album_artists(
-    configuration: &client::TidalClient,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
+    /// Retrieves providers relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Album id (e.g. "251380836")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    pub async fn album_providers(
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
-        "{}/albums/{id}/relationships/artists",
-        configuration.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!(
+            "{}/albums/{id}/relationships/providers",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-    req_builder = req_builder.query(&[("include", "artists")]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        }
+        req_builder = req_builder.query(&[("include", "providers")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        }
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
 }
 
-/// Retrieves coverArt relationship.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn album_cover_art(
-    configuration: &client::TidalClient,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
+    /// Retrieves similarAlbums relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Album id (e.g. "251380836")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    pub async fn album_similar_albums(
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
-        "{}/albums/{id}/relationships/coverArt",
-        configuration.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!(
+            "{}/albums/{id}/relationships/similarAlbums",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        }
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        }
+        req_builder = req_builder.query(&[("include", "similarAlbums")]);
+
+        self.execute_request(req_builder).await
     }
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-    req_builder = req_builder.query(&[("include", "coverArt")]);
-
-    configuration.execute_request(req_builder).await
-}
-
-/// Retrieves items relationship.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn album_items(
-    configuration: &client::TidalClient,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>, Error>
-{
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
-
-    let uri_str = format!(
-        "{}/albums/{id}/relationships/items",
-        configuration.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
-
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-    req_builder = req_builder.query(&[("include", "items")]);
-
-    configuration.execute_request(req_builder).await
-}
-
-/// Retrieves owners relationship.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn album_owners(
-    configuration: &client::TidalClient,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
-
-    let uri_str = format!(
-        "{}/albums/{id}/relationships/owners",
-        configuration.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
-
-    req_builder = req_builder.query(&[("include", "owners")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-
-    configuration.execute_request(req_builder).await
-}
-
-/// Retrieves providers relationship.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn album_providers(
-    configuration: &client::TidalClient,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
-
-    let uri_str = format!(
-        "{}/albums/{id}/relationships/providers",
-        configuration.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
-
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
-    req_builder = req_builder.query(&[("include", "providers")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-
-    configuration.execute_request(req_builder).await
-}
-
-/// Retrieves similarAlbums relationship.
-///
-/// # Parameters
-/// * `id` - Album id (e.g. "251380836")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn album_similar_albums(
-    configuration: &client::TidalClient,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
-
-    let uri_str = format!(
-        "{}/albums/{id}/relationships/similarAlbums",
-        configuration.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
-
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
-    req_builder = req_builder.query(&[("include", "similarAlbums")]);
-
-    configuration.execute_request(req_builder).await
 }

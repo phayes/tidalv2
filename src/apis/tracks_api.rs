@@ -14,64 +14,65 @@ use crate::models::*;
 
 use reqwest;
 
-/// Retrieves multiple tracks by available filters, or without if applicable.
-///
-/// # Parameters
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-/// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, sourceFile, trackStatistics (e.g. "albums")
-/// * `filter_owners_period_id` - User id (e.g. "123456")
-/// * `filter_isrc` - International Standard Recording Code (ISRC) (e.g. "QMJMT1701237")
-/// * `filter_id` - A Tidal catalogue ID (e.g. "75413016")
-pub async fn track_list(
-    configuration: &client::TidalClient,
+impl client::TidalClient {
+    /// Retrieves multiple tracks by available filters, or without if applicable.
+    ///
+    /// # Parameters
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, sourceFile, trackStatistics (e.g. "albums")
+    /// * `filter_owners_period_id` - User id (e.g. "123456")
+    /// * `filter_isrc` - International Standard Recording Code (ISRC) (e.g. "QMJMT1701237")
+    /// * `filter_id` - A Tidal catalogue ID (e.g. "75413016")
+        pub async fn track_list(
+        &self,
     page_cursor: Option<&str>,
     include: Option<Vec<String>>,
     filter_owners_period_id: Option<Vec<String>>,
     filter_isrc: Option<Vec<String>>,
     filter_id: Option<Vec<String>>,
 ) -> Result<MultiResource<Track>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_page_cursor = page_cursor;
-    let p_include = include;
-    let p_filter_owners_period_id = filter_owners_period_id;
-    let p_filter_isrc = filter_isrc;
-    let p_filter_id = filter_id;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_page_cursor = page_cursor;
+        let p_include = include;
+        let p_filter_owners_period_id = filter_owners_period_id;
+        let p_filter_isrc = filter_isrc;
+        let p_filter_id = filter_id;
 
-    let uri_str = format!("{}/tracks", configuration.base_path_api);
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!("{}/tracks", self.base_path_api);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("include".to_owned(), p.to_string()))
                 .collect::<Vec<(std::string::String, std::string::String)>>(),
         );
     }
-    if let Some(ref param_value) = p_filter_owners_period_id {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_filter_owners_period_id {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("filter[owners.id]".to_owned(), p.to_string()))
                 .collect::<Vec<(std::string::String, std::string::String)>>(),
         );
     }
-    if let Some(ref param_value) = p_filter_isrc {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_filter_isrc {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("filter[isrc]".to_owned(), p.to_string()))
                 .collect::<Vec<(std::string::String, std::string::String)>>(),
         );
     }
-    if let Some(ref param_value) = p_filter_id {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_filter_id {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("filter[id]".to_owned(), p.to_string()))
@@ -79,35 +80,35 @@ pub async fn track_list(
         );
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves single track by id.
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, sourceFile, trackStatistics (e.g. "albums")
-pub async fn track_get(
-    configuration: &client::TidalClient,
+    pub async fn track_get(
+    &self,
     id: &str,
     include: Option<Vec<String>>,
 ) -> Result<Resource<Track>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_include = include;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_include = include;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/tracks/{id}",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    if let Some(ref param_value) = p_include {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("include".to_owned(), p.to_string()))
@@ -115,266 +116,267 @@ pub async fn track_get(
         );
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves albums relationship.
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn track_albums(
-    configuration: &client::TidalClient,
+    pub async fn track_albums(
+    &self,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/tracks/{id}/relationships/albums",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    req_builder = req_builder.query(&[("include", "albums")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "albums")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves artists relationship.
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn track_artists(
-    configuration: &client::TidalClient,
+    pub async fn track_artists(
+    &self,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/tracks/{id}/relationships/artists",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    req_builder = req_builder.query(&[("include", "artists")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "artists")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves lyrics relationship.
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn track_lyrics(
-    configuration: &client::TidalClient,
+    pub async fn track_lyrics(
+    &self,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/tracks/{id}/relationships/lyrics",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("include", "lyrics")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "lyrics")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves owners relationship.
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn track_owners(
-    configuration: &client::TidalClient,
+    pub async fn track_owners(
+    &self,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/tracks/{id}/relationships/owners",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("include", "owners")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "owners")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves providers relationship.
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn track_providers(
-    configuration: &client::TidalClient,
+    pub async fn track_providers(
+    &self,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/tracks/{id}/relationships/providers",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    req_builder = req_builder.query(&[("include", "providers")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "providers")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves radio relationship.
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn track_radio(
-    configuration: &client::TidalClient,
+    pub async fn track_radio(
+    &self,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/tracks/{id}/relationships/radio",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("include", "radio")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "radio")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves similarTracks relationship.
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-pub async fn track_similar_tracks(
-    configuration: &client::TidalClient,
+    pub async fn track_similar_tracks(
+    &self,
     id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_page_cursor = page_cursor;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_page_cursor = page_cursor;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/tracks/{id}/relationships/similarTracks",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(country_code) = &configuration.country_code {
-        req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
     }
-    req_builder = req_builder.query(&[("include", "similarTracks")]);
-    if let Some(ref param_value) = p_page_cursor {
-        req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
+        req_builder = req_builder.query(&[("include", "similarTracks")]);
+        if let Some(ref param_value) = p_page_cursor {
+            req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves sourceFile relationship.
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
-pub async fn track_source_file(
-    configuration: &client::TidalClient,
+    pub async fn track_source_file(
+    &self,
     id: &str,
 ) -> Result<Relationship, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/tracks/{id}/relationships/sourceFile",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("include", "sourceFile")]);
+        req_builder = req_builder.query(&[("include", "sourceFile")]);
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves trackStatistics relationship.
 ///
 /// # Parameters
 /// * `id` - A Tidal catalogue ID (e.g. "75413016")
-pub async fn track_statistics(
-    configuration: &client::TidalClient,
+    pub async fn track_statistics(
+    &self,
     id: &str,
 ) -> Result<Relationship, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/tracks/{id}/relationships/trackStatistics",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("include", "trackStatistics")]);
+        req_builder = req_builder.query(&[("include", "trackStatistics")]);
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
+    }
 }

@@ -140,8 +140,7 @@ async fn test_search_and_walk_resources() {
     }
 
     increment_request_count();
-    let search_result = apis::search_results_api::search_result_get(
-        &client,
+    let search_result = client.search_result_get(
         search_query,
         None, // explicit_filter
         Some(vec![
@@ -262,8 +261,7 @@ async fn process_album(
     trace!("Loading album: {}", album_id);
     increment_request_count();
 
-    let result = apis::albums_api::album_get(
-        client,
+    let result = client.album_get(
         album_id,
         Some(vec![Artists.to_string(), "items".to_string()]),
     )
@@ -320,8 +318,7 @@ async fn process_artist(
     trace!("Loading artist: {}", artist_id);
     increment_request_count();
 
-    let result = apis::artists_api::artist_get(
-        client,
+    let result = client.artist_get(
         artist_id,
         Some(vec![Albums.to_string(), Tracks.to_string()]),
         Some("FINGERPRINT".to_string()),
@@ -437,8 +434,7 @@ async fn process_track(
     trace!("Loading track: {}", track_id);
     increment_request_count();
 
-    let result = apis::tracks_api::track_get(
-        client,
+    let result = client.track_get(
         track_id,
         Some(vec![Artists.to_string(), Albums.to_string()]),
     )
@@ -490,7 +486,7 @@ async fn process_playlist(
     increment_request_count();
 
     let result =
-        apis::playlists_api::playlist_get(client, playlist_id, Some(vec!["items".to_string()]))
+        client.playlist_get(playlist_id, Some(vec!["items".to_string()]))
             .await;
 
     match result {
@@ -545,8 +541,7 @@ async fn process_video(
 
     trace!("Loading video: {}", video_id);
     increment_request_count();
-    let result = apis::videos_api::video_get(
-        client,
+    let result = client.video_get(
         video_id,
         Some(vec![Artists.to_string(), Albums.to_string()]),
     )
@@ -597,7 +592,7 @@ async fn process_artwork(
     trace!("Loading artwork: {}", artwork_id);
     increment_request_count();
 
-    let result = apis::artworks_api::artwork_get(client, artwork_id, None).await;
+    let result = client.artwork_get(artwork_id, None).await;
 
     match result {
         Ok(_artwork_response) => {
@@ -635,7 +630,7 @@ async fn process_biography(
     trace!("Loading biography for artist: {}", artist_id);
     increment_request_count();
 
-    let result = apis::artists_api::artist_biography(client, artist_id).await;
+    let result = client.artist_biography(artist_id).await;
 
     match result {
         Ok(_biography_response) => {
@@ -666,7 +661,7 @@ async fn process_role(client: &apis::client::TidalClient, role_id: &str, _recurs
     trace!("Loading role: {}", role_id);
     increment_request_count();
 
-    let result = apis::artist_roles_api::artist_role_get(client, role_id).await;
+    let result = client.artist_role_get(role_id).await;
 
     match result {
         Ok(_role_response) => {
@@ -701,7 +696,7 @@ async fn process_provider(
     trace!("Loading provider: {}", provider_id);
     increment_request_count();
 
-    let result = apis::providers_api::provider_get(client, provider_id).await;
+    let result = client.provider_get(provider_id).await;
 
     match result {
         Ok(_provider_response) => {
@@ -782,7 +777,7 @@ async fn test_user_collections_and_walk() {
     }
 
     increment_request_count();
-    let user_result = apis::users_api::user_me(&client).await;
+    let user_result = client.user_me().await;
 
     match user_result {
         Ok(user_response) => {
@@ -807,8 +802,8 @@ async fn walk_user_collections(client: &apis::client::TidalClient, user_id: &str
         info!("Processing user playlist collection...");
         increment_request_count();
 
-        let playlists_result = apis::user_collections_api::user_collection_playlists(
-            client, user_id, None, // page_cursor
+        let playlists_result = client.user_collection_playlists(
+            user_id, None, // page_cursor
             None, // sort
         )
         .await;
@@ -840,8 +835,8 @@ async fn walk_user_collections(client: &apis::client::TidalClient, user_id: &str
         info!("Processing user album collection...");
         increment_request_count();
 
-        let albums_result = apis::user_collections_api::user_collection_albums(
-            client, user_id, "US", // locale
+        let albums_result = client.user_collection_albums(
+            user_id, "US", // locale
             None, // page_cursor
             None, // sort
         )
@@ -871,8 +866,8 @@ async fn walk_user_collections(client: &apis::client::TidalClient, user_id: &str
         info!("Processing user artist collection...");
         increment_request_count();
 
-        let artists_result = apis::user_collections_api::user_collection_artists(
-            client, user_id, "US", // locale
+        let artists_result = client.user_collection_artists(
+            user_id, "US", // locale
             None, // page_cursor
             None, // sort
         )
@@ -902,8 +897,8 @@ async fn walk_user_collections(client: &apis::client::TidalClient, user_id: &str
         info!("Processing user track collection...");
         increment_request_count();
 
-        let tracks_result = apis::user_collections_api::user_collection_tracks(
-            client, user_id, "US", // locale
+        let tracks_result = client.user_collection_tracks(
+            user_id, "US", // locale
             None, // page_cursor
             None, // sort
         )
@@ -933,8 +928,8 @@ async fn walk_user_collections(client: &apis::client::TidalClient, user_id: &str
         info!("Processing user video collection...");
         increment_request_count();
 
-        let videos_result = apis::user_collections_api::user_collection_videos(
-            client, user_id, "US", // locale
+        let videos_result = client.user_collection_videos(
+            user_id, "US", // locale
             None, // page_cursor
             None, // sort
         )

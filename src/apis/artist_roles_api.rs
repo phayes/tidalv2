@@ -13,49 +13,51 @@ use crate::models::*;
 
 use reqwest;
 
-/// Retrieves multiple artistRoles by available filters, or without if applicable.
-///
-/// # Parameters
-/// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "1")
-pub async fn artist_role_list(
-    configuration: &client::TidalClient,
-    filter_id: Option<Vec<String>>,
-) -> Result<MultiResource<artist_role::ArtistRole>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_filter_id = filter_id;
+impl client::TidalClient {
+    /// Retrieves multiple artistRoles by available filters, or without if applicable.
+    ///
+    /// # Parameters
+    /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "1")
+    pub async fn artist_role_list(
+        &self,
+        filter_id: Option<Vec<String>>,
+    ) -> Result<MultiResource<artist_role::ArtistRole>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_filter_id = filter_id;
 
-    let uri_str = format!("{}/artistRoles", configuration.base_path_api);
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!("{}/artistRoles", self.base_path_api);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_filter_id {
-        req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("filter[id]".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+        if let Some(ref param_value) = p_filter_id {
+            req_builder = req_builder.query(
+                &param_value
+                    .iter()
+                    .map(|p| ("filter[id]".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
 }
 
-/// Retrieves single artistRole by id.
-///
-/// # Parameters
-/// * `id` - Artist role id (e.g. "1")
-pub async fn artist_role_get(
-    configuration: &client::TidalClient,
-    id: &str,
-) -> Result<Resource<artist_role::ArtistRole>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
+    /// Retrieves single artistRole by id.
+    ///
+    /// # Parameters
+    /// * `id` - Artist role id (e.g. "1")
+    pub async fn artist_role_get(
+        &self,
+        id: &str,
+    ) -> Result<Resource<artist_role::ArtistRole>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
 
-    let uri_str = format!(
-        "{}/artistRoles/{id}",
-        configuration.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-    let req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!(
+            "{}/artistRoles/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
+        let req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
+    }
 }

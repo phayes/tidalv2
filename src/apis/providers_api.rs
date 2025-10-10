@@ -13,22 +13,23 @@ use crate::models::*;
 
 use reqwest;
 
-/// Retrieves multiple providers by available filters, or without if applicable.
-///
-/// # Parameters
-/// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "771")
-pub async fn provider_list(
-    configuration: &client::TidalClient,
-    filter_id: Option<Vec<String>>,
-) -> Result<MultiResource<provider::Provider>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_filter_id = filter_id;
+impl client::TidalClient {
+    /// Retrieves multiple providers by available filters, or without if applicable.
+    ///
+    /// # Parameters
+    /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "771")
+        pub async fn provider_list(
+        &self,
+        filter_id: Option<Vec<String>>,
+    ) -> Result<MultiResource<provider::Provider>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_filter_id = filter_id;
 
-    let uri_str = format!("{}/providers", configuration.base_path_api);
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!("{}/providers", self.base_path_api);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_filter_id {
-        req_builder = req_builder.query(
+        if let Some(ref param_value) = p_filter_id {
+            req_builder = req_builder.query(
             &param_value
                 .iter()
                 .map(|p| ("filter[id]".to_owned(), p.to_string()))
@@ -36,26 +37,27 @@ pub async fn provider_list(
         );
     }
 
-    configuration.execute_request(req_builder).await
-}
+        self.execute_request(req_builder).await
+    }
 
 /// Retrieves single provider by id.
 ///
 /// # Parameters
 /// * `id` - Provider id (e.g. "771")
-pub async fn provider_get(
-    configuration: &client::TidalClient,
+    pub async fn provider_get(
+    &self,
     id: &str,
 ) -> Result<Resource<provider::Provider>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
 
-    let uri_str = format!(
+        let uri_str = format!(
         "{}/providers/{id}",
-        configuration.base_path_api,
+        self.base_path_api,
         id = crate::apis::urlencode(p_id)
     );
-    let req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
+    }
 }

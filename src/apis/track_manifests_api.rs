@@ -13,36 +13,38 @@ use crate::models::*;
 
 use reqwest;
 
-/// Retrieves single trackManifest by id.
-pub async fn track_manifest_get(
-    configuration: &client::TidalClient,
-    id: &str,
-    manifest_type: &str,
-    formats: &str,
-    uri_scheme: &str,
-    usage: &str,
-    adaptive: &str,
-) -> Result<Resource<track_manifest::TrackManifest>, Error> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_manifest_type = manifest_type;
-    let p_formats = formats;
-    let p_uri_scheme = uri_scheme;
-    let p_usage = usage;
-    let p_adaptive = adaptive;
+impl client::TidalClient {
+    /// Retrieves single trackManifest by id.
+    pub async fn track_manifest_get(
+        &self,
+        id: &str,
+        manifest_type: &str,
+        formats: &str,
+        uri_scheme: &str,
+        usage: &str,
+        adaptive: &str,
+    ) -> Result<Resource<track_manifest::TrackManifest>, Error> {
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_manifest_type = manifest_type;
+        let p_formats = formats;
+        let p_uri_scheme = uri_scheme;
+        let p_usage = usage;
+        let p_adaptive = adaptive;
 
-    let uri_str = format!(
-        "{}/trackManifests/{id}",
-        configuration.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!(
+            "{}/trackManifests/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("manifestType", &p_manifest_type.to_string())]);
-    req_builder = req_builder.query(&[("formats", &p_formats.to_string())]);
-    req_builder = req_builder.query(&[("uriScheme", &p_uri_scheme.to_string())]);
-    req_builder = req_builder.query(&[("usage", &p_usage.to_string())]);
-    req_builder = req_builder.query(&[("adaptive", &p_adaptive.to_string())]);
+        req_builder = req_builder.query(&[("manifestType", &p_manifest_type.to_string())]);
+        req_builder = req_builder.query(&[("formats", &p_formats.to_string())]);
+        req_builder = req_builder.query(&[("uriScheme", &p_uri_scheme.to_string())]);
+        req_builder = req_builder.query(&[("usage", &p_usage.to_string())]);
+        req_builder = req_builder.query(&[("adaptive", &p_adaptive.to_string())]);
 
-    configuration.execute_request(req_builder).await
+        self.execute_request(req_builder).await
+    }
 }
