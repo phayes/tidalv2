@@ -22,6 +22,7 @@ use serde::de::{DeserializeOwned, Error as _};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use std::sync::Arc;
+use std::time::{SystemTime, UNIX_EPOCH};
 use strum_macros::{AsRefStr, EnumString};
 use tokio::sync::{Semaphore, SemaphorePermit};
 
@@ -90,6 +91,13 @@ pub struct AuthzToken {
 }
 
 impl AuthzToken {
+    /// Calculate the Unix timestamp when this token expires
+    pub fn expires_timestamp(&self) -> u64 {
+        let now = SystemTime::now().duration_since(UNIX_EPOCH)
+            .unwrap_or_default();
+        now.as_secs() + self.expires_in as u64
+    }
+    
     pub fn authz(&self) -> Option<Authz> {
         if let Some(refresh_token) = self.refresh_token.clone() {
             Some(Authz {
@@ -97,6 +105,7 @@ impl AuthzToken {
                 refresh_token: refresh_token,
                 user_id: self.user_id as u64,
                 country_code: Some(self.user.country_code.clone()),
+                expires_timestamp: self.expires_timestamp(),
             })
         } else {
             None
@@ -475,10 +484,10 @@ impl TidalClient {
                     "scope": "r_usr w_usr w_sub",
                 });
 
-                let resp: AuthzToken = self
-                    .do_request(reqwest::Method::POST, &url, Some(params), None)
-                    .await?;
+                let req_builder = self.client.post(&url).form(&params);
+                let resp: AuthzToken = self.execute_request(req_builder).await?;
 
+                let expires_timestamp = resp.expires_timestamp();
                 let new_authz = Authz {
                     access_token: resp.access_token,
                     refresh_token: resp
@@ -489,6 +498,7 @@ impl TidalClient {
                         Some(country_code) => Some(country_code.clone()),
                         None => Some(resp.user.country_code.clone()),
                     },
+                    expires_timestamp,
                 };
 
                 // Single, quick swap visible to all readers
@@ -513,153 +523,6 @@ impl TidalClient {
         }
     }
 
-    // Do a GET or DELETE request to the given URL.
-    #[async_recursion]
-    pub(crate) async fn do_request<T: DeserializeOwned>(
-        &self,
-        method: reqwest::Method,
-        url: &str,
-        params: Option<serde_json::Value>,
-        etag: Option<&str>,
-    ) -> Result<T, Error> {
-        let mut req = match method {
-            reqwest::Method::GET => self.client.get(url),
-            reqwest::Method::DELETE => self.client.delete(url),
-            reqwest::Method::POST => self.client.post(url),
-            _ => panic!("Invalid method: {}", method),
-        };
-
-        if let Some(etag) = etag {
-            req = req.header(reqwest::header::IF_NONE_MATCH, etag);
-        }
-
-        if let Some(authz) = self.get_authz() {
-            req = req.header(
-                reqwest::header::AUTHORIZATION,
-                &format!("Bearer {}", authz.access_token),
-            );
-        }
-
-        req = req.header(reqwest::header::USER_AGENT, &self.user_agent);
-
-        if let Some(params) = params.as_ref() {
-            match method {
-                reqwest::Method::POST => req = req.form(params),
-                reqwest::Method::GET => req = req.query(params),
-                reqwest::Method::DELETE => req = req.query(params),
-                _ => panic!("Invalid method for params: {}", method),
-            }
-        }
-
-        let resp = req.send().await?;
-
-        let etag: Option<String> = resp.headers().get("ETag").map(|etag| {
-            let etag = etag.to_str().expect("Invalid ETag header").to_string();
-
-            match serde_json::from_str::<String>(&etag) {
-                Ok(etag) => etag,
-                Err(_) => etag,
-            }
-        });
-
-        let status = resp.status();
-        let body = resp.bytes().await?;
-
-        // Parse it into a value
-        let mut value: serde_json::Value = if body.is_empty() {
-            serde_json::Value::Null
-        } else {
-            match serde_json::from_slice(&body) {
-                Ok(value) => value,
-                Err(e) => {
-                    let error_message = String::from_utf8_lossy(&body);
-                    if log::log_enabled!(log::Level::Warn) {
-                        log::warn!("Requested URL: {}", url);
-                        log::warn!("JSON deserialization error: {}", e);
-                        log::warn!("Response: {}", error_message);
-                    }
-                    return Err(Error::TidalError(TidalError::TidalV1Error(TidalV1Error {
-                        status: status.as_u16(),
-                        sub_status: 0,
-                        user_message: error_message.to_string(),
-                    })));
-                }
-            }
-        };
-
-        if status.is_success() {
-            // If we have an etag, add it to the response, if the value doesn't already exist
-            if let Some(etag) = etag {
-                if value.get("etag").is_none() {
-                    value["etag"] = serde_json::Value::String(etag);
-                }
-            }
-
-            let resp: T = match serde_json::from_value(value.clone()) {
-                Ok(t) => t,
-                Err(e) => {
-                    if log::log_enabled!(log::Level::Warn) {
-                        let problem_value_pretty = serde_json::to_string_pretty(&value).unwrap();
-                        log::warn!("Requested URL: {}", url);
-                        log::warn!("JSON deserialization error: {}", e);
-                        log::warn!("Response: {}", problem_value_pretty);
-                    }
-                    return Err(Error::TidalError(TidalError::TidalV1Error(TidalV1Error {
-                        status: status.as_u16(),
-                        sub_status: 0,
-                        user_message: e.to_string(),
-                    })));
-                }
-            };
-
-            Ok(resp)
-        } else {
-            let tidal_err = match serde_json::from_value::<TidalError>(value.clone()) {
-                Ok(e) => e,
-                Err(e) => {
-                    if log::log_enabled!(log::Level::Warn) {
-                        let problem_value_pretty = serde_json::to_string_pretty(&value).unwrap();
-                        log::warn!("Requested URL: {}", url);
-                        log::warn!("JSON deserialization error of TidalV1Error: {}", e);
-                        log::warn!("Response: {}", problem_value_pretty);
-                    }
-                    return Err(Error::TidalError(TidalError::UnknownError(TidalUnknownError {
-                        status: status.as_u16(),
-                        message: e.to_string(),
-                    })));
-                }
-            };
-
-            let token_needs_refresh = match &tidal_err {
-                TidalError::TidalV1Error(tidal_v1_error) => tidal_v1_error.sub_status == 11003,
-                TidalError::TidalV2Error(tidal_v2_error) => {
-                    if let Some(errors) = &tidal_v2_error.errors {
-                        if errors.iter().any(|e| e.code == Some("UNAUTHORIZED".to_string()) && e.detail == Some("Expired token".to_string())) {
-                            true
-                        } else {
-                            false
-                        }
-                    } else {
-                        false
-                    }
-                }
-                _ => false,
-            };
-
-            if token_needs_refresh {
-                self.refresh_authz().await?;
-                return self.do_request(method, url, params, etag.as_deref()).await;
-            }
-
-            if log::log_enabled!(log::Level::Warn) {
-                let pretty_err = serde_json::to_string_pretty(&tidal_err).unwrap();
-                log::warn!("Requested URL: {}", url);
-                log::warn!("TIDAL API Error: {}", pretty_err);
-            }
-
-            Err(Error::TidalError(tidal_err))
-        }
-    }
 
     /// Start the OAuth2 device authorization flow.
     ///
@@ -692,9 +555,8 @@ impl TidalClient {
             "scope": "r_usr w_usr w_sub",
         });
 
-        let mut resp: DeviceAuthorizationResponse = self
-            .do_request(reqwest::Method::POST, &url, Some(params), None)
-            .await?;
+        let req_builder = self.client.post(&url).form(&params);
+        let mut resp: DeviceAuthorizationResponse = self.execute_request(req_builder).await?;
 
         resp.url = format!("https://{url}", url = resp.url);
 
@@ -746,9 +608,8 @@ impl TidalClient {
             "scope": "r_usr w_usr w_sub",
         });
 
-        let resp: AuthzToken = self
-            .do_request(reqwest::Method::POST, &url, Some(params), None)
-            .await?;
+        let req_builder = self.client.post(&url).form(&params);
+        let resp: AuthzToken = self.execute_request(req_builder).await?;
 
         let authz = Authz {
             access_token: resp.access_token.clone(),
@@ -761,6 +622,7 @@ impl TidalClient {
                 Some(country_code) => Some(country_code.clone()),
                 None => Some(resp.user.country_code.clone()),
             },
+            expires_timestamp: resp.expires_timestamp(),
         };
 
         self.authz.store(Some(Arc::new(authz)));
@@ -955,6 +817,8 @@ pub struct Authz {
     pub user_id: u64,
     /// User's country code (affects content availability)
     pub country_code: Option<String>,
+    /// Unix timestamp when the access token expires (seconds since epoch)
+    pub expires_timestamp: u64,
 }
 
 impl Authz {
@@ -963,12 +827,14 @@ impl Authz {
         refresh_token: String,
         user_id: u64,
         country_code: Option<String>,
+        expires_timestamp: u64,
     ) -> Self {
         Self {
             access_token,
             refresh_token,
             user_id,
             country_code,
+            expires_timestamp,
         }
     }
 }
