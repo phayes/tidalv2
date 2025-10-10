@@ -464,7 +464,7 @@ impl TidalClient {
         match permit {
             // We're the single refresher, fetch the new authz and update the client
             Some(permit) => {
-                let url = format!("{TIDAL_AUTH_API_BASE_URL}/oauth2/token");
+                let url = format!("{}/oauth2/token", self.base_path_auth);
 
                 let authz = self.get_authz().ok_or(Error::NoAuthzToken)?;
 
@@ -493,6 +493,7 @@ impl TidalClient {
 
                 // Single, quick swap visible to all readers
                 self.authz.store(Some(Arc::new(new_authz.clone())));
+                trace!("TIDAL API Token refreshed");
 
                 drop(permit);
 
@@ -613,7 +614,7 @@ impl TidalClient {
 
             Ok(resp)
         } else {
-            let tidal_err = match serde_json::from_value::<TidalV1Error>(value.clone()) {
+            let tidal_err = match serde_json::from_value::<TidalError>(value.clone()) {
                 Ok(e) => e,
                 Err(e) => {
                     if log::log_enabled!(log::Level::Warn) {
@@ -622,17 +623,30 @@ impl TidalClient {
                         log::warn!("JSON deserialization error of TidalV1Error: {}", e);
                         log::warn!("Response: {}", problem_value_pretty);
                     }
-                    return Err(Error::TidalError(TidalError::TidalV1Error(TidalV1Error {
+                    return Err(Error::TidalError(TidalError::UnknownError(TidalUnknownError {
                         status: status.as_u16(),
-                        sub_status: 0,
-                        user_message: e.to_string(),
+                        message: e.to_string(),
                     })));
                 }
             };
 
-            // If it's 401, we need to refresh the authz and try again
-            if status.as_u16() == 401 && tidal_err.sub_status == 11003 {
-                // Expired token, safe to refresh
+            let token_needs_refresh = match &tidal_err {
+                TidalError::TidalV1Error(tidal_v1_error) => tidal_v1_error.sub_status == 11003,
+                TidalError::TidalV2Error(tidal_v2_error) => {
+                    if let Some(errors) = &tidal_v2_error.errors {
+                        if errors.iter().any(|e| e.code == Some("UNAUTHORIZED".to_string()) && e.detail == Some("Expired token".to_string())) {
+                            true
+                        } else {
+                            false
+                        }
+                    } else {
+                        false
+                    }
+                }
+                _ => false,
+            };
+
+            if token_needs_refresh {
                 self.refresh_authz().await?;
                 return self.do_request(method, url, params, etag.as_deref()).await;
             }
@@ -643,7 +657,7 @@ impl TidalClient {
                 log::warn!("TIDAL API Error: {}", pretty_err);
             }
 
-            Err(Error::TidalError(TidalError::TidalV1Error(tidal_err)))
+            Err(Error::TidalError(tidal_err))
         }
     }
 
@@ -770,6 +784,8 @@ impl TidalClient {
         &self,
         req_builder: reqwest::RequestBuilder,
     ) -> Result<T, Error> {
+        let original_req_builder = req_builder.try_clone().unwrap();
+
         // Apply authentication and headers before building the request
         let mut req_builder = req_builder.header(reqwest::header::USER_AGENT, &self.user_agent);
 
@@ -873,14 +889,26 @@ impl TidalClient {
                 }
             };
 
-            // If it's 401, we need to refresh the authz and try again
-            if let TidalError::TidalV1Error(tidal_v1_error) = &tidal_err {
-                if tidal_v1_error.sub_status == 11003 {
-                    debug!("Got Tidal Expired token, safe to refresh");
-                    // Expired token, safe to refresh
-                    self.refresh_authz().await?;
-                    return self.execute_request(req_builder).await;
+            let token_needs_refresh = match &tidal_err {
+                TidalError::TidalV1Error(tidal_v1_error) => tidal_v1_error.sub_status == 11003,
+                TidalError::TidalV2Error(tidal_v2_error) => {
+                    if let Some(errors) = &tidal_v2_error.errors {
+                        if errors.iter().any(|e| e.code == Some("UNAUTHORIZED".to_string()) && e.detail == Some("Expired token".to_string())) {
+                            true
+                        } else {
+                            false
+                        }
+                    } else {
+                        false
+                    }
                 }
+                _ => false,
+            };
+
+            if token_needs_refresh {
+                trace!("TIDAL API Token expired, refreshing");
+                self.refresh_authz().await?;
+                return self.execute_request(original_req_builder).await;
             }
 
             if log::log_enabled!(log::Level::Warn) {
