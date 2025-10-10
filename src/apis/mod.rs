@@ -24,4 +24,4 @@ pub mod user_collections_api;
 pub mod user_recommendations_api;
 pub mod users_api;
 pub mod videos_api;
-pub mod configuration;
+pub mod client;

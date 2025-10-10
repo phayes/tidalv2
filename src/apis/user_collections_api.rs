@@ -1,4 +1,4 @@
-use super::{configuration, Error};
+use super::{client, Error};
 use crate::models::user_collection::*;
 use crate::models::*;
 use reqwest;
@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 /// * `locale` - BCP47 locale code (e.g. "en-US")
 /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists (e.g. "albums")
 pub async fn user_collection_get(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     locale: &str,
     include: Option<Vec<String>>,
@@ -46,7 +46,7 @@ pub async fn user_collection_get(
 
 /// Deletes item(s) from albums relationship.
 pub async fn user_collections_id_relationships_albums_delete(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     albums_to_remove: Vec<String>,
 ) -> Result<(), Error> {
@@ -81,7 +81,7 @@ pub async fn user_collections_id_relationships_albums_delete(
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
 pub async fn user_collection_albums(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     locale: &str,
     page_cursor: Option<&str>,
@@ -122,7 +122,7 @@ pub async fn user_collection_albums(
 
 /// Adds item(s) to albums relationship.
 pub async fn user_collections_id_relationships_albums_post(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     albums_to_add: Vec<String>,
 ) -> Result<(), Error> {
@@ -154,7 +154,7 @@ pub async fn user_collections_id_relationships_albums_post(
 
 /// Deletes item(s) from artists relationship.
 pub async fn user_collections_id_relationships_artists_delete(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     artists_to_remove: Vec<String>,
 ) -> Result<(), Error> {
@@ -189,7 +189,7 @@ pub async fn user_collections_id_relationships_artists_delete(
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
 pub async fn user_collection_artists(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     locale: &str,
     page_cursor: Option<&str>,
@@ -230,7 +230,7 @@ pub async fn user_collection_artists(
 
 /// Adds item(s) to artists relationship.
 pub async fn user_collections_id_relationships_artists_post(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     artists_to_add: Vec<String>,
 ) -> Result<(), Error> {
@@ -266,7 +266,7 @@ pub async fn user_collections_id_relationships_artists_post(
 /// * `user_id` - User id (e.g. "123456")
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 pub async fn user_collection_owners(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     page_cursor: Option<&str>,
 ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
@@ -291,7 +291,7 @@ pub async fn user_collection_owners(
 
 /// Deletes item(s) from playlists relationship.
 pub async fn user_collections_id_relationships_playlists_delete(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     playlists_to_remove: Vec<String>,
 ) -> Result<(), Error> {
@@ -327,7 +327,7 @@ pub async fn user_collections_id_relationships_playlists_delete(
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
 pub async fn user_collection_playlists(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     page_cursor: Option<&str>,
     sort: Option<Vec<String>>,
@@ -362,7 +362,7 @@ pub async fn user_collection_playlists(
 
 /// Adds item(s) to playlists relationship.
 pub async fn user_collections_id_relationships_playlists_post(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     playlists_to_add: Vec<String>,
 ) -> Result<(), Error> {
@@ -393,7 +393,7 @@ pub async fn user_collections_id_relationships_playlists_post(
 
 /// Deletes item(s) from tracks relationship.
 pub async fn user_collections_id_relationships_tracks_delete(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     tracks_to_remove: Vec<String>,
 ) -> Result<(), Error> {
@@ -428,7 +428,7 @@ pub async fn user_collections_id_relationships_tracks_delete(
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
 pub async fn user_collection_tracks(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     locale: &str,
     page_cursor: Option<&str>,
@@ -469,7 +469,7 @@ pub async fn user_collection_tracks(
 
 /// Adds item(s) to tracks relationship.
 pub async fn user_collections_id_relationships_tracks_post(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     tracks_to_add: Vec<String>,
 ) -> Result<(), Error> {
@@ -501,7 +501,7 @@ pub async fn user_collections_id_relationships_tracks_post(
 
 /// Deletes item(s) from videos relationship.
 pub async fn user_collections_id_relationships_videos_delete(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     videos_to_remove: Vec<String>,
 ) -> Result<(), Error> {
@@ -536,7 +536,7 @@ pub async fn user_collections_id_relationships_videos_delete(
 /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
 /// * `sort` - Values prefixed with "-" are sorted descending; values without it are sorted ascending
 pub async fn user_collection_videos(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     locale: &str,
     page_cursor: Option<&str>,
@@ -577,7 +577,7 @@ pub async fn user_collection_videos(
 
 /// Adds item(s) to videos relationship.
 pub async fn user_collections_id_relationships_videos_post(
-    configuration: &configuration::TidalClient,
+    configuration: &client::TidalClient,
     user_id: &str,
     videos_to_add: Vec<String>,
 ) -> Result<(), Error> {
