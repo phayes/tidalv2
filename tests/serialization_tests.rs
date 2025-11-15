@@ -16,8 +16,9 @@ async fn test_search_result_json_deserialization() {
         .expect("Failed to read test_search_result.json file");
 
     // Test full search result deserialization
-    let search_result =
-        serde_json::from_str::<models::Resource<models::search_result::SearchResult>>(&json_content);
+    let search_result = serde_json::from_str::<models::Resource<models::search_result::SearchResult>>(
+        &json_content,
+    );
     assert!(
         search_result.is_ok(),
         "Failed to deserialize search result: {:?}",
@@ -264,25 +265,35 @@ async fn test_artist_json_deserialization() {
 #[test]
 fn test_included_vec_serialization() {
     use tidalv2::models::{Links, Resource};
-    
+
     // Test with empty included vec - should not serialize "included" field
     let resource_empty = Resource {
         data: "test".to_string(),
         included: Vec::new(),
         links: Links::new("http://example.com/self".to_string()),
     };
-    
+
     let json_empty = serde_json::to_string(&resource_empty).unwrap();
-    assert!(!json_empty.contains("included"), "Empty included vec should not be serialized");
-    
+    assert!(
+        !json_empty.contains("included"),
+        "Empty included vec should not be serialized"
+    );
+
     // Test deserialization without "included" field - should default to empty vec
     let json_no_included = r#"{"data":"test","links":{"self":"http://example.com/self"}}"#;
     let deserialized: Resource<String> = serde_json::from_str(json_no_included).unwrap();
-    assert!(deserialized.included.is_empty(), "Missing included field should deserialize to empty vec");
+    assert!(
+        deserialized.included.is_empty(),
+        "Missing included field should deserialize to empty vec"
+    );
     assert_eq!(deserialized.data, "test");
-    
+
     // Test deserialization with explicit empty array
-    let json_empty_array = r#"{"data":"test","included":[],"links":{"self":"http://example.com/self"}}"#;
+    let json_empty_array =
+        r#"{"data":"test","included":[],"links":{"self":"http://example.com/self"}}"#;
     let deserialized2: Resource<String> = serde_json::from_str(json_empty_array).unwrap();
-    assert!(deserialized2.included.is_empty(), "Empty included array should deserialize to empty vec");
+    assert!(
+        deserialized2.included.is_empty(),
+        "Empty included array should deserialize to empty vec"
+    );
 }

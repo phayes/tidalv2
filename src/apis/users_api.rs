@@ -17,9 +17,7 @@ impl client::TidalClient {
     ///
     /// # Parameters
     /// This endpoint takes no parameters.
-    pub async fn user_me(
-        &self,
-    ) -> Result<Resource<user::User>, Error> {
+    pub async fn user_me(&self) -> Result<Resource<user::User>, Error> {
         let uri_str = format!("{}/users/me", self.base_path_api);
         let req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 

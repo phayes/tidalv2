@@ -20,7 +20,7 @@ impl client::TidalClient {
     /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, thumbnailArt (e.g. "albums")
     /// * `filter_isrc` - Allows to filter the collection of resources based on isrc attribute value (e.g. "USSM21600755")
     /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "75623239")
-        pub async fn video_list(
+    pub async fn video_list(
         &self,
         include: Option<Vec<String>>,
         filter_isrc: Option<Vec<String>>,
@@ -36,191 +36,191 @@ impl client::TidalClient {
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
         if let Some(ref param_value) = p_filter_isrc {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("filter[isrc]".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("filter[isrc]".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
         if let Some(ref param_value) = p_filter_id {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("filter[id]".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("filter[id]".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves single video by id.
+    /// Retrieves single video by id.
     pub async fn video_get(
-    &self,
-    id: &str,
-    include: Option<Vec<String>>,
-) -> Result<Resource<video::Video>, Error> {
+        &self,
+        id: &str,
+        include: Option<Vec<String>>,
+    ) -> Result<Resource<video::Video>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_include = include;
 
         let uri_str = format!(
-        "{}/videos/{id}",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/videos/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves albums relationship.
-///
-/// # Parameters
-/// * `id` - Video id (e.g. "75623239")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves albums relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Video id (e.g. "75623239")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn video_albums(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/videos/{id}/relationships/albums",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/videos/{id}/relationships/albums",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "albums")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves artists relationship.
-///
-/// # Parameters
-/// * `id` - Video id (e.g. "75623239")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves artists relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Video id (e.g. "75623239")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn video_artists(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/videos/{id}/relationships/artists",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/videos/{id}/relationships/artists",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "artists")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves providers relationship.
-///
-/// # Parameters
-/// * `id` - Video id (e.g. "75623239")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves providers relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Video id (e.g. "75623239")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn video_providers(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/videos/{id}/relationships/providers",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/videos/{id}/relationships/providers",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "providers")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves thumbnailArt relationship.
-///
-/// # Parameters
-/// * `id` - Video id (e.g. "75623239")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves thumbnailArt relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Video id (e.g. "75623239")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn video_thumbnail_art(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/videos/{id}/relationships/thumbnailArt",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/videos/{id}/relationships/thumbnailArt",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "thumbnailArt")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }

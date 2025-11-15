@@ -9,9 +9,9 @@ extern crate serde_repr;
 extern crate url;
 
 pub(crate) mod apis;
-pub mod models;
-pub mod error;
 pub mod client;
+pub mod error;
+pub mod models;
 
 pub use client::TidalClient;
 

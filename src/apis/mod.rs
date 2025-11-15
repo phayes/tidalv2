@@ -1,8 +1,8 @@
 pub use crate::error::*;
 
 // Common API Error Types - these replace the duplicated error enums across all API files
-use crate::models;
 use crate::client;
+use crate::models;
 use serde::{Deserialize, Serialize};
 
 pub(crate) fn urlencode<T: AsRef<str>>(s: T) -> String {

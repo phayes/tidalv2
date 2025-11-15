@@ -15,7 +15,7 @@ use reqwest;
 
 impl client::TidalClient {
     /// Retrieves single searchResult by id.
-        pub async fn search_result_get(
+    pub async fn search_result_get(
         &self,
         id: &str,
         explicit_filter: Option<&str>,
@@ -27,254 +27,254 @@ impl client::TidalClient {
         let p_include = include;
 
         let uri_str = format!(
-        "{}/searchResults/{id}",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/searchResults/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_explicit_filter {
             req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves albums relationship.
-///
-/// # Parameters
-/// * `id` - Search query (e.g. "moon")
-/// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves albums relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Search query (e.g. "moon")
+    /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn search_result_albums(
-    &self,
-    id: &str,
-    explicit_filter: Option<&str>,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        explicit_filter: Option<&str>,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_explicit_filter = explicit_filter;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/searchResults/{id}/relationships/albums",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/searchResults/{id}/relationships/albums",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_explicit_filter {
             req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "albums")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves artists relationship.
-///
-/// # Parameters
-/// * `id` - Search query (e.g. "moon")
-/// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves artists relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Search query (e.g. "moon")
+    /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn search_result_artists(
-    &self,
-    id: &str,
-    explicit_filter: Option<&str>,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        explicit_filter: Option<&str>,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_explicit_filter = explicit_filter;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/searchResults/{id}/relationships/artists",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/searchResults/{id}/relationships/artists",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_explicit_filter {
             req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "artists")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves playlists relationship.
-///
-/// # Parameters
-/// * `id` - Search query (e.g. "moon")
-/// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves playlists relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Search query (e.g. "moon")
+    /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn search_result_playlists(
-    &self,
-    id: &str,
-    explicit_filter: Option<&str>,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        explicit_filter: Option<&str>,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_explicit_filter = explicit_filter;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/searchResults/{id}/relationships/playlists",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/searchResults/{id}/relationships/playlists",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_explicit_filter {
             req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "playlists")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves topHits relationship.
-///
-/// # Parameters
-/// * `id` - Search query (e.g. "moon")
-/// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves topHits relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Search query (e.g. "moon")
+    /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn search_result_top_hits(
-    &self,
-    id: &str,
-    explicit_filter: Option<&str>,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        explicit_filter: Option<&str>,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_explicit_filter = explicit_filter;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/searchResults/{id}/relationships/topHits",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/searchResults/{id}/relationships/topHits",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_explicit_filter {
             req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "topHits")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves tracks relationship.
-///
-/// # Parameters
-/// * `id` - Search query (e.g. "moon")
-/// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves tracks relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Search query (e.g. "moon")
+    /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn search_result_tracks(
-    &self,
-    id: &str,
-    explicit_filter: Option<&str>,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        explicit_filter: Option<&str>,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_explicit_filter = explicit_filter;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/searchResults/{id}/relationships/tracks",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/searchResults/{id}/relationships/tracks",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_explicit_filter {
             req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "tracks")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves videos relationship.
-///
-/// # Parameters
-/// * `id` - Search query (e.g. "moon")
-/// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves videos relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Search query (e.g. "moon")
+    /// * `explicit_filter` - Explicit filter (e.g. "include, exclude")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn search_result_videos(
-    &self,
-    id: &str,
-    explicit_filter: Option<&str>,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        explicit_filter: Option<&str>,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_explicit_filter = explicit_filter;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/searchResults/{id}/relationships/videos",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/searchResults/{id}/relationships/videos",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_explicit_filter {
             req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "videos")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }

@@ -23,14 +23,14 @@ impl client::TidalClient {
     /// * `include` - Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners (e.g. "coverArt")
     /// * `filter_owners_period_id` - User id (e.g. "123456")
     /// * `filter_id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
-        pub async fn playlist_list(
+    pub async fn playlist_list(
         &self,
-    page_cursor: Option<&str>,
-    sort: Option<Vec<String>>,
-    include: Option<Vec<String>>,
-    filter_owners_period_id: Option<Vec<String>>,
-    filter_id: Option<Vec<String>>,
-) -> Result<MultiResource<playlist::Playlist>, Error> {
+        page_cursor: Option<&str>,
+        sort: Option<Vec<String>>,
+        include: Option<Vec<String>>,
+        filter_owners_period_id: Option<Vec<String>>,
+        filter_id: Option<Vec<String>>,
+    ) -> Result<MultiResource<playlist::Playlist>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_page_cursor = page_cursor;
         let p_sort = sort;
@@ -43,400 +43,386 @@ impl client::TidalClient {
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
         if let Some(ref param_value) = p_sort {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("sort".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("sort".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
         if let Some(ref param_value) = p_filter_owners_period_id {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("filter[owners.id]".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("filter[owners.id]".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
         if let Some(ref param_value) = p_filter_id {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("filter[id]".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("filter[id]".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Deletes existing playlist.
-    pub async fn playlist_delete(
-    &self,
-    id: &str,
-) -> Result<(), Error> {
+    /// Deletes existing playlist.
+    pub async fn playlist_delete(&self, id: &str) -> Result<(), Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
 
         let uri_str = format!(
-        "{}/playlists/{id}",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-        let req_builder = self
-        .client
-        .request(reqwest::Method::DELETE, &uri_str);
+            "{}/playlists/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
+        let req_builder = self.client.request(reqwest::Method::DELETE, &uri_str);
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves single playlist by id.
+    /// Retrieves single playlist by id.
     pub async fn playlist_get(
-    &self,
-    id: &str,
-    include: Option<Vec<String>>,
-) -> Result<Resource<playlist::Playlist>, Error> {
+        &self,
+        id: &str,
+        include: Option<Vec<String>>,
+    ) -> Result<Resource<playlist::Playlist>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_include = include;
 
         let uri_str = format!(
-        "{}/playlists/{id}",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/playlists/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Updates existing playlist.
+    /// Updates existing playlist.
     pub async fn playlist_update(
-    &self,
-    id: &str,
-    update: playlist::UpdatePlaylist,
-) -> Result<(), Error> {
+        &self,
+        id: &str,
+        update: playlist::UpdatePlaylist,
+    ) -> Result<(), Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_playlist_update_operation_payload = DataWrap::new(update);
 
         let uri_str = format!(
-        "{}/playlists/{id}",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-        let mut req_builder = self
-        .client
-        .request(reqwest::Method::PATCH, &uri_str);
+            "{}/playlists/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
+        let mut req_builder = self.client.request(reqwest::Method::PATCH, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.json(&p_playlist_update_operation_payload);
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves coverArt relationship.
-///
-/// # Parameters
-/// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves coverArt relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn playlist_cover_art(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/playlists/{id}/relationships/coverArt",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/playlists/{id}/relationships/coverArt",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "coverArt")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Remove tracks from playlist.
+    /// Remove tracks from playlist.
     pub async fn playlist_remove_tracks(
-    &self,
-    id: &str,
-    tracks_to_remove: Vec<String>,
-) -> Result<(), Error> {
-    let resource_identifiers = tracks_to_remove
-        .into_iter()
-        .map(|track_id| {
-            ResourceIdentifier::new_with_meta(
-                track_id.clone(),
-                ResourceType::Tracks,
-                playlist::PlaylistItemMeta::new(track_id),
-            )
-        })
-        .collect::<Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>>();
+        &self,
+        id: &str,
+        tracks_to_remove: Vec<String>,
+    ) -> Result<(), Error> {
+        let resource_identifiers = tracks_to_remove
+            .into_iter()
+            .map(|track_id| {
+                ResourceIdentifier::new_with_meta(
+                    track_id.clone(),
+                    ResourceType::Tracks,
+                    playlist::PlaylistItemMeta::new(track_id),
+                )
+            })
+            .collect::<Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>>();
 
-    self.playlist_remove_items( id, resource_identifiers).await
-}
+        self.playlist_remove_items(id, resource_identifiers).await
+    }
 
-/// Remove videos from playlist.
+    /// Remove videos from playlist.
     pub async fn playlist_remove_videos(
-    &self,
-    id: &str,
-    videos_to_remove: Vec<String>,
-) -> Result<(), Error> {
-    let resource_identifiers = videos_to_remove
-        .into_iter()
-        .map(|video_id| {
-            ResourceIdentifier::new_with_meta(
-                video_id.clone(),
-                ResourceType::Videos,
-                playlist::PlaylistItemMeta::new(video_id),
-            )
-        })
-        .collect::<Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>>();
+        &self,
+        id: &str,
+        videos_to_remove: Vec<String>,
+    ) -> Result<(), Error> {
+        let resource_identifiers = videos_to_remove
+            .into_iter()
+            .map(|video_id| {
+                ResourceIdentifier::new_with_meta(
+                    video_id.clone(),
+                    ResourceType::Videos,
+                    playlist::PlaylistItemMeta::new(video_id),
+                )
+            })
+            .collect::<Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>>();
 
-    self.playlist_remove_items( id, resource_identifiers).await
-}
+        self.playlist_remove_items(id, resource_identifiers).await
+    }
 
-/// Retrieves items relationship.
-///
-/// # Parameters
-/// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves items relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn playlist_items(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<
-    MultiRelationship<ResourceIdentifier<playlist::PlaylistsItemsIdentifierMeta>>,
-    Error,
-> {
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier<playlist::PlaylistsItemsIdentifierMeta>>, Error>
+    {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/playlists/{id}/relationships/items",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/playlists/{id}/relationships/items",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "items")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Remove items from playlist.
-///
-/// # Parameters
-/// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
-/// * `items_to_remove` - List of items to remove from the playlist
+    /// Remove items from playlist.
+    ///
+    /// # Parameters
+    /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
+    /// * `items_to_remove` - List of items to remove from the playlist
     pub async fn playlist_remove_items(
-    &self,
-    id: &str,
-    items_to_remove: Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>,
-) -> Result<(), Error> {
+        &self,
+        id: &str,
+        items_to_remove: Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>,
+    ) -> Result<(), Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_playlist_items_relationship_remove_operation_payload = DataWrap::new(items_to_remove);
 
         let uri_str = format!(
-        "{}/playlists/{id}/relationships/items",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-        let mut req_builder = self
-        .client
-        .request(reqwest::Method::DELETE, &uri_str);
+            "{}/playlists/{id}/relationships/items",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
+        let mut req_builder = self.client.request(reqwest::Method::DELETE, &uri_str);
 
         req_builder = req_builder.json(&p_playlist_items_relationship_remove_operation_payload);
 
         self.execute_request(req_builder).await
     }
 
-/// Re-order items in playlist.
-///
-/// # Parameters
-/// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
-/// * `reorder_items` - Ordered list of items to re-order
-/// * `position_before` - Position before which the items will be re-ordered (e.g. "123456")
+    /// Re-order items in playlist.
+    ///
+    /// # Parameters
+    /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
+    /// * `reorder_items` - Ordered list of items to re-order
+    /// * `position_before` - Position before which the items will be re-ordered (e.g. "123456")
     pub async fn playlist_reorder_items(
-    &self,
-    id: &str,
-    reorder_items: Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>,
-    position_before: String,
-) -> Result<(), Error> {
+        &self,
+        id: &str,
+        reorder_items: Vec<ResourceIdentifier<playlist::PlaylistItemMeta>>,
+        position_before: String,
+    ) -> Result<(), Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_playlist_items_relationship_reorder_operation_payload = DataWrap::new_with_meta(
-        reorder_items,
-        playlist::PlaylistItemPosition::new(position_before),
-    );
+            reorder_items,
+            playlist::PlaylistItemPosition::new(position_before),
+        );
 
         let uri_str = format!(
-        "{}/playlists/{id}/relationships/items",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-        let mut req_builder = self
-        .client
-        .request(reqwest::Method::PATCH, &uri_str);
+            "{}/playlists/{id}/relationships/items",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
+        let mut req_builder = self.client.request(reqwest::Method::PATCH, &uri_str);
 
         req_builder = req_builder.json(&p_playlist_items_relationship_reorder_operation_payload);
 
         self.execute_request(req_builder).await
     }
 
-/// Adds item(s) to items relationship.
+    /// Adds item(s) to items relationship.
     pub async fn playlist_add_items(
-    &self,
-    id: &str,
-    items_to_add: Vec<models::ResourceIdentifier>,
-    position_before: Option<String>,
-) -> Result<(), Error> {
+        &self,
+        id: &str,
+        items_to_add: Vec<models::ResourceIdentifier>,
+        position_before: Option<String>,
+    ) -> Result<(), Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_playlist_items_relationship_add_operation_payload = DataWrap::new_with_meta(
-        items_to_add,
-        position_before.map(|position_before| playlist::PlaylistItemPosition::new(position_before)),
-    );
+            items_to_add,
+            position_before
+                .map(|position_before| playlist::PlaylistItemPosition::new(position_before)),
+        );
 
         let uri_str = format!(
-        "{}/playlists/{id}/relationships/items",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
-        let mut req_builder = self
-        .client
-        .request(reqwest::Method::POST, &uri_str);
+            "{}/playlists/{id}/relationships/items",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
+        let mut req_builder = self.client.request(reqwest::Method::POST, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.json(&p_playlist_items_relationship_add_operation_payload);
 
         self.execute_request(req_builder).await
     }
 
     pub async fn playlist_add_videos(
-    &self,
-    id: &str,
-    videos_to_add: Vec<String>,
-    position_before: Option<String>,
-) -> Result<(), Error> {
-    let resource_identifiers = videos_to_add
-        .into_iter()
-        .map(|video_id| ResourceIdentifier::new(video_id, ResourceType::Videos))
-        .collect::<Vec<ResourceIdentifier>>();
+        &self,
+        id: &str,
+        videos_to_add: Vec<String>,
+        position_before: Option<String>,
+    ) -> Result<(), Error> {
+        let resource_identifiers = videos_to_add
+            .into_iter()
+            .map(|video_id| ResourceIdentifier::new(video_id, ResourceType::Videos))
+            .collect::<Vec<ResourceIdentifier>>();
 
-    self.playlist_add_items( id, resource_identifiers, position_before).await
-}
+        self.playlist_add_items(id, resource_identifiers, position_before)
+            .await
+    }
 
     pub async fn playlist_add_tracks(
-    &self,
-    id: &str,
-    tracks_to_add: Vec<String>,
-    position_before: Option<String>,
-) -> Result<(), Error> {
-    let resource_identifiers = tracks_to_add
-        .into_iter()
-        .map(|track_id| ResourceIdentifier::new(track_id, ResourceType::Tracks))
-        .collect::<Vec<ResourceIdentifier>>();
+        &self,
+        id: &str,
+        tracks_to_add: Vec<String>,
+        position_before: Option<String>,
+    ) -> Result<(), Error> {
+        let resource_identifiers = tracks_to_add
+            .into_iter()
+            .map(|track_id| ResourceIdentifier::new(track_id, ResourceType::Tracks))
+            .collect::<Vec<ResourceIdentifier>>();
 
-    self.playlist_add_items( id, resource_identifiers, position_before).await
-}
+        self.playlist_add_items(id, resource_identifiers, position_before)
+            .await
+    }
 
-/// Retrieves owners relationship.
-///
-/// # Parameters
-/// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves owners relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Playlist id (e.g. "550e8400-e29b-41d4-a716-446655440000")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn playlist_owners(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<models::MultiRelationship<models::ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/playlists/{id}/relationships/owners",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/playlists/{id}/relationships/owners",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "owners")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Creates a new playlist.
+    /// Creates a new playlist.
     pub async fn playlist_create(
-    &self,
-    playlist: playlist::CreatePlaylist,
-) -> Result<Resource<playlist::Playlist>, Error> {
+        &self,
+        playlist: playlist::CreatePlaylist,
+    ) -> Result<Resource<playlist::Playlist>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_playlist_create_operation_payload = DataWrap::new(playlist);
 
         let uri_str = format!("{}/playlists", self.base_path_api);
-        let mut req_builder = self
-        .client
-        .request(reqwest::Method::POST, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::POST, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.json(&p_playlist_create_operation_payload);
 
         self.execute_request(req_builder).await

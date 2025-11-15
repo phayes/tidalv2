@@ -20,7 +20,7 @@ impl client::TidalClient {
     /// * `id` - User id (e.g. "123456")
     /// * `locale` - BCP47 locale code (e.g. "en-US")
     /// * `include` - Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes (e.g. "discoveryMixes")
-        pub async fn user_recommendation_get(
+    pub async fn user_recommendation_get(
         &self,
         id: &str,
         locale: &str,
@@ -32,132 +32,132 @@ impl client::TidalClient {
         let p_include = include;
 
         let uri_str = format!(
-        "{}/userRecommendations/{id}",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/userRecommendations/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves discoveryMixes relationship.
-///
-/// # Parameters
-/// * `id` - User id (e.g. "123456")
-/// * `locale` - BCP47 locale code (e.g. "en-US")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves discoveryMixes relationship.
+    ///
+    /// # Parameters
+    /// * `id` - User id (e.g. "123456")
+    /// * `locale` - BCP47 locale code (e.g. "en-US")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn user_recommendation_discovery_mixes(
-    &self,
-    id: &str,
-    locale: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        locale: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_locale = locale;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/userRecommendations/{id}/relationships/discoveryMixes",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/userRecommendations/{id}/relationships/discoveryMixes",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
         req_builder = req_builder.query(&[("include", "discoveryMixes")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves myMixes relationship.
-///
-/// # Parameters
-/// * `id` - User id (e.g. "123456")
-/// * `locale` - BCP47 locale code (e.g. "en-US")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves myMixes relationship.
+    ///
+    /// # Parameters
+    /// * `id` - User id (e.g. "123456")
+    /// * `locale` - BCP47 locale code (e.g. "en-US")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn user_recommendation_my_mixes(
-    &self,
-    id: &str,
-    locale: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        locale: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_locale = locale;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/userRecommendations/{id}/relationships/myMixes",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/userRecommendations/{id}/relationships/myMixes",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
         req_builder = req_builder.query(&[("include", "myMixes")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves newArrivalMixes relationship.
-///
-/// # Parameters
-/// * `id` - User id (e.g. "123456")
-/// * `locale` - BCP47 locale code (e.g. "en-US")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves newArrivalMixes relationship.
+    ///
+    /// # Parameters
+    /// * `id` - User id (e.g. "123456")
+    /// * `locale` - BCP47 locale code (e.g. "en-US")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn user_recommendation_new_arrival_mixes(
-    &self,
-    id: &str,
-    locale: &str,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        locale: &str,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_locale = locale;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/userRecommendations/{id}/relationships/newArrivalMixes",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/userRecommendations/{id}/relationships/newArrivalMixes",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("locale", &p_locale.to_string())]);
         req_builder = req_builder.query(&[("include", "newArrivalMixes")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }

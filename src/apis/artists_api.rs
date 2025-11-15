@@ -29,46 +29,46 @@ impl client::TidalClient {
     /// * `collapse_by` - Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based entry fingerprints while collapsing by ID always returns all available items. (e.g. "FINGERPRINT")
     /// * `filter_handle` - Artist handle (e.g. "jayz")
     /// * `filter_id` - Artist id (e.g. "1566")
-        pub async fn artist_list(
+    pub async fn artist_list(
         &self,
         include: Option<Vec<String>>,
         collapse_by: Option<String>,
         filter_handle: Option<Vec<String>>,
         filter_id: Option<Vec<String>>,
     ) -> Result<MultiResource<artist::Artist>, Error> {
-            // add a prefix to parameters to efficiently prevent name collisions
-            let p_include = include;
-            let p_filter_handle = filter_handle;
-            let p_filter_id = filter_id;
-            let p_collapse_by = collapse_by;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_include = include;
+        let p_filter_handle = filter_handle;
+        let p_filter_id = filter_id;
+        let p_collapse_by = collapse_by;
 
-            let uri_str = format!("{}/artists", self.base_path_api);
-            let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
+        let uri_str = format!("{}/artists", self.base_path_api);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-            if let Some(country_code) = &self.country_code {
-                req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
         }
-            if let Some(ref param_value) = p_collapse_by {
-                req_builder = req_builder.query(&[("collapseBy", &param_value.to_string())]);
+        if let Some(ref param_value) = p_collapse_by {
+            req_builder = req_builder.query(&[("collapseBy", &param_value.to_string())]);
         }
-            if let Some(ref param_value) = p_include {
-                req_builder = req_builder.query(
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
                 &param_value
                     .iter()
                     .map(|p| ("include".to_owned(), p.to_string()))
                     .collect::<Vec<(std::string::String, std::string::String)>>(),
             );
         }
-            if let Some(ref param_value) = p_filter_handle {
-                req_builder = req_builder.query(
+        if let Some(ref param_value) = p_filter_handle {
+            req_builder = req_builder.query(
                 &param_value
                     .iter()
                     .map(|p| ("filter[handle]".to_owned(), p.to_string()))
                     .collect::<Vec<(std::string::String, std::string::String)>>(),
             );
         }
-            if let Some(ref param_value) = p_filter_id {
-                req_builder = req_builder.query(
+        if let Some(ref param_value) = p_filter_id {
+            req_builder = req_builder.query(
                 &param_value
                     .iter()
                     .map(|p| ("filter[id]".to_owned(), p.to_string()))
@@ -76,7 +76,7 @@ impl client::TidalClient {
             );
         }
 
-            self.execute_request(req_builder).await
+        self.execute_request(req_builder).await
     }
 
     /// Retrieves single artist by id.
@@ -85,32 +85,32 @@ impl client::TidalClient {
     /// * `id` - Artist id (e.g. "1566")
     /// * `include` - Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos (e.g. "albums")
     /// * `collapse_by` - Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based entry fingerprints while collapsing by ID always returns all available items. (e.g. "FINGERPRINT")
-        pub async fn artist_get(
+    pub async fn artist_get(
         &self,
         id: &str,
         include: Option<Vec<String>>,
         collapse_by: Option<String>,
     ) -> Result<Resource<artist::Artist>, Error> {
-            // add a prefix to parameters to efficiently prevent name collisions
-            let p_id = id;
-            let p_include = include;
-            let p_collapse_by = collapse_by;
+        // add a prefix to parameters to efficiently prevent name collisions
+        let p_id = id;
+        let p_include = include;
+        let p_collapse_by = collapse_by;
 
-            let uri_str = format!(
+        let uri_str = format!(
             "{}/artists/{id}",
             self.base_path_api,
             id = crate::apis::urlencode(p_id)
         );
-            let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
+        let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
-            if let Some(country_code) = &self.country_code {
-                req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
+        if let Some(country_code) = &self.country_code {
+            req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
         }
-            if let Some(ref param_value) = p_collapse_by {
-                req_builder = req_builder.query(&[("collapseBy", &param_value.to_string())]);
+        if let Some(ref param_value) = p_collapse_by {
+            req_builder = req_builder.query(&[("collapseBy", &param_value.to_string())]);
         }
-            if let Some(ref param_value) = p_include {
-                req_builder = req_builder.query(
+        if let Some(ref param_value) = p_include {
+            req_builder = req_builder.query(
                 &param_value
                     .iter()
                     .map(|p| ("include".to_owned(), p.to_string()))
@@ -118,7 +118,7 @@ impl client::TidalClient {
             );
         }
 
-            self.execute_request(req_builder).await
+        self.execute_request(req_builder).await
     }
 
     /// Retrieves albums relationship.
@@ -126,7 +126,7 @@ impl client::TidalClient {
     /// # Parameters
     /// * `id` - Artist id (e.g. "1566")
     /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
-        pub async fn artist_albums(
+    pub async fn artist_albums(
         &self,
         id: &str,
         page_cursor: Option<&str>,
@@ -136,51 +136,48 @@ impl client::TidalClient {
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/artists/{id}/relationships/albums",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/artists/{id}/relationships/albums",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "albums")]);
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves biography relationship.
-///
-/// # Parameters
-/// * `id` - Artist id (e.g. "1566")
-        pub async fn artist_biography(
-        &self,
-        id: &str,
-    ) -> Result<Relationship, Error> {
+    /// Retrieves biography relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Artist id (e.g. "1566")
+    pub async fn artist_biography(&self, id: &str) -> Result<Relationship, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
 
         let uri_str = format!(
-        "{}/artists/{id}/relationships/biography",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/artists/{id}/relationships/biography",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "biography")]);
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves owners relationship.
-        pub async fn artist_owners(
+    /// Retrieves owners relationship.
+    pub async fn artist_owners(
         &self,
         id: &str,
         include: Option<Vec<String>>,
@@ -192,215 +189,215 @@ impl client::TidalClient {
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/artists/{id}/relationships/owners",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/artists/{id}/relationships/owners",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves profileArt relationship.
+    /// Retrieves profileArt relationship.
     pub async fn artist_profile_art(
-    &self,
-    id: &str,
-    include: Option<Vec<String>>,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        include: Option<Vec<String>>,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_include = include;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/artists/{id}/relationships/profileArt",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/artists/{id}/relationships/profileArt",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves radio relationship.
+    /// Retrieves radio relationship.
     pub async fn artist_radio(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+        include: Option<Vec<String>>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
         let p_include = include;
 
         let uri_str = format!(
-        "{}/artists/{id}/relationships/radio",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/artists/{id}/relationships/radio",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves roles relationship.
+    /// Retrieves roles relationship.
     pub async fn artist_roles(
-    &self,
-    id: &str,
-    include: Option<Vec<String>>,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        include: Option<Vec<String>>,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_include = include;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/artists/{id}/relationships/roles",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/artists/{id}/relationships/roles",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves similarArtists relationship.
+    /// Retrieves similarArtists relationship.
     pub async fn artist_similar_artists(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+        include: Option<Vec<String>>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
         let p_include = include;
 
         let uri_str = format!(
-        "{}/artists/{id}/relationships/similarArtists",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/artists/{id}/relationships/similarArtists",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves trackProviders relationship.
+    /// Retrieves trackProviders relationship.
     pub async fn artist_track_providers(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier<ArtistsTrackProvidersResourceMeta>>, Error>
-{
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+        include: Option<Vec<String>>,
+    ) -> Result<MultiRelationship<ResourceIdentifier<ArtistsTrackProvidersResourceMeta>>, Error>
+    {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
         let p_include = include;
 
         let uri_str = format!(
-        "{}/artists/{id}/relationships/trackProviders",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/artists/{id}/relationships/trackProviders",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves tracks relationship.
+    /// Retrieves tracks relationship.
     pub async fn artist_tracks(
-    &self,
-    id: &str,
-    collapse_by: &str,
-    page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        collapse_by: &str,
+        page_cursor: Option<&str>,
+        include: Option<Vec<String>>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_collapse_by = collapse_by;
@@ -408,64 +405,64 @@ impl client::TidalClient {
         let p_include = include;
 
         let uri_str = format!(
-        "{}/artists/{id}/relationships/tracks",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/artists/{id}/relationships/tracks",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         req_builder = req_builder.query(&[("collapseBy", &p_collapse_by.to_string())]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves videos relationship.
+    /// Retrieves videos relationship.
     pub async fn artist_videos(
-    &self,
-    id: &str,
-    page_cursor: Option<&str>,
-    include: Option<Vec<String>>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        page_cursor: Option<&str>,
+        include: Option<Vec<String>>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
         let p_include = include;
 
         let uri_str = format!(
-        "{}/artists/{id}/relationships/videos",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/artists/{id}/relationships/videos",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }

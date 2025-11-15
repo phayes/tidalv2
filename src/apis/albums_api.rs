@@ -81,7 +81,7 @@ impl client::TidalClient {
         }
 
         self.execute_request(req_builder).await
-}
+    }
 
     /// Retrieves single album by id.
     ///
@@ -117,7 +117,7 @@ impl client::TidalClient {
         }
 
         self.execute_request(req_builder).await
-}
+    }
 
     /// Retrieves artists relationship.
     ///
@@ -149,7 +149,7 @@ impl client::TidalClient {
         req_builder = req_builder.query(&[("include", "artists")]);
 
         self.execute_request(req_builder).await
-}
+    }
 
     /// Retrieves coverArt relationship.
     ///
@@ -181,7 +181,7 @@ impl client::TidalClient {
         req_builder = req_builder.query(&[("include", "coverArt")]);
 
         self.execute_request(req_builder).await
-}
+    }
 
     /// Retrieves items relationship.
     ///
@@ -192,8 +192,7 @@ impl client::TidalClient {
         &self,
         id: &str,
         page_cursor: Option<&str>,
-    ) -> Result<MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>, Error>
-    {
+    ) -> Result<MultiRelationship<ResourceIdentifier<album::AlbumsItemsResourceMeta>>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_page_cursor = page_cursor;
@@ -214,7 +213,7 @@ impl client::TidalClient {
         req_builder = req_builder.query(&[("include", "items")]);
 
         self.execute_request(req_builder).await
-}
+    }
 
     /// Retrieves owners relationship.
     ///
@@ -243,7 +242,7 @@ impl client::TidalClient {
         }
 
         self.execute_request(req_builder).await
-}
+    }
 
     /// Retrieves providers relationship.
     ///
@@ -275,7 +274,7 @@ impl client::TidalClient {
         }
 
         self.execute_request(req_builder).await
-}
+    }
 
     /// Retrieves similarAlbums relationship.
     ///

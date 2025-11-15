@@ -1,11 +1,11 @@
 use async_recursion::async_recursion;
 use log::{info, trace};
-use tidalv2::models::*;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::LazyLock;
 use std::sync::{Mutex, Once};
+use tidalv2::models::*;
 use ResourceType::*;
 
 /// Ensure logging is only initialized once across all tests
@@ -105,16 +105,15 @@ async fn test_search_and_walk_resources() {
     init_logging_once();
 
     // Get required environment variables
-    let client_id: String = env::var("TIDAL_CLIENT_ID")
-        .expect("TIDAL_CLIENT_ID environment variable must be set");
-    
+    let client_id: String =
+        env::var("TIDAL_CLIENT_ID").expect("TIDAL_CLIENT_ID environment variable must be set");
+
     let refresh_token = env::var("TIDAL_REFRESH_TOKEN")
         .expect("TIDAL_REFRESH_TOKEN environment variable must be set");
-    
+
     // Get optional access token (client will generate one if not provided)
-    let access_token = env::var("TIDAL_ACCESS_TOKEN")
-        .unwrap_or_else(|_| String::new()); // Empty string if not provided
-    
+    let access_token = env::var("TIDAL_ACCESS_TOKEN").unwrap_or_else(|_| String::new()); // Empty string if not provided
+
     // Configure API client with authentication
     let authz = tidalv2::client::Authz::new(
         access_token,
@@ -123,10 +122,9 @@ async fn test_search_and_walk_resources() {
         Some("US".to_string()),
         u64::MAX, // expires_timestamp - set to far future for testing
     );
-    
-    let mut client = tidalv2::client::TidalClient::new(client_id)
-        .with_authz(authz);
-    
+
+    let mut client = tidalv2::client::TidalClient::new(client_id).with_authz(authz);
+
     client.set_country_code("US".to_string());
 
     // Perform search for a popular query
@@ -139,19 +137,20 @@ async fn test_search_and_walk_resources() {
     }
 
     increment_request_count();
-    let search_result = client.search_result_get(
-        search_query,
-        None, // explicit_filter
-        Some(vec![
-            Albums.to_string(),
-            Artists.to_string(),
-            Tracks.to_string(),
-            Playlists.to_string(),
-            Videos.to_string(),
-            "topHits".to_string(),
-        ]),
-    )
-    .await;
+    let search_result = client
+        .search_result_get(
+            search_query,
+            None, // explicit_filter
+            Some(vec![
+                Albums.to_string(),
+                Artists.to_string(),
+                Tracks.to_string(),
+                Playlists.to_string(),
+                Videos.to_string(),
+                "topHits".to_string(),
+            ]),
+        )
+        .await;
 
     match search_result {
         Ok(search_response) => {
@@ -239,11 +238,7 @@ async fn walk_search_result(
 }
 
 #[async_recursion]
-async fn process_album(
-    client: &tidalv2::client::TidalClient,
-    album_id: &str,
-    recurse: usize,
-) {
+async fn process_album(client: &tidalv2::client::TidalClient, album_id: &str, recurse: usize) {
     if !can_make_request() {
         return;
     }
@@ -260,11 +255,12 @@ async fn process_album(
     trace!("Loading album: {}", album_id);
     increment_request_count();
 
-    let result = client.album_get(
-        album_id,
-        Some(vec![Artists.to_string(), "items".to_string()]),
-    )
-    .await;
+    let result = client
+        .album_get(
+            album_id,
+            Some(vec![Artists.to_string(), "items".to_string()]),
+        )
+        .await;
 
     match result {
         Ok(album_response) => {
@@ -296,11 +292,7 @@ async fn process_album(
 }
 
 #[async_recursion]
-async fn process_artist(
-    client: &tidalv2::client::TidalClient,
-    artist_id: &str,
-    recurse: usize,
-) {
+async fn process_artist(client: &tidalv2::client::TidalClient, artist_id: &str, recurse: usize) {
     if !can_make_request() {
         return;
     }
@@ -317,12 +309,13 @@ async fn process_artist(
     trace!("Loading artist: {}", artist_id);
     increment_request_count();
 
-    let result = client.artist_get(
-        artist_id,
-        Some(vec![Albums.to_string(), Tracks.to_string()]),
-        Some("FINGERPRINT".to_string()),
-    )
-    .await;
+    let result = client
+        .artist_get(
+            artist_id,
+            Some(vec![Albums.to_string(), Tracks.to_string()]),
+            Some("FINGERPRINT".to_string()),
+        )
+        .await;
 
     match result {
         Ok(artist_response) => {
@@ -412,11 +405,7 @@ async fn process_artist(
 }
 
 #[async_recursion]
-async fn process_track(
-    client: &tidalv2::client::TidalClient,
-    track_id: &str,
-    recurse: usize,
-) {
+async fn process_track(client: &tidalv2::client::TidalClient, track_id: &str, recurse: usize) {
     if !can_make_request() {
         return;
     }
@@ -433,11 +422,12 @@ async fn process_track(
     trace!("Loading track: {}", track_id);
     increment_request_count();
 
-    let result = client.track_get(
-        track_id,
-        Some(vec![Artists.to_string(), Albums.to_string()]),
-    )
-    .await;
+    let result = client
+        .track_get(
+            track_id,
+            Some(vec![Artists.to_string(), Albums.to_string()]),
+        )
+        .await;
 
     match result {
         Ok(track_response) => {
@@ -484,9 +474,9 @@ async fn process_playlist(
     trace!("Loading playlist: {}", playlist_id);
     increment_request_count();
 
-    let result =
-        client.playlist_get(playlist_id, Some(vec!["items".to_string()]))
-            .await;
+    let result = client
+        .playlist_get(playlist_id, Some(vec!["items".to_string()]))
+        .await;
 
     match result {
         Ok(playlist_response) => {
@@ -520,11 +510,7 @@ async fn process_playlist(
 }
 
 #[async_recursion]
-async fn process_video(
-    client: &tidalv2::client::TidalClient,
-    video_id: &str,
-    recurse: usize,
-) {
+async fn process_video(client: &tidalv2::client::TidalClient, video_id: &str, recurse: usize) {
     if !can_make_request() {
         return;
     }
@@ -540,11 +526,12 @@ async fn process_video(
 
     trace!("Loading video: {}", video_id);
     increment_request_count();
-    let result = client.video_get(
-        video_id,
-        Some(vec![Artists.to_string(), Albums.to_string()]),
-    )
-    .await;
+    let result = client
+        .video_get(
+            video_id,
+            Some(vec![Artists.to_string(), Albums.to_string()]),
+        )
+        .await;
 
     match result {
         Ok(video_response) => {
@@ -570,11 +557,7 @@ async fn process_video(
 }
 
 #[async_recursion]
-async fn process_artwork(
-    client: &tidalv2::client::TidalClient,
-    artwork_id: &str,
-    _recurse: usize,
-) {
+async fn process_artwork(client: &tidalv2::client::TidalClient, artwork_id: &str, _recurse: usize) {
     if !can_make_request() {
         return;
     }
@@ -709,11 +692,7 @@ async fn process_provider(
 }
 
 #[async_recursion]
-async fn process_radio(
-    _client: &tidalv2::client::TidalClient,
-    radio_id: &str,
-    _recurse: usize,
-) {
+async fn process_radio(_client: &tidalv2::client::TidalClient, radio_id: &str, _recurse: usize) {
     if !can_make_request() {
         return;
     }
@@ -744,16 +723,15 @@ async fn test_user_collections_and_walk() {
     init_logging_once();
 
     // Get required environment variables
-    let client_id = env::var("TIDAL_CLIENT_ID")
-        .expect("TIDAL_CLIENT_ID environment variable must be set");
-    
+    let client_id =
+        env::var("TIDAL_CLIENT_ID").expect("TIDAL_CLIENT_ID environment variable must be set");
+
     let refresh_token = env::var("TIDAL_REFRESH_TOKEN")
         .expect("TIDAL_REFRESH_TOKEN environment variable must be set");
-    
+
     // Get optional access token (client will generate one if not provided)
-    let access_token = env::var("TIDAL_ACCESS_TOKEN")
-        .unwrap_or_else(|_| String::new()); // Empty string if not provided
-    
+    let access_token = env::var("TIDAL_ACCESS_TOKEN").unwrap_or_else(|_| String::new()); // Empty string if not provided
+
     // Configure API client with authentication
     let authz = tidalv2::client::Authz::new(
         access_token,
@@ -762,10 +740,9 @@ async fn test_user_collections_and_walk() {
         Some("US".to_string()),
         u64::MAX, // expires_timestamp - set to far future for testing
     );
-    
-    let mut client = tidalv2::client::TidalClient::new(client_id)
-        .with_authz(authz);
-    
+
+    let mut client = tidalv2::client::TidalClient::new(client_id).with_authz(authz);
+
     client.set_country_code("US".to_string());
 
     info!("Starting user collections integration test");
@@ -801,11 +778,12 @@ async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &
         info!("Processing user playlist collection...");
         increment_request_count();
 
-        let playlists_result = client.user_collection_playlists(
-            user_id, None, // page_cursor
-            None, // sort
-        )
-        .await;
+        let playlists_result = client
+            .user_collection_playlists(
+                user_id, None, // page_cursor
+                None, // sort
+            )
+            .await;
 
         match playlists_result {
             Ok(playlists_response) => {
@@ -834,12 +812,13 @@ async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &
         info!("Processing user album collection...");
         increment_request_count();
 
-        let albums_result = client.user_collection_albums(
-            user_id, "US", // locale
-            None, // page_cursor
-            None, // sort
-        )
-        .await;
+        let albums_result = client
+            .user_collection_albums(
+                user_id, "US", // locale
+                None, // page_cursor
+                None, // sort
+            )
+            .await;
 
         match albums_result {
             Ok(albums_response) => {
@@ -865,12 +844,13 @@ async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &
         info!("Processing user artist collection...");
         increment_request_count();
 
-        let artists_result = client.user_collection_artists(
-            user_id, "US", // locale
-            None, // page_cursor
-            None, // sort
-        )
-        .await;
+        let artists_result = client
+            .user_collection_artists(
+                user_id, "US", // locale
+                None, // page_cursor
+                None, // sort
+            )
+            .await;
 
         match artists_result {
             Ok(artists_response) => {
@@ -896,12 +876,13 @@ async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &
         info!("Processing user track collection...");
         increment_request_count();
 
-        let tracks_result = client.user_collection_tracks(
-            user_id, "US", // locale
-            None, // page_cursor
-            None, // sort
-        )
-        .await;
+        let tracks_result = client
+            .user_collection_tracks(
+                user_id, "US", // locale
+                None, // page_cursor
+                None, // sort
+            )
+            .await;
 
         match tracks_result {
             Ok(tracks_response) => {
@@ -927,12 +908,13 @@ async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &
         info!("Processing user video collection...");
         increment_request_count();
 
-        let videos_result = client.user_collection_videos(
-            user_id, "US", // locale
-            None, // page_cursor
-            None, // sort
-        )
-        .await;
+        let videos_result = client
+            .user_collection_videos(
+                user_id, "US", // locale
+                None, // page_cursor
+                None, // sort
+            )
+            .await;
 
         match videos_result {
             Ok(videos_response) => {

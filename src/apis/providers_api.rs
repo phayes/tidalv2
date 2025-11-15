@@ -18,7 +18,7 @@ impl client::TidalClient {
     ///
     /// # Parameters
     /// * `filter_id` - Allows to filter the collection of resources based on id attribute value (e.g. "771")
-        pub async fn provider_list(
+    pub async fn provider_list(
         &self,
         filter_id: Option<Vec<String>>,
     ) -> Result<MultiResource<provider::Provider>, Error> {
@@ -30,32 +30,29 @@ impl client::TidalClient {
 
         if let Some(ref param_value) = p_filter_id {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("filter[id]".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("filter[id]".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves single provider by id.
-///
-/// # Parameters
-/// * `id` - Provider id (e.g. "771")
-    pub async fn provider_get(
-    &self,
-    id: &str,
-) -> Result<Resource<provider::Provider>, Error> {
+    /// Retrieves single provider by id.
+    ///
+    /// # Parameters
+    /// * `id` - Provider id (e.g. "771")
+    pub async fn provider_get(&self, id: &str) -> Result<Resource<provider::Provider>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
 
         let uri_str = format!(
-        "{}/providers/{id}",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/providers/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         self.execute_request(req_builder).await

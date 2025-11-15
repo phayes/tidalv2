@@ -1,6 +1,6 @@
-use std::error;
-use serde::{Deserialize, Serialize};
 use crate::models;
+use serde::{Deserialize, Serialize};
+use std::error;
 use std::fmt::Display;
 
 /// Errors that can occur when using the TidalRS library.
@@ -43,8 +43,11 @@ pub enum Error {
     /// User authentication required for this operation
     #[error("User authentication required - please login first")]
     UserAuthenticationRequired,
-}
 
+    /// Exponential backoff exceeded the maximum duration while handling rate limits
+    #[error("Hit rate limit backoff ceiling of {0}ms without recovery")]
+    RateLimitBackoffExceeded(u64),
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -97,27 +100,32 @@ impl<'de> Deserialize<'de> for TidalV1Error {
     {
         // First deserialize to a generic Value
         let value: serde_json::Value = serde_json::Value::deserialize(deserializer)?;
-        
+
         // Extract status (should be consistent)
         // TODO: Apparently this *isn't* consistent, so we need to handle it better
-        let status = value.get("status")
+        let status = value
+            .get("status")
             .and_then(|v| v.as_u64())
             .ok_or_else(|| serde::de::Error::custom("Missing or invalid 'status' field"))?
             as u16;
-        
+
         // Extract sub_status - try both snake_case and camelCase
-        let sub_status = value.get("sub_status")
+        let sub_status = value
+            .get("sub_status")
             .or_else(|| value.get("subStatus"))
             .and_then(|v| v.as_u64())
-            .ok_or_else(|| serde::de::Error::custom("Missing or invalid 'sub_status'/'subStatus' field"))?;
-        
+            .ok_or_else(|| {
+                serde::de::Error::custom("Missing or invalid 'sub_status'/'subStatus' field")
+            })?;
+
         // Extract user_message - try both snake_case and camelCase, default to empty string
-        let user_message = value.get("user_message")
+        let user_message = value
+            .get("user_message")
             .or_else(|| value.get("userMessage"))
             .and_then(|v| v.as_str())
             .unwrap_or("")
             .to_string();
-        
+
         Ok(TidalV1Error {
             status,
             sub_status,
@@ -135,7 +143,6 @@ impl Display for TidalV1Error {
         )
     }
 }
-
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TidalV2Error {

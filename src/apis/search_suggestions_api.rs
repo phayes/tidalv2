@@ -15,7 +15,7 @@ use reqwest;
 
 impl client::TidalClient {
     /// Retrieves single searchSuggestion by id.
-        pub async fn search_suggestion_get(
+    pub async fn search_suggestion_get(
         &self,
         id: &str,
         explicit_filter: Option<&str>,
@@ -27,64 +27,64 @@ impl client::TidalClient {
         let p_include = include;
 
         let uri_str = format!(
-        "{}/searchSuggestions/{id}",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/searchSuggestions/{id}",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_explicit_filter {
             req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
-    }
+        }
         if let Some(ref param_value) = p_include {
             req_builder = req_builder.query(
-            &param_value
-                .iter()
-                .map(|p| ("include".to_owned(), p.to_string()))
-                .collect::<Vec<(std::string::String, std::string::String)>>(),
-        );
-    }
+                &param_value
+                    .iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            );
+        }
 
         self.execute_request(req_builder).await
     }
 
-/// Retrieves directHits relationship.
-///
-/// # Parameters
-/// * `id` - Search suggestion id
-/// * `explicit_filter` - Explicit filter (e.g. "INCLUDE/EXCLUDE")
-/// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
+    /// Retrieves directHits relationship.
+    ///
+    /// # Parameters
+    /// * `id` - Search suggestion id
+    /// * `explicit_filter` - Explicit filter (e.g. "INCLUDE/EXCLUDE")
+    /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn search_suggestion_direct_hits(
-    &self,
-    id: &str,
-    explicit_filter: Option<&str>,
-    page_cursor: Option<&str>,
-) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
+        &self,
+        id: &str,
+        explicit_filter: Option<&str>,
+        page_cursor: Option<&str>,
+    ) -> Result<MultiRelationship<ResourceIdentifier>, Error> {
         // add a prefix to parameters to efficiently prevent name collisions
         let p_id = id;
         let p_explicit_filter = explicit_filter;
         let p_page_cursor = page_cursor;
 
         let uri_str = format!(
-        "{}/searchSuggestions/{id}/relationships/directHits",
-        self.base_path_api,
-        id = crate::apis::urlencode(p_id)
-    );
+            "{}/searchSuggestions/{id}/relationships/directHits",
+            self.base_path_api,
+            id = crate::apis::urlencode(p_id)
+        );
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
-    }
+        }
         if let Some(ref param_value) = p_explicit_filter {
             req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
-    }
+        }
         req_builder = req_builder.query(&[("include", "directHits")]);
         if let Some(ref param_value) = p_page_cursor {
             req_builder = req_builder.query(&[("page[cursor]", &param_value.to_string())]);
-    }
+        }
 
         self.execute_request(req_builder).await
     }

@@ -12,6 +12,8 @@ pub(crate) static TIDAL_AUTH_API_BASE_URL: &str = "https://auth.tidal.com/v1";
 pub(crate) static TIDAL_V1_API_BASE_URL: &str = "https://api.tidal.com/v1";
 pub(crate) static TIDAL_V2_API_BASE_URL: &str = "https://openapi.tidal.com/v2";
 pub(crate) static TIDAL_USER_AGENT: &str = "rust-crate:tidalv2";
+const INITIAL_BACKOFF_MILLIS: u64 = 100;
+const MAX_BACKOFF_MILLIS: u64 = 5_000;
 
 use crate::error::TidalV1Error;
 use crate::error::{Error, TidalError, TidalUnknownError};
@@ -21,10 +23,11 @@ use log::{debug, info, trace};
 use serde::de::{DeserializeOwned, Error as _};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
-use std::sync::Arc;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::sync::{Arc, Mutex};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use strum_macros::{AsRefStr, EnumString};
 use tokio::sync::{Semaphore, SemaphorePermit};
+use tokio::time::sleep;
 
 /// Callback function type for handling authorization token refresh events.
 ///
@@ -93,11 +96,12 @@ pub struct AuthzToken {
 impl AuthzToken {
     /// Calculate the Unix timestamp when this token expires
     pub fn expires_timestamp(&self) -> u64 {
-        let now = SystemTime::now().duration_since(UNIX_EPOCH)
+        let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
             .unwrap_or_default();
         now.as_secs() + self.expires_in as u64
     }
-    
+
     pub fn authz(&self) -> Option<Authz> {
         if let Some(refresh_token) = self.refresh_token.clone() {
             Some(Authz {
@@ -160,6 +164,7 @@ pub struct TidalClient {
     pub(crate) on_authz_refresh_callback: Option<AuthzCallback>,
     locale: Option<String>,
     device_type: Option<DeviceType>,
+    backoff: Mutex<Option<u64>>,
 }
 
 pub type BasicAuth = (String, Option<String>);
@@ -191,6 +196,7 @@ impl TidalClient {
             user_agent: TIDAL_USER_AGENT.to_string(),
             locale: None,
             device_type: None,
+            backoff: Mutex::new(None),
         }
     }
 
@@ -523,7 +529,6 @@ impl TidalClient {
         }
     }
 
-
     /// Start the OAuth2 device authorization flow.
     ///
     /// This initiates the device flow authentication process. The user must
@@ -646,6 +651,7 @@ impl TidalClient {
         &self,
         req_builder: reqwest::RequestBuilder,
     ) -> Result<T, Error> {
+        self.await_rate_limit_backoff().await;
         let original_req_builder = req_builder.try_clone().unwrap();
 
         // Apply authentication and headers before building the request
@@ -701,15 +707,19 @@ impl TidalClient {
                         log::warn!("JSON deserialization error: {}", e);
                         log::warn!("Response: {}", error_message);
                     }
-                    return Err(Error::TidalError(TidalError::UnknownError(TidalUnknownError {
-                        status: status.as_u16(),
-                        message: error_message.to_string(),
-                    })));
+                    return Err(Error::TidalError(TidalError::UnknownError(
+                        TidalUnknownError {
+                            status: status.as_u16(),
+                            message: error_message.to_string(),
+                        },
+                    )));
                 }
             }
         };
 
         if status.is_success() {
+            self.reset_rate_limit_backoff();
+
             // If we have an etag, add it to the response, if the value doesn't already exist
             if let Some(etag) = etag {
                 if value.get("etag").is_none() {
@@ -726,15 +736,23 @@ impl TidalClient {
                         log::warn!("JSON deserialization error: {}", e);
                         log::warn!("Response: {}", problem_value_pretty);
                     }
-                    return Err(Error::TidalError(TidalError::UnknownError(TidalUnknownError {
-                        status: status.as_u16(),
-                        message: e.to_string(),
-                    })));
+                    return Err(Error::TidalError(TidalError::UnknownError(
+                        TidalUnknownError {
+                            status: status.as_u16(),
+                            message: e.to_string(),
+                        },
+                    )));
                 }
             };
 
             Ok(resp)
         } else {
+            if status.as_u16() == 429 {
+                self.increase_rate_limit_backoff()?;
+            } else {
+                self.reset_rate_limit_backoff();
+            }
+
             let tidal_err = match serde_json::from_value::<TidalError>(value.clone()) {
                 Ok(e) => e,
                 Err(e) => {
@@ -744,10 +762,12 @@ impl TidalClient {
                         log::warn!("JSON deserialization error of TidalV1Error: {}", e);
                         log::warn!("Response: {}", problem_value_pretty);
                     }
-                    return Err(Error::TidalError(TidalError::UnknownError(TidalUnknownError {
-                        status: status.as_u16(),
-                        message: e.to_string(),
-                    })));
+                    return Err(Error::TidalError(TidalError::UnknownError(
+                        TidalUnknownError {
+                            status: status.as_u16(),
+                            message: e.to_string(),
+                        },
+                    )));
                 }
             };
 
@@ -755,7 +775,10 @@ impl TidalClient {
                 TidalError::TidalV1Error(tidal_v1_error) => tidal_v1_error.sub_status == 11003,
                 TidalError::TidalV2Error(tidal_v2_error) => {
                     if let Some(errors) = &tidal_v2_error.errors {
-                        if errors.iter().any(|e| e.code == Some("UNAUTHORIZED".to_string()) && e.detail == Some("Expired token".to_string())) {
+                        if errors.iter().any(|e| {
+                            e.code == Some("UNAUTHORIZED".to_string())
+                                && e.detail == Some("Expired token".to_string())
+                        }) {
                             true
                         } else {
                             false
@@ -780,6 +803,51 @@ impl TidalClient {
             }
 
             Err(Error::TidalError(tidal_err))
+        }
+    }
+
+    async fn await_rate_limit_backoff(&self) {
+        let delay = {
+            let guard = self
+                .backoff
+                .lock()
+                .unwrap_or_else(|poisoned| poisoned.into_inner());
+            *guard
+        };
+
+        if let Some(ms) = delay {
+            if ms > 0 {
+                sleep(Duration::from_millis(ms)).await;
+            }
+        }
+    }
+
+    fn increase_rate_limit_backoff(&self) -> Result<(), Error> {
+        let mut guard = self
+            .backoff
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        let next = match *guard {
+            Some(current) => current.saturating_mul(2),
+            None => INITIAL_BACKOFF_MILLIS,
+        };
+
+        if next >= MAX_BACKOFF_MILLIS {
+            *guard = Some(MAX_BACKOFF_MILLIS);
+            return Err(Error::RateLimitBackoffExceeded(MAX_BACKOFF_MILLIS));
+        }
+
+        *guard = Some(next);
+        Ok(())
+    }
+
+    fn reset_rate_limit_backoff(&self) {
+        let mut guard = self
+            .backoff
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        if guard.is_some() {
+            *guard = None;
         }
     }
 }

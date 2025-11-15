@@ -38,7 +38,7 @@ impl client::TidalClient {
         }
 
         self.execute_request(req_builder).await
-}
+    }
 
     /// Retrieves single artistRole by id.
     ///
