@@ -95,7 +95,7 @@ pub struct AuthzUser {
     /// User's full name (if provided)
     pub full_name: Option<String>,
     /// Google UID associated with the account
-    pub google_uid: String,
+    pub google_uid: Option<String>,
     /// User's last name (if provided)
     pub last_name: Option<String>,
     /// Whether this is a new user account
