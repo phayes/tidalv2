@@ -13,12 +13,17 @@ keywords = ["tidal", "music", "streaming", "api", "jsonapi"]
 categories = ["api-bindings", "multimedia::audio"]
 rust-version = "1.70"
 
+[features]
+default = []
+tidalrs = ["dep:tidalrs"]
+
 [dependencies]
 serde = { version = "^1.0", features = ["derive"] }
 serde_json = "^1.0"
 serde_repr = "^0.1"
 url = "^2.5"
 reqwest = { version = "^0.12", default-features = false, features = ["json", "multipart", "rustls-tls"] }
+tidalrs = { version = "0.4", optional = true }
 log = "^0.4"
 strum = { version = "0.27", features = ["derive"] }
 strum_macros = { version = "0.27"}

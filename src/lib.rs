@@ -14,3 +14,6 @@ pub mod error;
 pub mod models;
 
 pub use client::TidalClient;
+
+#[cfg(feature = "tidalrs")]
+pub mod tidalrs;

@@ -1,24 +1,77 @@
-use crate::apis::configuration::Configuration;
-use tidalrs::TidalClient;
+//! Interoperability with the `tidalrs` v1 API client.
+//!
+//! Enable the `tidalrs` Cargo feature to convert an authenticated
+//! [`tidalrs::TidalClient`] into a [`crate::TidalClient`]. The resulting client
+//! reuses the HTTP client, country code, and current authorization credentials.
 
-const TIDALV2_BASE_URL: &str = "https://openapi.tidal.com/v2";
-const USER_AGENT: &str = "Mozilla/5.0 (Linux; Android 12; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.114 Safari/537.36";
+use crate::client::Authz;
 
-pub trait Configurator {
-    fn tidalv2_config(&self) -> Configuration;
+/// Creates a v2 client from a `tidalrs` client.
+///
+/// The v2 client receives its own copy of the current authorization state.
+/// Subsequent credential changes are not synchronized between the two clients.
+/// Use the same TIDAL client ID that was used to construct the `tidalrs` client
+/// so that the v2 client can refresh the copied credentials.
+///
+/// # Example
+///
+/// ```
+/// use tidalv2::tidalrs::TidalV2ClientExt;
+///
+/// let v1_client = tidalrs::TidalClient::new("client_id".to_string());
+/// let v2_client = v1_client.tidalv2_client("client_id");
+///
+/// assert_eq!(v2_client.get_country_code(), "US");
+/// ```
+pub trait TidalV2ClientExt {
+    /// Builds a v2 client using this client's HTTP and authorization state.
+    fn tidalv2_client(&self, client_id: impl Into<String>) -> crate::TidalClient;
 }
 
-impl Configurator for TidalClient {
-    fn tidalv2_config(&self) -> Configuration {
-        let country_code = self.get_country_code();
-        let authz = self.get_authz();
-        Configuration {
-            base_path: TIDALV2_BASE_URL.to_string(),
-            user_agent: Some(USER_AGENT.to_string()),
-            client: self.client.clone(),
-            bearer_access_token: authz.map(|a| a.access_token.clone()),
-            country_code: country_code,
-            ..Default::default()
+impl TidalV2ClientExt for ::tidalrs::TidalClient {
+    fn tidalv2_client(&self, client_id: impl Into<String>) -> crate::TidalClient {
+        let mut client = crate::TidalClient::new(client_id.into())
+            .with_client(self.client.clone())
+            .with_country_code(self.get_country_code());
+
+        if let Some(authz) = self.get_authz() {
+            client = client.with_authz(Authz {
+                access_token: authz.access_token.clone(),
+                refresh_token: authz.refresh_token.clone(),
+                user_id: authz.user_id,
+                country_code: authz.country_code.clone(),
+                expires_timestamp: None,
+            });
         }
+
+        client
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::TidalV2ClientExt;
+
+    #[test]
+    fn copies_authorization_into_v2_client() {
+        let authz = ::tidalrs::Authz::new(
+            "access-token".to_string(),
+            "refresh-token".to_string(),
+            42,
+            Some("GB".to_string()),
+        );
+        let v1_client = ::tidalrs::TidalClient::new("client-id".to_string()).with_authz(authz);
+
+        let v2_client = v1_client.tidalv2_client("client-id");
+        let v2_authz = v2_client
+            .get_authz()
+            .expect("authorization should be copied");
+
+        assert_eq!(v2_client.get_country_code(), "GB");
+        assert_eq!(v2_authz.access_token, "access-token");
+        assert_eq!(v2_authz.refresh_token, "refresh-token");
+        assert_eq!(v2_authz.user_id, 42);
+        assert_eq!(v2_authz.country_code.as_deref(), Some("GB"));
+        assert_eq!(v2_authz.expires_timestamp, None);
     }
 }

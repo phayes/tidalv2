@@ -9,7 +9,7 @@ This library provides type-safe, async access to TIDAL's music catalog and user 
 - **JSON:API Support**: Full support for TIDAL's JSON:API v2 endpoints
 - **Type-Safe Models**: Strongly-typed data models generated from OpenAPI spec
 - **Async/Await**: Built on `reqwest` and `tokio` for async operations
-- **OAuth2 Authentication**: Device flow authentication with automatic token refresh via `tidalrs` integration
+- **OAuth2 Authentication**: Built-in device flow authentication, plus optional `tidalrs` interoperability
 - **Comprehensive API Coverage**:
   - Albums, artists, tracks, videos
   - Playlists and user collections
@@ -24,6 +24,16 @@ Add this to your `Cargo.toml`:
 ```toml
 [dependencies]
 tidalv2 = "0.1"
+```
+
+All default functionality is available without optional features. To create a
+v2 client from an existing [`tidalrs`](https://crates.io/crates/tidalrs)
+client, enable the `tidalrs` feature:
+
+```toml
+[dependencies]
+tidalv2 = { version = "0.1", features = ["tidalrs"] }
+tidalrs = "0.4"
 ```
 
 ## Usage
@@ -94,49 +104,34 @@ let albums = client
 
 ## Authentication
 
-This library can be used with the [`tidalrs`](https://crates.io/crates/tidalrs) crate for OAuth2 authentication. To use both together, add them as separate dependencies:
-
-```toml
-[dependencies]
-tidalv2 = "0.1"
-tidalrs = "0.4"
-```
-
-Then use `TidalClient` from `tidalrs` which provides authentication, and import the tidalv2 configuration trait:
+With the `tidalrs` feature enabled, an existing `tidalrs::TidalClient` can
+create a v2 client with the same HTTP client, country code, and current
+authorization credentials:
 
 ```rust
-use tidalrs::TidalClient;
+use tidalrs::TidalClient as TidalV1Client;
+use tidalv2::tidalrs::TidalV2ClientExt;
 
-// Note: The Configurator trait for tidalv2 integration is only available
-// when both crates are used together. You'll need to implement a small
-// extension trait or use the generated APIs directly with your own Configuration.
-
-let client = TidalClient::new("your_client_id".to_string());
+let client_id = "your_client_id";
+let v1_client = TidalV1Client::new(client_id.to_string());
 
 // Authenticate using device flow
-let device_auth = client.device_authorization().await?;
+let device_auth = v1_client.device_authorization().await?;
 println!("Visit: {}", device_auth.url);
 println!("Enter code: {}", device_auth.user_code);
 
-// Complete authentication
-let authz_token = client.authorize(&device_auth.device_code, "client_secret").await?;
+// After the user completes authorization, poll as described in the tidalrs docs.
+v1_client
+    .authorize(&device_auth.device_code, "client_secret")
+    .await?;
+
+let v2_client = v1_client.tidalv2_client(client_id);
+let album = v2_client.album_get("12345678", None).await?;
 ```
 
-For direct API usage without tidalrs, create a `Configuration` and use the generated API clients:
-
-```rust
-use tidalv2::apis::configuration::Configuration;
-use tidalv2::apis::albums_api;
-
-let config = Configuration {
-    base_path: "https://openapi.tidal.com/v2".to_string(),
-    bearer_access_token: Some("your_access_token".to_string()),
-    country_code: "US".to_string(),
-    ..Default::default()
-};
-
-let album = albums_api::album_get(&config, "12345678", None).await?;
-```
+The two clients own separate copies of the authorization state after
+conversion. Use the same client ID for both so the v2 client can refresh its
+copy of the credentials.
 
 ## API Documentation
 
@@ -150,6 +145,7 @@ The library follows TIDAL's JSON:API specification. All response types implement
 ## Requirements
 
 - Rust 1.70+
+- Rust 1.85+ when the optional `tidalrs` feature is enabled
 - Valid TIDAL API client credentials
 - For streaming features, appropriate TIDAL subscription
 

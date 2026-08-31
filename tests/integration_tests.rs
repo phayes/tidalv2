@@ -120,7 +120,7 @@ async fn test_search_and_walk_resources() {
         refresh_token,
         0, // user_id will be updated when we get user info
         Some("US".to_string()),
-        u64::MAX, // expires_timestamp - set to far future for testing
+        Some(u64::MAX), // expires_timestamp - set to far future for testing
     );
 
     let mut client = tidalv2::client::TidalClient::new(client_id).with_authz(authz);
@@ -738,7 +738,7 @@ async fn test_user_collections_and_walk() {
         refresh_token,
         0, // user_id will be updated when we get user info
         Some("US".to_string()),
-        u64::MAX, // expires_timestamp - set to far future for testing
+        Some(u64::MAX), // expires_timestamp - set to far future for testing
     );
 
     let mut client = tidalv2::client::TidalClient::new(client_id).with_authz(authz);
