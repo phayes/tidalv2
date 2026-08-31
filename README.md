@@ -184,4 +184,4 @@ This library is not officially affiliated with TIDAL. Use at your own risk and e
 ## Related Projects
 
 - [tidalrs](https://github.com/phayes/tidalrs) - TIDAL v1 API client with authentication support
-- [tidlers](https://crates.io/crates/tidlers) - Alternative TIDAL client with HiRes streaming support
+- [tidlers](https://crates.io/crates/tidlers) - Alternative v1 TIDAL client
