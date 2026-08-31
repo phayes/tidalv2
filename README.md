@@ -1,8 +1,14 @@
 # tidalv2
 
+[![Crates.io](https://img.shields.io/crates/v/tidalv2.svg)](https://crates.io/crates/tidalv2)
+[![Documentation](https://docs.rs/tidalv2/badge.svg)](https://docs.rs/tidalv2)
+[![GitHub](https://img.shields.io/badge/GitHub-phayes%2Ftidalv2-181717?logo=github)](https://github.com/phayes/tidalv2)
+
 A Rust client library for TIDAL's v2 JSON:API.
 
 This library provides type-safe, async access to TIDAL's music catalog and user data through their v2 API. The models and API clients are generated from TIDAL's OpenAPI specification, with hand-written client utilities for authentication and configuration.
+
+**Note**: For TIDAL's v1 API, see [tidalrs](https://github.com/phayes/tidalrs).
 
 ## Features
 
