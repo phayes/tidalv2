@@ -1,11 +1,17 @@
 [package]
 name = "tidalv2"
 version = "0.1.76"
-authors = ["OpenAPI Generator team and contributors"]
-description = "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data."
-# Override this license by providing a License Object in the OpenAPI.
+authors = ["Patrick Hayes <patrick.d.hayes@gmail.com>"]
+description = "Rust client library for TIDAL's v2 JSON:API - type-safe access to TIDAL's music catalog and streaming services"
 license = "Unlicense"
 edition = "2021"
+repository = "https://github.com/phayes/tidalv2"
+homepage = "https://github.com/phayes/tidalv2"
+documentation = "https://docs.rs/tidalv2"
+readme = "README.md"
+keywords = ["tidal", "music", "streaming", "api", "jsonapi"]
+categories = ["api-bindings", "multimedia::audio"]
+rust-version = "1.70"
 
 [dependencies]
 serde = { version = "^1.0", features = ["derive"] }
@@ -13,7 +19,6 @@ serde_json = "^1.0"
 serde_repr = "^0.1"
 url = "^2.5"
 reqwest = { version = "^0.12", default-features = false, features = ["json", "multipart", "rustls-tls"] }
-tidalrs = { git = "https://github.com/phayes/tidalrs", optional = true }
 log = "^0.4"
 strum = { version = "0.27", features = ["derive"] }
 strum_macros = { version = "0.27"}
