@@ -1,14 +1,14 @@
 use crate::models::{
-    album::Album, artist::Artist, artist_biography::ArtistBiography, artist_role::ArtistRole,
-    artwork::Artwork, genre::Genre, lyrics::Lyrics, playlist::Playlist, provider::Provider,
-    search_result::SearchResult, search_suggestions::SearchSuggestion, track::Track,
-    track_file::TrackFile, track_manifest::TrackManifest, track_statistics::TrackStatistics,
-    user::User, user_collection::UserCollection, user_recommendation::UserRecommendation,
-    user_share::UserShare, video::Video, Links,
+    Links, album::Album, artist::Artist, artist_biography::ArtistBiography,
+    artist_role::ArtistRole, artwork::Artwork, genre::Genre, lyrics::Lyrics, playlist::Playlist,
+    provider::Provider, search_result::SearchResult, search_suggestions::SearchSuggestion,
+    track::Track, track_file::TrackFile, track_manifest::TrackManifest,
+    track_statistics::TrackStatistics, user::User, user_collection::UserCollection,
+    user_recommendation::UserRecommendation, user_share::UserShare, video::Video,
 };
 
 // Generic Resource struct for all single resource data documents
-use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize, Serializer};
+use serde::{Deserialize, Deserializer, Serialize, Serializer, de::DeserializeOwned};
 use serde_json::Value;
 use strum::{AsRefStr, Display, IntoStaticStr};
 

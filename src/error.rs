@@ -47,14 +47,95 @@ pub enum Error {
     /// Exponential backoff exceeded the maximum duration while handling rate limits
     #[error("Hit rate limit backoff ceiling of {0}ms without recovery")]
     RateLimitBackoffExceeded(u64),
+
+    /// Client secret is required for this authorization flow
+    #[error("Client secret is required for this authorization flow")]
+    ClientSecretRequired,
+
+    /// PKCE login has not been started; call `start_pkce` first
+    #[error("PKCE login has not been started; call start_pkce first")]
+    PkceNotStarted,
+
+    /// Authorization code was not found in the PKCE redirect URL
+    #[error("Authorization code not found in PKCE redirect URL")]
+    PkceRedirectMissingCode,
+
+    /// Device authorization timed out before the user completed login
+    #[error("Device authorization timed out before the user completed login")]
+    DeviceAuthorizationTimeout,
+
+    /// OAuth device authorization was rejected or failed
+    #[error("OAuth device authorization failed: {0}")]
+    DeviceAuthorizationDenied(String),
+
+    /// The OAuth token endpoint returned an error response
+    #[error("OAuth error {error}: {description}")]
+    OAuth { error: String, description: String },
+
+    /// URL parsing failed
+    #[error("Invalid URL: {0}")]
+    Url(#[from] url::ParseError),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+/// An error body returned by a TIDAL API.
+///
+/// Deserialization is shape-based rather than untagged: a JSON:API `errors`
+/// array is a v2 error, a `subStatus` / `sub_status` field is a v1 error, and
+/// `{"status": ..., "message": ...}` is the serialized
+/// [`TidalError::UnknownError`] shape. Other unrecognized API bodies fail so
+/// the caller can wrap the HTTP status and raw response.
+#[derive(Debug, Clone, Serialize)]
 #[serde(untagged)]
 pub enum TidalError {
     TidalV2Error(TidalV2Error),
     TidalV1Error(TidalV1Error),
+    /// Built by callers that know the HTTP status and raw response body.
     UnknownError(TidalUnknownError),
+}
+
+impl<'de> Deserialize<'de> for TidalError {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = serde_json::Value::deserialize(deserializer)?;
+        if value.get("errors").is_some_and(|e| e.is_array()) {
+            return TidalV2Error::deserialize(value)
+                .map(TidalError::TidalV2Error)
+                .map_err(serde::de::Error::custom);
+        }
+        if value
+            .get("sub_status")
+            .or_else(|| value.get("subStatus"))
+            .is_some()
+        {
+            return TidalV1Error::deserialize(value)
+                .map(TidalError::TidalV1Error)
+                .map_err(serde::de::Error::custom);
+        }
+        if value.get("status").is_some() && value.get("message").is_some() {
+            return TidalUnknownError::deserialize(value)
+                .map(TidalError::UnknownError)
+                .map_err(serde::de::Error::custom);
+        }
+        Err(serde::de::Error::custom("unrecognized TIDAL error shape"))
+    }
+}
+
+impl TidalError {
+    /// Whether this error indicates the access token expired and should be refreshed.
+    pub fn is_expired_token(&self) -> bool {
+        match self {
+            TidalError::TidalV1Error(err) => err.sub_status == 11003,
+            TidalError::TidalV2Error(err) => err.errors.as_ref().is_some_and(|errors| {
+                errors.iter().any(|e| {
+                    e.code.as_deref() == Some("UNAUTHORIZED")
+                        && e.detail.as_deref() == Some("Expired token")
+                })
+            }),
+            TidalError::UnknownError(_) => false,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -85,8 +166,8 @@ impl Display for TidalError {
 /// both HTTP status codes and Tidal-specific error information.
 #[derive(Debug, Serialize, Clone)]
 pub struct TidalV1Error {
-    /// HTTP status code
-    pub status: u16,
+    /// HTTP status code, when the response includes one.
+    pub status: Option<u16>,
     /// Tidal-specific sub-status code
     pub sub_status: u64,
     /// Human-readable error message
@@ -98,18 +179,13 @@ impl<'de> Deserialize<'de> for TidalV1Error {
     where
         D: serde::Deserializer<'de>,
     {
-        // First deserialize to a generic Value
         let value: serde_json::Value = serde_json::Value::deserialize(deserializer)?;
 
-        // Extract status (should be consistent)
-        // TODO: Apparently this *isn't* consistent, so we need to handle it better
         let status = value
             .get("status")
             .and_then(|v| v.as_u64())
-            .ok_or_else(|| serde::de::Error::custom("Missing or invalid 'status' field"))?
-            as u16;
+            .map(|v| v as u16);
 
-        // Extract sub_status - try both snake_case and camelCase
         let sub_status = value
             .get("sub_status")
             .or_else(|| value.get("subStatus"))
@@ -118,7 +194,6 @@ impl<'de> Deserialize<'de> for TidalV1Error {
                 serde::de::Error::custom("Missing or invalid 'sub_status'/'subStatus' field")
             })?;
 
-        // Extract user_message - try both snake_case and camelCase, default to empty string
         let user_message = value
             .get("user_message")
             .or_else(|| value.get("userMessage"))
@@ -136,11 +211,18 @@ impl<'de> Deserialize<'de> for TidalV1Error {
 
 impl Display for TidalV1Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "Tidal API error: {} {} {}",
-            self.status, self.sub_status, self.user_message
-        )
+        match self.status {
+            Some(status) => write!(
+                f,
+                "Tidal API error: {} {} {}",
+                status, self.sub_status, self.user_message
+            ),
+            None => write!(
+                f,
+                "Tidal API error: {} {}",
+                self.sub_status, self.user_message
+            ),
+        }
     }
 }
 
@@ -221,5 +303,155 @@ impl ErrorObjectSource {
             parameter: None,
             pointer: None,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn parse(json: &str) -> Result<TidalError, serde_json::Error> {
+        serde_json::from_str(json)
+    }
+
+    #[test]
+    fn v2_shape_parses_with_errors() {
+        let err = parse(r#"{"errors":[{"code":"UNAUTHORIZED","detail":"Expired token"}]}"#)
+            .expect("v2 shape");
+        match err {
+            TidalError::TidalV2Error(v2) => {
+                assert_eq!(v2.errors.expect("errors").len(), 1);
+            }
+            other => panic!("expected TidalV2Error, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn v1_camel_case_parses_with_status() {
+        let err =
+            parse(r#"{"status":401,"subStatus":11003,"userMessage":"The token has expired"}"#)
+                .expect("v1 camelCase");
+        match err {
+            TidalError::TidalV1Error(v1) => {
+                assert_eq!(v1.status, Some(401));
+                assert_eq!(v1.sub_status, 11003);
+                assert_eq!(v1.user_message, "The token has expired");
+            }
+            other => panic!("expected TidalV1Error, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn v1_snake_case_without_status_parses() {
+        let err = parse(r#"{"sub_status":11003,"user_message":"The token has expired"}"#)
+            .expect("v1 snake_case without status");
+        match err {
+            TidalError::TidalV1Error(v1) => {
+                assert_eq!(v1.status, None);
+                assert_eq!(v1.sub_status, 11003);
+                assert_eq!(v1.user_message, "The token has expired");
+            }
+            other => panic!("expected TidalV1Error, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn oauth_shape_is_unrecognized() {
+        parse(r#"{"error":"invalid_client","error_description":"Bad client secret"}"#)
+            .expect_err("OAuth body is not a TIDAL error shape");
+    }
+
+    #[test]
+    fn empty_object_is_unrecognized() {
+        parse("{}").expect_err("empty object is not a TIDAL error shape");
+    }
+
+    #[test]
+    fn unknown_shape_parses_status_and_message() {
+        let err = parse(r#"{"status":502,"message":"upstream exploded"}"#).expect("unknown shape");
+        match err {
+            TidalError::UnknownError(unknown) => {
+                assert_eq!(unknown.status, 502);
+                assert_eq!(unknown.message, "upstream exploded");
+            }
+            other => panic!("expected UnknownError, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn unknown_error_round_trips() {
+        let original = TidalError::UnknownError(TidalUnknownError {
+            status: 503,
+            message: "gateway timeout".into(),
+        });
+        let json = serde_json::to_string(&original).expect("serialize");
+        let parsed: TidalError = serde_json::from_str(&json).expect("deserialize");
+        match parsed {
+            TidalError::UnknownError(unknown) => {
+                assert_eq!(unknown.status, 503);
+                assert_eq!(unknown.message, "gateway timeout");
+            }
+            other => panic!("expected UnknownError, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn malformed_unknown_shape_is_rejected() {
+        parse(r#"{"status":"502","message":"upstream exploded"}"#)
+            .expect_err("status must be a number");
+        parse(r#"{"status":502,"message":123}"#).expect_err("message must be a string");
+        parse(r#"{"status":502}"#).expect_err("message is required");
+        parse(r#"{"message":"upstream exploded"}"#).expect_err("status is required");
+    }
+
+    #[test]
+    fn v1_discriminator_takes_precedence_over_unknown_shape() {
+        let err = parse(
+            r#"{"status":401,"subStatus":11003,"message":"synthetic","userMessage":"expired"}"#,
+        )
+        .expect("v1 with message");
+        match err {
+            TidalError::TidalV1Error(v1) => {
+                assert_eq!(v1.status, Some(401));
+                assert_eq!(v1.sub_status, 11003);
+                assert_eq!(v1.user_message, "expired");
+            }
+            other => panic!("expected TidalV1Error, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn is_expired_token_v1_11003() {
+        let err = parse(r#"{"status":401,"subStatus":11003,"userMessage":"expired"}"#).unwrap();
+        assert!(err.is_expired_token());
+    }
+
+    #[test]
+    fn is_expired_token_v2_unauthorized() {
+        let err =
+            parse(r#"{"errors":[{"code":"UNAUTHORIZED","detail":"Expired token"}]}"#).unwrap();
+        assert!(err.is_expired_token());
+    }
+
+    #[test]
+    fn is_expired_token_false_for_other_v1() {
+        let err = parse(r#"{"status":400,"subStatus":1002,"userMessage":"pending"}"#).unwrap();
+        assert!(!err.is_expired_token());
+    }
+
+    #[test]
+    fn is_expired_token_false_for_other_v2() {
+        let err = parse(r#"{"errors":[{"code":"NOT_FOUND","detail":"missing"}]}"#).unwrap();
+        assert!(!err.is_expired_token());
+    }
+
+    #[test]
+    fn v1_display_omits_missing_status() {
+        let err = TidalV1Error {
+            status: None,
+            sub_status: 11003,
+            user_message: "expired".into(),
+        };
+        assert_eq!(err.to_string(), "Tidal API error: 11003 expired");
     }
 }

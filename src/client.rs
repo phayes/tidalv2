@@ -14,13 +14,13 @@ pub static TIDAL_V2_API_BASE_URL: &str = "https://openapi.tidal.com/v2";
 pub static TIDAL_USER_AGENT: &str = "rust-crate:tidalv2";
 const INITIAL_BACKOFF_MILLIS: u64 = 100;
 const DEFAULT_MAX_BACKOFF_MILLIS: u64 = 5_000;
+const MAX_TOKEN_REFRESH_ATTEMPTS: u8 = 10;
 
-use crate::error::TidalV1Error;
 use crate::error::{Error, TidalError, TidalUnknownError};
 use arc_swap::ArcSwapOption;
 use async_recursion::async_recursion;
 use log::{debug, info, trace};
-use serde::de::{DeserializeOwned, Error as _};
+use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use std::sync::{Arc, Mutex};
@@ -61,6 +61,13 @@ pub struct DeviceAuthorizationResponse {
     pub expires_in: u64,
     /// The code the user enters on the authorization page
     pub user_code: String,
+    /// Suggested polling interval in seconds (RFC 8628)
+    #[serde(default = "default_device_interval")]
+    pub interval: u64,
+}
+
+fn default_device_interval() -> u64 {
+    crate::auth::DEFAULT_DEVICE_INTERVAL_SECS
 }
 
 /// Complete authorization token response from Tidal's OAuth2 endpoint.
@@ -102,17 +109,13 @@ impl AuthzToken {
         now.as_secs() + self.expires_in as u64
     }
 
-    pub fn authz(&self) -> Option<Authz> {
-        if let Some(refresh_token) = self.refresh_token.clone() {
-            Some(Authz {
-                access_token: self.access_token.clone(),
-                refresh_token: refresh_token,
-                user_id: self.user_id as u64,
-                country_code: Some(self.user.country_code.clone()),
-                expires_timestamp: Some(self.expires_timestamp()),
-            })
-        } else {
-            None
+    pub fn authz(&self) -> Authz {
+        Authz {
+            access_token: self.access_token.clone(),
+            refresh_token: self.refresh_token.clone(),
+            user_id: Some(self.user_id as u64),
+            country_code: Some(self.user.country_code.clone()),
+            expires_timestamp: Some(self.expires_timestamp()),
         }
     }
 }
@@ -155,11 +158,13 @@ impl AuthzToken {
 pub struct TidalClient {
     pub client: reqwest::Client,
     pub(crate) client_id: String,
+    pub(crate) client_secret: Option<String>,
     pub(crate) base_path_api: String,
     pub(crate) base_path_auth: String,
     pub(crate) user_agent: String,
     pub(crate) authz: ArcSwapOption<Authz>,
     pub(crate) authz_update_semaphore: Semaphore,
+    pub(crate) pkce_pending: ArcSwapOption<crate::auth::PkcePending>,
     pub(crate) country_code: Option<String>,
     pub(crate) on_authz_refresh_callback: Option<AuthzCallback>,
     locale: Option<String>,
@@ -188,8 +193,10 @@ impl TidalClient {
         Self {
             client: reqwest::Client::new(),
             client_id,
+            client_secret: None,
             authz: ArcSwapOption::from(None),
             authz_update_semaphore: Semaphore::new(1),
+            pkce_pending: ArcSwapOption::from(None),
             country_code: None,
             on_authz_refresh_callback: None,
             base_path_api: TIDAL_V2_API_BASE_URL.to_string(),
@@ -246,8 +253,8 @@ impl TidalClient {
     ///
     /// let authz = Authz::new(
     ///     "access_token".to_string(),
-    ///     "refresh_token".to_string(),
-    ///     12345,
+    ///     Some("refresh_token".to_string()),
+    ///     Some(12345),
     ///     Some("US".to_string()),
     ///     None,
     /// );
@@ -257,6 +264,26 @@ impl TidalClient {
     pub fn with_authz(mut self, authz: Authz) -> Self {
         self.authz = ArcSwapOption::from_pointee(authz);
         self
+    }
+
+    /// Set the OAuth client secret used by device-code polling, PKCE refresh,
+    /// and the client-credentials grant.
+    pub fn with_client_secret(mut self, client_secret: impl Into<String>) -> Self {
+        self.client_secret = Some(client_secret.into());
+        self
+    }
+
+    /// Authenticate with a pre-existing access token and no refresh token.
+    ///
+    /// Use [`TidalClient::with_authz`] when you also have a refresh token to persist.
+    pub fn with_access_token(self, access_token: impl Into<String>) -> Self {
+        self.with_authz(Authz {
+            access_token: access_token.into(),
+            refresh_token: None,
+            user_id: None,
+            country_code: None,
+            expires_timestamp: None,
+        })
     }
 
     /// Set the device type for API requests using the builder pattern.
@@ -352,7 +379,7 @@ impl TidalClient {
     ///
     /// let client = TidalClient::new("client_id".to_string())
     ///     .with_authz_refresh_callback(|new_authz| {
-    ///         println!("Tokens refreshed for user: {}", new_authz.user_id);
+    ///         println!("Tokens refreshed for user: {:?}", new_authz.user_id);
     ///         // Save tokens to persistent storage
     ///         todo!();
     ///     });
@@ -430,7 +457,7 @@ impl TidalClient {
     ///
     /// Returns `None` if the client is not authenticated.
     pub fn get_user_id(&self) -> Option<u64> {
-        self.get_authz().map(|authz| authz.user_id)
+        self.get_authz().and_then(|authz| authz.user_id)
     }
 
     /// Set the country code for API requests.
@@ -493,7 +520,7 @@ impl TidalClient {
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// let mut client = TidalClient::new("client_id".to_string());
     /// client.on_authz_refresh(|new_authz| {
-    ///     println!("Tokens refreshed for user: {}", new_authz.user_id);
+    ///     println!("Tokens refreshed for user: {:?}", new_authz.user_id);
     ///     // Save tokens to persistent storage.
     /// });
     /// # Ok(())
@@ -520,7 +547,7 @@ impl TidalClient {
     /// # let client = TidalClient::new("client_id".to_string());
     /// if let Some(authz) = client.get_authz() {
     ///     // Save tokens for next session
-    ///     println!("User ID: {}", authz.user_id);
+    ///     println!("User ID: {:?}", authz.user_id);
     /// }
     /// # Ok(())
     /// # }
@@ -529,7 +556,12 @@ impl TidalClient {
         self.authz.load_full()
     }
 
-    #[async_recursion]
+    fn can_renew_token(&self) -> bool {
+        self.get_authz().is_some_and(|authz| {
+            authz.token_renewal(self.client_secret.is_some()) != TokenRenewal::None
+        })
+    }
+
     async fn refresh_authz(&self) -> Result<(), Error> {
         // Try to become the single refresher
         let permit: Option<SemaphorePermit> = match self.authz_update_semaphore.try_acquire() {
@@ -540,41 +572,51 @@ impl TidalClient {
         match permit {
             // We're the single refresher, fetch the new authz and update the client
             Some(permit) => {
-                let url = format!("{}/oauth2/token", self.base_path_auth);
-
                 let authz = self.get_authz().ok_or(Error::NoAuthzToken)?;
 
-                let params = serde_json::json!({
-                    "client_id": &self.client_id,
-                    "refresh_token": authz.refresh_token,
-                    "grant_type": "refresh_token",
-                    "scope": "r_usr w_usr w_sub",
-                });
+                let new_authz = match authz.token_renewal(self.client_secret.is_some()) {
+                    TokenRenewal::RefreshToken(refresh_token) => {
+                        let basic_auth = self
+                            .client_secret
+                            .as_deref()
+                            .map(|secret| (self.client_id.as_str(), secret));
 
-                let req_builder = self.client.post(&url).form(&params);
-                let resp: AuthzToken = self.execute_request(req_builder).await?;
+                        let resp: AuthzToken = self
+                            .post_token(
+                                &[
+                                    ("client_id", self.client_id.as_str()),
+                                    ("refresh_token", refresh_token.as_str()),
+                                    ("grant_type", "refresh_token"),
+                                    ("scope", "r_usr w_usr w_sub"),
+                                ],
+                                basic_auth,
+                            )
+                            .await?;
 
-                let expires_timestamp = Some(resp.expires_timestamp());
-                let new_authz = Authz {
-                    access_token: resp.access_token,
-                    refresh_token: resp
-                        .refresh_token
-                        .unwrap_or_else(|| authz.refresh_token.clone()),
-                    user_id: resp.user.user_id,
-                    country_code: match &authz.country_code {
-                        Some(country_code) => Some(country_code.clone()),
-                        None => Some(resp.user.country_code.clone()),
-                    },
-                    expires_timestamp,
+                        let expires_timestamp = Some(resp.expires_timestamp());
+                        let new_authz = Authz {
+                            access_token: resp.access_token,
+                            refresh_token: resp
+                                .refresh_token
+                                .or_else(|| authz.refresh_token.clone()),
+                            user_id: Some(resp.user.user_id),
+                            country_code: match &authz.country_code {
+                                Some(country_code) => Some(country_code.clone()),
+                                None => Some(resp.user.country_code.clone()),
+                            },
+                            expires_timestamp,
+                        };
+                        self.authz.store(Some(Arc::new(new_authz.clone())));
+                        new_authz
+                    }
+                    TokenRenewal::ClientCredentials => self.client_credentials().await?,
+                    TokenRenewal::None => return Err(Error::NoAuthzToken),
                 };
 
-                // Single, quick swap visible to all readers
-                self.authz.store(Some(Arc::new(new_authz.clone())));
                 trace!("TIDAL API Token refreshed");
 
                 drop(permit);
 
-                // invoke callback if set
                 if let Some(cb) = &self.on_authz_refresh_callback {
                     cb(new_authz);
                 }
@@ -614,16 +656,18 @@ impl TidalClient {
     /// # }
     /// ```
     pub async fn device_authorization(&self) -> Result<DeviceAuthorizationResponse, Error> {
-        let url = format!("{TIDAL_AUTH_API_BASE_URL}/oauth2/device_authorization");
+        let mut resp: DeviceAuthorizationResponse = self
+            .post_auth_form(
+                crate::auth::DEVICE_AUTHORIZATION_PATH,
+                &[
+                    ("client_id", self.client_id.as_str()),
+                    ("scope", "r_usr w_usr w_sub"),
+                ],
+                None,
+            )
+            .await?;
 
-        let params = serde_json::json!({
-            "client_id": &self.client_id,
-            "scope": "r_usr w_usr w_sub",
-        });
-
-        let req_builder = self.client.post(&url).form(&params);
-        let mut resp: DeviceAuthorizationResponse = self.execute_request(req_builder).await?;
-
+        // TIDAL returns verificationUriComplete without a scheme.
         resp.url = format!("https://{url}", url = resp.url);
 
         Ok(resp)
@@ -657,7 +701,7 @@ impl TidalClient {
     /// println!("Authenticated as: {}", authz_token.user.username);
     ///
     /// // Get the authz token to store in persistent storage
-    /// let authz = authz_token.authz().unwrap();
+    /// let authz = authz_token.authz();
     /// std::fs::write("authz.json", serde_json::to_string(&authz).unwrap()).unwrap();
     /// # Ok(())
     /// # }
@@ -667,35 +711,20 @@ impl TidalClient {
         device_code: &str,
         client_secret: &str,
     ) -> Result<AuthzToken, Error> {
-        let url = format!("{TIDAL_AUTH_API_BASE_URL}/oauth2/token");
+        let resp: AuthzToken = self
+            .post_token(
+                &[
+                    ("client_id", self.client_id.as_str()),
+                    ("client_secret", client_secret),
+                    ("device_code", device_code),
+                    ("grant_type", "urn:ietf:params:oauth:grant-type:device_code"),
+                    ("scope", "r_usr w_usr w_sub"),
+                ],
+                None,
+            )
+            .await?;
 
-        let params = serde_json::json!({
-            "client_id": &self.client_id,
-            "client_secret": client_secret,
-            "device_code": &device_code,
-            "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
-            "scope": "r_usr w_usr w_sub",
-        });
-
-        let req_builder = self.client.post(&url).form(&params);
-        let resp: AuthzToken = self.execute_request(req_builder).await?;
-
-        let authz = Authz {
-            access_token: resp.access_token.clone(),
-            refresh_token: resp
-                .refresh_token
-                .clone()
-                .expect("No refresh token received from Tidal after authorization"),
-            user_id: resp.user.user_id,
-            country_code: match &self.country_code {
-                Some(country_code) => Some(country_code.clone()),
-                None => Some(resp.user.country_code.clone()),
-            },
-            expires_timestamp: Some(resp.expires_timestamp()),
-        };
-
-        self.authz.store(Some(Arc::new(authz)));
-
+        self.store_user_authz(&resp);
         Ok(resp)
     }
 }
@@ -710,10 +739,19 @@ impl TidalClient {
     /// Execute HTTP request and parse response into the specified type T
     /// This centralizes all request execution, response handling, and deserialization
     /// Also applies authentication headers (bearer token, user agent, etc.) automatically
-    #[async_recursion]
     pub async fn execute_request<T: DeserializeOwned>(
         &self,
         req_builder: reqwest::RequestBuilder,
+    ) -> Result<T, Error> {
+        self.execute_request_with_refresh_attempts(req_builder, 0)
+            .await
+    }
+
+    #[async_recursion]
+    async fn execute_request_with_refresh_attempts<T: DeserializeOwned>(
+        &self,
+        req_builder: reqwest::RequestBuilder,
+        token_refresh_attempts: u8,
     ) -> Result<T, Error> {
         self.await_rate_limit_backoff().await;
         let original_req_builder = req_builder.try_clone().unwrap();
@@ -820,7 +858,12 @@ impl TidalClient {
                     // The backoff wait will happen at the start of execute_request
                     self.increase_rate_limit_backoff()?;
                     // Retry the request (execute_request will wait for backoff at the start)
-                    return self.execute_request(original_req_builder).await;
+                    return self
+                        .execute_request_with_refresh_attempts(
+                            original_req_builder,
+                            token_refresh_attempts,
+                        )
+                        .await;
                 }
             } else {
                 self.reset_rate_limit_backoff();
@@ -832,41 +875,30 @@ impl TidalClient {
                     if log::log_enabled!(log::Level::Warn) {
                         let problem_value_pretty = serde_json::to_string_pretty(&value).unwrap();
                         log::warn!("Requested URL: {}", url);
-                        log::warn!("JSON deserialization error of TidalV1Error: {}", e);
+                        log::warn!("Unrecognized TIDAL error shape: {}", e);
                         log::warn!("Response: {}", problem_value_pretty);
                     }
                     return Err(Error::TidalError(TidalError::UnknownError(
                         TidalUnknownError {
                             status: status.as_u16(),
-                            message: e.to_string(),
+                            message: String::from_utf8_lossy(&body).into_owned(),
                         },
                     )));
                 }
             };
 
-            let token_needs_refresh = match &tidal_err {
-                TidalError::TidalV1Error(tidal_v1_error) => tidal_v1_error.sub_status == 11003,
-                TidalError::TidalV2Error(tidal_v2_error) => {
-                    if let Some(errors) = &tidal_v2_error.errors {
-                        if errors.iter().any(|e| {
-                            e.code == Some("UNAUTHORIZED".to_string())
-                                && e.detail == Some("Expired token".to_string())
-                        }) {
-                            true
-                        } else {
-                            false
-                        }
-                    } else {
-                        false
-                    }
-                }
-                _ => false,
-            };
-
-            if token_needs_refresh {
+            if tidal_err.is_expired_token()
+                && self.can_renew_token()
+                && token_refresh_attempts < MAX_TOKEN_REFRESH_ATTEMPTS
+            {
                 trace!("TIDAL API Token expired, refreshing");
                 self.refresh_authz().await?;
-                return self.execute_request(original_req_builder).await;
+                return self
+                    .execute_request_with_refresh_attempts(
+                        original_req_builder,
+                        token_refresh_attempts + 1,
+                    )
+                    .await;
             }
 
             if log::log_enabled!(log::Level::Warn) {
@@ -951,8 +983,8 @@ impl TidalClient {
 /// // Create Authz from stored tokens
 /// let authz = Authz::new(
 ///     "access_token".to_string(),
-///     "refresh_token".to_string(),
-///     12345,
+///     Some("refresh_token".to_string()),
+///     Some(12345),
 ///     Some("US".to_string()),
 ///     None,
 /// );
@@ -965,10 +997,16 @@ impl TidalClient {
 pub struct Authz {
     /// Access token for API authentication
     pub access_token: String,
-    /// Refresh token for obtaining new access tokens
-    pub refresh_token: String,
-    /// User ID associated with these tokens
-    pub user_id: u64,
+    /// Refresh token for obtaining new access tokens.
+    ///
+    /// Absent for client-credentials and access-token-only sessions.
+    #[serde(default)]
+    pub refresh_token: Option<String>,
+    /// User ID associated with these tokens.
+    ///
+    /// Absent for client-credentials and access-token-only sessions.
+    #[serde(default)]
+    pub user_id: Option<u64>,
     /// User's country code (affects content availability)
     pub country_code: Option<String>,
     /// Unix timestamp when the access token expires (seconds since epoch).
@@ -977,11 +1015,19 @@ pub struct Authz {
     pub expires_timestamp: Option<u64>,
 }
 
+/// How an expired access token can be renewed.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum TokenRenewal {
+    RefreshToken(String),
+    ClientCredentials,
+    None,
+}
+
 impl Authz {
     pub fn new(
         access_token: String,
-        refresh_token: String,
-        user_id: u64,
+        refresh_token: Option<String>,
+        user_id: Option<u64>,
         country_code: Option<String>,
         expires_timestamp: Option<u64>,
     ) -> Self {
@@ -992,6 +1038,18 @@ impl Authz {
             country_code,
             expires_timestamp,
         }
+    }
+
+    pub(crate) fn token_renewal(&self, has_client_secret: bool) -> TokenRenewal {
+        if let Some(refresh_token) = &self.refresh_token
+            && !refresh_token.is_empty()
+        {
+            return TokenRenewal::RefreshToken(refresh_token.clone());
+        }
+        if has_client_secret {
+            return TokenRenewal::ClientCredentials;
+        }
+        TokenRenewal::None
     }
 }
 
@@ -1008,4 +1066,67 @@ pub enum DeviceType {
     /// Browser-based client
     #[default]
     Browser,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn authz_without_refresh_token_cannot_renew() {
+        let authz = Authz::new("tok".to_string(), None, None, None, None);
+        assert_eq!(authz.token_renewal(false), TokenRenewal::None);
+        assert_eq!(authz.token_renewal(true), TokenRenewal::ClientCredentials);
+    }
+
+    #[test]
+    fn authz_with_refresh_token_uses_refresh() {
+        let authz = Authz::new(
+            "tok".to_string(),
+            Some("rt".to_string()),
+            Some(1),
+            None,
+            None,
+        );
+        assert!(matches!(
+            authz.token_renewal(true),
+            TokenRenewal::RefreshToken(token) if token == "rt"
+        ));
+        assert!(matches!(
+            authz.token_renewal(false),
+            TokenRenewal::RefreshToken(_)
+        ));
+    }
+
+    #[test]
+    fn empty_refresh_token_falls_back_to_client_credentials() {
+        let authz = Authz::new("tok".to_string(), Some(String::new()), None, None, None);
+        assert_eq!(authz.token_renewal(false), TokenRenewal::None);
+        assert_eq!(authz.token_renewal(true), TokenRenewal::ClientCredentials);
+    }
+
+    #[test]
+    fn with_access_token_stores_token_only_authz() {
+        let client = TidalClient::new("client-id".to_string()).with_access_token("abc");
+        let authz = client.get_authz().expect("authz");
+        assert_eq!(authz.access_token, "abc");
+        assert_eq!(authz.refresh_token, None);
+        assert_eq!(authz.user_id, None);
+        assert!(!client.can_renew_token());
+    }
+
+    #[test]
+    fn with_client_secret_enables_client_credentials_renewal() {
+        let client = TidalClient::new("client-id".to_string())
+            .with_client_secret("secret")
+            .with_access_token("abc");
+        assert!(client.can_renew_token());
+        assert_eq!(
+            client
+                .get_authz()
+                .unwrap()
+                .token_renewal(client.client_secret.is_some()),
+            TokenRenewal::ClientCredentials
+        );
+    }
 }

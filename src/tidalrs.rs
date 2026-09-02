@@ -37,8 +37,8 @@ impl TidalV2ClientExt for ::tidalrs::TidalClient {
         if let Some(authz) = self.get_authz() {
             client = client.with_authz(Authz {
                 access_token: authz.access_token.clone(),
-                refresh_token: authz.refresh_token.clone(),
-                user_id: authz.user_id,
+                refresh_token: Some(authz.refresh_token.clone()),
+                user_id: Some(authz.user_id),
                 country_code: authz.country_code.clone(),
                 expires_timestamp: None,
             });
@@ -69,8 +69,8 @@ mod tests {
 
         assert_eq!(v2_client.get_country_code(), "GB");
         assert_eq!(v2_authz.access_token, "access-token");
-        assert_eq!(v2_authz.refresh_token, "refresh-token");
-        assert_eq!(v2_authz.user_id, 42);
+        assert_eq!(v2_authz.refresh_token.as_deref(), Some("refresh-token"));
+        assert_eq!(v2_authz.user_id, Some(42));
         assert_eq!(v2_authz.country_code.as_deref(), Some("GB"));
         assert_eq!(v2_authz.expires_timestamp, None);
     }

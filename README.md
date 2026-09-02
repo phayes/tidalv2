@@ -15,7 +15,7 @@ This library provides type-safe, async access to TIDAL's music catalog and user 
 - **JSON:API Support**: Full support for TIDAL's JSON:API v2 endpoints
 - **Type-Safe Models**: Strongly-typed data models generated from OpenAPI spec
 - **Async/Await**: Built on `reqwest` and `tokio` for async operations
-- **OAuth2 Authentication**: Built-in device flow authentication, plus optional `tidalrs` interoperability
+- **OAuth2 Authentication**: Device-code, PKCE, client-credentials, and direct access-token flows, plus optional `tidalrs` interoperability
 - **Comprehensive API Coverage**:
   - Albums, artists, tracks, videos
   - Playlists and user collections
@@ -54,8 +54,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create a client with your TIDAL client ID
     let client = TidalClient::new("your_client_id".to_string());
     
-    // Perform authentication (see tidalrs documentation)
-    // ...
+    // Authenticate (device-code, PKCE, client-credentials, or a stored token)
     
     Ok(())
 }
@@ -109,6 +108,94 @@ let albums = client
 ```
 
 ## Authentication
+
+Credentials are always caller-supplied. The same Bearer token is used for all
+API calls, including HiRes streaming. HiRes availability depends on the OAuth
+client that issued the token, not on a separate streaming credential.
+
+### Device-code flow
+
+```rust
+use tidalv2::TidalClient;
+
+# async fn example() -> Result<(), Box<dyn std::error::Error>> {
+let client = TidalClient::new("your_client_id".to_string())
+    .with_client_secret("your_client_secret");
+
+let device_auth = client.device_authorization().await?;
+println!("Visit: {}", device_auth.url);
+println!("Enter code: {}", device_auth.user_code);
+
+let token = client
+    .wait_for_authorization(
+        &device_auth.device_code,
+        device_auth.expires_in,
+        device_auth.interval,
+    )
+    .await?;
+println!("Authenticated as: {}", token.user.username);
+# Ok(())
+# }
+```
+
+You can still complete the flow yourself by polling `authorize(device_code, client_secret)` after the user approves.
+
+### PKCE flow (HiRes-capable clients)
+
+Use a client ID that TIDAL associates with HiRes playback, and the matching
+redirect URI (the Android app uses `https://tidal.com/android/login/auth`).
+Official developer-portal clients may not unlock HiRes.
+
+```rust
+use tidalv2::TidalClient;
+
+# async fn example() -> Result<(), Box<dyn std::error::Error>> {
+let client = TidalClient::new("hires_client_id".to_string())
+    .with_client_secret("hires_client_secret");
+
+let url = client.start_pkce("https://tidal.com/android/login/auth")?;
+println!("Visit: {}", url);
+
+// After login, paste the full redirect URL (it includes ?code=...)
+let token = client.finish_pkce(&redirect_url).await?;
+println!("Authenticated as: {}", token.user.username);
+# Ok(())
+# }
+```
+
+### Client-credentials flow
+
+```rust
+use tidalv2::TidalClient;
+
+# async fn example() -> Result<(), Box<dyn std::error::Error>> {
+let client = TidalClient::new("your_client_id".to_string())
+    .with_client_secret("your_client_secret");
+let authz = client.client_credentials().await?;
+println!("App token expires at {:?}", authz.expires_timestamp);
+# Ok(())
+# }
+```
+
+### Direct access token
+
+```rust
+use tidalv2::{client::Authz, TidalClient};
+
+// Token only — no automatic refresh
+let client = TidalClient::new("your_client_id".to_string())
+    .with_access_token("access_token");
+
+// Persisted user session with refresh
+let authz = Authz::new(
+    "access_token".to_string(),
+    Some("refresh_token".to_string()),
+    Some(12345),
+    Some("US".to_string()),
+    None,
+);
+let client = TidalClient::new("your_client_id".to_string()).with_authz(authz);
+```
 
 With the `tidalrs` feature enabled, an existing `tidalrs::TidalClient` can
 create a v2 client with the same HTTP client, country code, and current
@@ -172,7 +259,7 @@ cargo test --ignored
 Contributions are welcome! Please note:
 
 - Models and API clients in `src/models/` and `src/apis/` are OpenAPI-generated
-- Hand-written code is in `src/client.rs`, `src/error.rs`, and `src/tidalrs.rs`
+- Hand-written code is in `src/client.rs`, `src/auth.rs`, `src/error.rs`, and `src/tidalrs.rs`
 - Tests use real TIDAL API endpoints and require credentials
 
 ## License

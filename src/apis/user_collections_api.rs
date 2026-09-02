@@ -1,4 +1,4 @@
-use super::{client, Error};
+use super::{Error, client};
 use crate::models::user_collection::*;
 use crate::models::*;
 use reqwest;

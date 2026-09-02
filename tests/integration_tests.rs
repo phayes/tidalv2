@@ -1,12 +1,12 @@
+use ResourceType::*;
 use async_recursion::async_recursion;
 use log::{info, trace};
 use std::collections::{HashMap, HashSet};
 use std::env;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::LazyLock;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Mutex, Once};
 use tidalv2::models::*;
-use ResourceType::*;
 
 /// Ensure logging is only initialized once across all tests
 static INIT_LOGGER: Once = Once::new();
@@ -117,8 +117,8 @@ async fn test_search_and_walk_resources() {
     // Configure API client with authentication
     let authz = tidalv2::client::Authz::new(
         access_token,
-        refresh_token,
-        0, // user_id will be updated when we get user info
+        Some(refresh_token),
+        Some(0), // user_id will be updated when we get user info
         Some("US".to_string()),
         Some(u64::MAX), // expires_timestamp - set to far future for testing
     );
@@ -735,8 +735,8 @@ async fn test_user_collections_and_walk() {
     // Configure API client with authentication
     let authz = tidalv2::client::Authz::new(
         access_token,
-        refresh_token,
-        0, // user_id will be updated when we get user info
+        Some(refresh_token),
+        Some(0), // user_id will be updated when we get user info
         Some("US".to_string()),
         Some(u64::MAX), // expires_timestamp - set to far future for testing
     );
