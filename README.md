@@ -29,7 +29,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-tidalv2 = "0.2"
+tidalv2 = "0.3"
 ```
 
 All default functionality is available without optional features. To create a
@@ -38,7 +38,7 @@ client, enable the `tidalrs` feature:
 
 ```toml
 [dependencies]
-tidalv2 = { version = "0.2", features = ["tidalrs"] }
+tidalv2 = { version = "0.3", features = ["tidalrs"] }
 tidalrs = "0.5"
 ```
 

@@ -2,7 +2,9 @@
 //!
 //! Enable the `tidalrs` Cargo feature to convert an authenticated
 //! [`tidalrs::TidalClient`] into a [`crate::TidalClient`]. The resulting client
-//! reuses the HTTP client, country code, and current authorization credentials.
+//! copies the country code and current authorization credentials. The HTTP
+//! clients are not shared: `tidalrs` still uses reqwest 0.12 while this crate
+//! uses reqwest 0.13.
 
 use crate::client::Authz;
 
@@ -24,14 +26,14 @@ use crate::client::Authz;
 /// assert_eq!(v2_client.get_country_code(), "US");
 /// ```
 pub trait TidalV2ClientExt {
-    /// Builds a v2 client using this client's HTTP and authorization state.
+    /// Builds a v2 client using this client's country and authorization state.
     fn tidalv2_client(&self, client_id: impl Into<String>) -> crate::TidalClient;
 }
 
 impl TidalV2ClientExt for ::tidalrs::TidalClient {
     fn tidalv2_client(&self, client_id: impl Into<String>) -> crate::TidalClient {
+        // TODO: Share the HTTP client once `tidalrs` uses the same reqwest version.
         let mut client = crate::TidalClient::new(client_id.into())
-            .with_client(self.client.clone())
             .with_country_code(self.get_country_code());
 
         if let Some(authz) = self.get_authz() {

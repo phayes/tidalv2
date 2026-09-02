@@ -1,6 +1,6 @@
 [package]
 name = "tidalv2"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Patrick Hayes <patrick.d.hayes@gmail.com>"]
 description = "Rust client library for TIDAL's v2 JSON:API - type-safe access to TIDAL's music catalog and streaming services"
 license = "Unlicense"
@@ -21,7 +21,7 @@ serde = { version = "^1.0", features = ["derive"] }
 serde_json = "^1.0"
 serde_repr = "^0.1"
 url = "^2.5"
-reqwest = { version = "^0.12", default-features = false, features = ["json", "multipart", "rustls-tls"] }
+reqwest = { version = "^0.13", default-features = false, features = ["json", "multipart", "query", "form", "rustls"] }
 tidalrs = { version = "0.5", optional = true }
 log = "^0.4"
 strum = { version = "0.28", features = ["derive"] }
@@ -30,9 +30,9 @@ thiserror = "^2.0"
 arc-swap = "^1.7"
 async-recursion = "^1.0"
 tokio = { version = "1.0"}
-sha2 = "0.10"
-base64 = "0.22"
-rand = "0.8"
+sha2 = "0.11"
+base64 = "0.23"
+rand = "0.10"
 
 [dev-dependencies]
 env_logger = "0.11"

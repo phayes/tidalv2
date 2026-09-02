@@ -7,7 +7,6 @@ use crate::client::{Authz, AuthzToken, TidalClient};
 use crate::error::{Error, TidalError, TidalUnknownError};
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
 use log::{debug, info, trace};
-use rand::{Rng, RngCore};
 use reqwest::StatusCode;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
@@ -59,12 +58,11 @@ pub struct OAuthErrorBody {
 
 /// Generate a new PKCE verifier, S256 challenge, and client unique key.
 pub fn generate_pkce_pending(redirect_uri: impl Into<String>) -> PkcePending {
-    let mut rng = rand::thread_rng();
-    let bits: u64 = rng.r#gen();
+    let bits: u64 = rand::random();
     let client_unique_key = format!("{:02x}", bits);
 
     let mut random_bytes = [0u8; 32];
-    rng.fill_bytes(&mut random_bytes);
+    rand::fill(&mut random_bytes);
     let code_verifier = URL_SAFE_NO_PAD.encode(random_bytes);
 
     let mut hasher = Sha256::new();
