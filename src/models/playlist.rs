@@ -85,24 +85,24 @@ impl PlaylistAttributes {
 }
 
 /// Access type
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum PlaylistAccess {
     #[serde(rename = "UNLISTED")]
+    #[default]
     Unlisted,
     #[serde(rename = "PUBLIC")]
     Public,
 }
 
-impl Default for PlaylistAccess {
-    fn default() -> PlaylistAccess {
-        Self::Unlisted
-    }
-}
-
 /// The type of the playlist
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum PlaylistType {
     #[serde(rename = "USER")]
+    #[default]
     User,
     #[serde(rename = "EDITORIAL")]
     Editorial,
@@ -110,12 +110,6 @@ pub enum PlaylistType {
     Mix,
     #[serde(rename = "ARTIST")]
     Artist,
-}
-
-impl Default for PlaylistType {
-    fn default() -> PlaylistType {
-        Self::User
-    }
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]

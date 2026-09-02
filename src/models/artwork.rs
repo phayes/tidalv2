@@ -46,18 +46,15 @@ impl ArtworkAttributes {
 }
 
 /// Media type of artwork files
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum ArtworkMediaType {
     #[serde(rename = "IMAGE")]
+    #[default]
     Image,
     #[serde(rename = "VIDEO")]
     Video,
-}
-
-impl Default for ArtworkMediaType {
-    fn default() -> ArtworkMediaType {
-        Self::Image
-    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

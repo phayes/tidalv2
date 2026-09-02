@@ -328,8 +328,7 @@ impl client::TidalClient {
         let p_id = id;
         let p_playlist_items_relationship_add_operation_payload = DataWrap::new_with_meta(
             items_to_add,
-            position_before
-                .map(|position_before| playlist::PlaylistItemPosition::new(position_before)),
+            position_before.map(playlist::PlaylistItemPosition::new),
         );
 
         let uri_str = format!(

@@ -112,9 +112,12 @@ impl TrackAttributes {
 }
 
 /// Access type
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum TrackAccess {
     #[serde(rename = "PUBLIC")]
+    #[default]
     Public,
     #[serde(rename = "UNLISTED")]
     Unlisted,
@@ -122,16 +125,13 @@ pub enum TrackAccess {
     Private,
 }
 
-impl Default for TrackAccess {
-    fn default() -> TrackAccess {
-        Self::Public
-    }
-}
-
 /// Available usage for this track
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum TrackAvailability {
     #[serde(rename = "STREAM")]
+    #[default]
     Stream,
     #[serde(rename = "DJ")]
     Dj,
@@ -139,16 +139,13 @@ pub enum TrackAvailability {
     Stem,
 }
 
-impl Default for TrackAvailability {
-    fn default() -> TrackAvailability {
-        Self::Stream
-    }
-}
-
 /// Key
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum TrackKey {
     #[serde(rename = "UNKNOWN")]
+    #[default]
     Unknown,
     #[serde(rename = "C")]
     C,
@@ -176,16 +173,13 @@ pub enum TrackKey {
     B,
 }
 
-impl Default for TrackKey {
-    fn default() -> TrackKey {
-        Self::Unknown
-    }
-}
-
 /// The scale of the key
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum TrackKeyScale {
     #[serde(rename = "UNKNOWN")]
+    #[default]
     Unknown,
     #[serde(rename = "MAJOR")]
     Major,
@@ -213,12 +207,6 @@ pub enum TrackKeyScale {
     MelodicMinor,
     #[serde(rename = "PENTATONIC_MINOR")]
     PentatonicMinor,
-}
-
-impl Default for TrackKeyScale {
-    fn default() -> TrackKeyScale {
-        Self::Unknown
-    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

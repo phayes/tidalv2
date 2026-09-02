@@ -32,17 +32,13 @@ impl DrmData {
         }
     }
 }
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum DrmSystem {
     #[serde(rename = "FAIRPLAY")]
+    #[default]
     Fairplay,
     #[serde(rename = "WIDEVINE")]
     Widevine,
-}
-
-impl Default for DrmSystem {
-    fn default() -> DrmSystem {
-        Self::Fairplay
-    }
 }

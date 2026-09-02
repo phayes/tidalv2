@@ -1,9 +1,12 @@
 use serde::{Deserialize, Serialize};
 
 /// Audio Formats
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum AudioFormat {
     #[serde(rename = "HEAACV1")]
+    #[default]
     Heaacv1,
     #[serde(rename = "AACLC")]
     Aaclc,
@@ -16,12 +19,6 @@ pub enum AudioFormat {
 impl AudioFormat {
     pub fn is_lossless(&self) -> bool {
         matches!(self, AudioFormat::Flac | AudioFormat::FlacHires)
-    }
-}
-
-impl Default for AudioFormat {
-    fn default() -> AudioFormat {
-        Self::Heaacv1
     }
 }
 

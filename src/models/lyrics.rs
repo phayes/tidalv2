@@ -43,10 +43,12 @@ impl LyricsAttributes {
     }
 }
 
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum LyricsTechnicalStatus {
     #[serde(rename = "PENDING")]
+    #[default]
     Pending,
     #[serde(rename = "PROCESSING")]
     Processing,
@@ -54,12 +56,6 @@ pub enum LyricsTechnicalStatus {
     Error,
     #[serde(rename = "OK")]
     Ok,
-}
-
-impl Default for LyricsTechnicalStatus {
-    fn default() -> LyricsTechnicalStatus {
-        Self::Pending
-    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

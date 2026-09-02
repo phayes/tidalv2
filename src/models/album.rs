@@ -102,9 +102,12 @@ impl AlbumAttributes {
 }
 
 /// Available usage for this album
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum AlbumAvailability {
     #[serde(rename = "STREAM")]
+    #[default]
     Stream,
     #[serde(rename = "DJ")]
     Dj,
@@ -112,27 +115,18 @@ pub enum AlbumAvailability {
     Stem,
 }
 
-impl Default for AlbumAvailability {
-    fn default() -> AlbumAvailability {
-        Self::Stream
-    }
-}
-
 /// Album type
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum AlbumType {
     #[serde(rename = "ALBUM")]
+    #[default]
     Album,
     #[serde(rename = "EP")]
     Ep,
     #[serde(rename = "SINGLE")]
     Single,
-}
-
-impl Default for AlbumType {
-    fn default() -> AlbumType {
-        Self::Album
-    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

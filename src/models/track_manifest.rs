@@ -44,18 +44,15 @@ impl TrackManifestAttributes {
 }
 
 /// Track presentation
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum TrackPresentation {
     #[serde(rename = "FULL")]
+    #[default]
     Full,
     #[serde(rename = "PREVIEW")]
     Preview,
-}
-
-impl Default for TrackPresentation {
-    fn default() -> TrackPresentation {
-        Self::Full
-    }
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]

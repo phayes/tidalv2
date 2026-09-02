@@ -32,9 +32,12 @@ pub struct ExternalLinkMeta {
     pub r#type: ExternalLinkType,
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum ExternalLinkType {
     #[serde(rename = "TIDAL_SHARING")]
+    #[default]
     TidalSharing,
     #[serde(rename = "TIDAL_USER_SHARING")]
     TidalUserSharing,
@@ -58,10 +61,4 @@ pub enum ExternalLinkType {
     OfficialHomepage,
     #[serde(rename = "CASHAPP_CONTRIBUTIONS")]
     CashappContributions,
-}
-
-impl Default for ExternalLinkType {
-    fn default() -> ExternalLinkType {
-        Self::TidalSharing
-    }
 }

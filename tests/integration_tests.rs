@@ -1,3 +1,17 @@
+//! Integration tests for TIDAL API
+//!
+//! These tests require the following environment variables to be set:
+//! - TIDAL_CLIENT_ID: Your Tidal API client ID
+//! - TIDAL_CLIENT_SECRET: Your Tidal API client secret (optional, for some operations)
+//! - TIDAL_REFRESH_TOKEN: Refresh token for automatic token renewal (required)
+//! - TIDAL_ACCESS_TOKEN: Valid access token for API authentication (optional, will be generated from refresh token if not provided)
+//!
+//! The tests perform read-only operations to validate API parsing and resource walking.
+//! Note: These tests are marked with #[ignore] and require the --ignored flag to run.
+//!
+//! Run with: cargo test --ignored -- --nocapture
+//! Or run specific tests: cargo test test_search_and_walk_resources --ignored -- --nocapture
+
 use ResourceType::*;
 use async_recursion::async_recursion;
 use log::{info, trace};
@@ -27,20 +41,6 @@ static TOTAL_REQUESTS: AtomicUsize = AtomicUsize::new(0);
 /// Static tracker of processed resources to avoid infinite loops and redundant processing
 static PROCESSED_RESOURCES: LazyLock<Mutex<HashMap<ResourceType, HashSet<String>>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));
-
-/// Integration tests for TIDAL API
-///
-/// These tests require the following environment variables to be set:
-/// - TIDAL_CLIENT_ID: Your Tidal API client ID
-/// - TIDAL_CLIENT_SECRET: Your Tidal API client secret (optional, for some operations)
-/// - TIDAL_REFRESH_TOKEN: Refresh token for automatic token renewal (required)
-/// - TIDAL_ACCESS_TOKEN: Valid access token for API authentication (optional, will be generated from refresh token if not provided)
-///
-/// The tests perform read-only operations to validate API parsing and resource walking.
-/// Note: These tests are marked with #[ignore] and require the --ignored flag to run.
-///
-/// Run with: cargo test --ignored -- --nocapture
-/// Or run specific tests: cargo test test_search_and_walk_resources --ignored -- --nocapture
 
 /// Check if we can make another API request without exceeding the global limit
 fn can_make_request() -> bool {
@@ -79,10 +79,10 @@ fn reset_request_count() {
 
 /// Check if a resource has already been processed
 fn is_resource_processed(resource_type: ResourceType, resource_id: &str) -> bool {
-    if let Ok(processed) = PROCESSED_RESOURCES.lock() {
-        if let Some(type_set) = processed.get(&resource_type) {
-            return type_set.contains(resource_id);
-        }
+    if let Ok(processed) = PROCESSED_RESOURCES.lock()
+        && let Some(type_set) = processed.get(&resource_type)
+    {
+        return type_set.contains(resource_id);
     }
     false
 }
@@ -319,82 +319,80 @@ async fn process_artist(client: &tidalv2::client::TidalClient, artist_id: &str, 
 
     match result {
         Ok(artist_response) => {
-            if recurse > 0 {
-                if let Some(relationships) = &artist_response.data.relationships {
-                    // Process albums
-                    if let Some(albums_data) = &relationships.albums.data {
-                        for resource_id in albums_data {
-                            process_album(client, &resource_id.id, recurse - 1).await;
+            if recurse > 0
+                && let Some(relationships) = &artist_response.data.relationships
+            {
+                // Process albums
+                if let Some(albums_data) = &relationships.albums.data {
+                    for resource_id in albums_data {
+                        process_album(client, &resource_id.id, recurse - 1).await;
+                    }
+                }
+
+                // Process tracks
+                if let Some(tracks_data) = &relationships.tracks.data {
+                    for resource_id in tracks_data {
+                        process_track(client, &resource_id.id, recurse - 1).await;
+                    }
+                }
+
+                // Process videos
+                if let Some(videos_data) = &relationships.videos.data {
+                    for resource_id in videos_data {
+                        process_video(client, &resource_id.id, recurse - 1).await;
+                    }
+                }
+
+                // Process similar artists
+                if let Some(similar_artists_data) = &relationships.similar_artists.data {
+                    for resource_id in similar_artists_data {
+                        process_artist(client, &resource_id.id, recurse - 1).await;
+                    }
+                }
+
+                // Process owners (other artists that own this artist's content)
+                if let Some(owners_data) = &relationships.owners.data {
+                    for resource_id in owners_data {
+                        match resource_id.r#type {
+                            Artists => process_artist(client, &resource_id.id, recurse - 1).await,
+                            _ => trace!("Skipping owner resource type: {}", resource_id.r#type),
                         }
                     }
+                }
 
-                    // Process tracks
-                    if let Some(tracks_data) = &relationships.tracks.data {
-                        for resource_id in tracks_data {
-                            process_track(client, &resource_id.id, recurse - 1).await;
-                        }
+                // Process profile art (artwork resources)
+                if let Some(profile_art_data) = &relationships.profile_art.data {
+                    for resource_id in profile_art_data {
+                        process_artwork(client, &resource_id.id, recurse - 1).await;
                     }
+                }
 
-                    // Process videos
-                    if let Some(videos_data) = &relationships.videos.data {
-                        for resource_id in videos_data {
-                            process_video(client, &resource_id.id, recurse - 1).await;
-                        }
+                // Process radio (radio station resources)
+                if let Some(radio_data) = &relationships.radio.data {
+                    for resource_id in radio_data {
+                        process_radio(client, &resource_id.id, recurse - 1).await;
                     }
+                }
 
-                    // Process similar artists
-                    if let Some(similar_artists_data) = &relationships.similar_artists.data {
-                        for resource_id in similar_artists_data {
-                            process_artist(client, &resource_id.id, recurse - 1).await;
-                        }
+                // Process roles (role resources)
+                if let Some(roles_data) = &relationships.roles.data {
+                    for resource_id in roles_data {
+                        process_role(client, &resource_id.id, recurse - 1).await;
                     }
+                }
 
-                    // Process owners (other artists that own this artist's content)
-                    if let Some(owners_data) = &relationships.owners.data {
-                        for resource_id in owners_data {
-                            match resource_id.r#type {
-                                Artists => {
-                                    process_artist(client, &resource_id.id, recurse - 1).await
-                                }
-                                _ => trace!("Skipping owner resource type: {}", resource_id.r#type),
-                            }
-                        }
+                // Process track providers
+                if let Some(track_providers_data) = &relationships.track_providers.data {
+                    for resource_id in track_providers_data {
+                        process_provider(client, &resource_id.id, recurse - 1).await;
                     }
+                }
 
-                    // Process profile art (artwork resources)
-                    if let Some(profile_art_data) = &relationships.profile_art.data {
-                        for resource_id in profile_art_data {
-                            process_artwork(client, &resource_id.id, recurse - 1).await;
-                        }
-                    }
-
-                    // Process radio (radio station resources)
-                    if let Some(radio_data) = &relationships.radio.data {
-                        for resource_id in radio_data {
-                            process_radio(client, &resource_id.id, recurse - 1).await;
-                        }
-                    }
-
-                    // Process roles (role resources)
-                    if let Some(roles_data) = &relationships.roles.data {
-                        for resource_id in roles_data {
-                            process_role(client, &resource_id.id, recurse - 1).await;
-                        }
-                    }
-
-                    // Process track providers
-                    if let Some(track_providers_data) = &relationships.track_providers.data {
-                        for resource_id in track_providers_data {
-                            process_provider(client, &resource_id.id, recurse - 1).await;
-                        }
-                    }
-
-                    // Process biography (single Relationship)
-                    if let Some(_biography_data) = &relationships.biography.data {
-                        // Note: Biography API takes artist_id, not biography resource id
-                        // We'll use the current artist_id instead of biography_data.id
-                        process_biography(client, artist_id, recurse - 1).await;
-                    }
+                // Process biography (single Relationship)
+                if let Some(_biography_data) = &relationships.biography.data {
+                    // Note: Biography API takes artist_id, not biography resource id
+                    // We'll use the current artist_id instead of biography_data.id
+                    process_biography(client, artist_id, recurse - 1).await;
                 }
             }
         }
@@ -431,17 +429,17 @@ async fn process_track(client: &tidalv2::client::TidalClient, track_id: &str, re
 
     match result {
         Ok(track_response) => {
-            if recurse > 0 {
-                if let Some(relationships) = &track_response.data.relationships {
-                    if let Some(artists_data) = &relationships.artists.data {
-                        for resource_id in artists_data {
-                            process_artist(client, &resource_id.id, recurse - 1).await;
-                        }
+            if recurse > 0
+                && let Some(relationships) = &track_response.data.relationships
+            {
+                if let Some(artists_data) = &relationships.artists.data {
+                    for resource_id in artists_data {
+                        process_artist(client, &resource_id.id, recurse - 1).await;
                     }
-                    if let Some(albums_data) = &relationships.albums.data {
-                        for resource_id in albums_data {
-                            process_album(client, &resource_id.id, recurse - 1).await;
-                        }
+                }
+                if let Some(albums_data) = &relationships.albums.data {
+                    for resource_id in albums_data {
+                        process_album(client, &resource_id.id, recurse - 1).await;
                     }
                 }
             }
@@ -480,24 +478,21 @@ async fn process_playlist(
 
     match result {
         Ok(playlist_response) => {
-            if recurse > 0 {
-                if let Some(relationships) = &playlist_response.data.relationships {
-                    if let Some(items_data) = &relationships.items.data {
-                        for resource_id in items_data {
-                            if !can_make_request() {
-                                return;
-                            }
-                            match resource_id.r#type {
-                                Tracks => process_track(client, &resource_id.id, recurse - 1).await,
-                                Albums => process_album(client, &resource_id.id, recurse - 1).await,
-                                Artists => {
-                                    process_artist(client, &resource_id.id, recurse - 1).await
-                                }
-                                Videos => process_video(client, &resource_id.id, recurse - 1).await,
-                                _ => {
-                                    panic!("Unknown resource type: {}", resource_id.r#type);
-                                }
-                            }
+            if recurse > 0
+                && let Some(relationships) = &playlist_response.data.relationships
+                && let Some(items_data) = &relationships.items.data
+            {
+                for resource_id in items_data {
+                    if !can_make_request() {
+                        return;
+                    }
+                    match resource_id.r#type {
+                        Tracks => process_track(client, &resource_id.id, recurse - 1).await,
+                        Albums => process_album(client, &resource_id.id, recurse - 1).await,
+                        Artists => process_artist(client, &resource_id.id, recurse - 1).await,
+                        Videos => process_video(client, &resource_id.id, recurse - 1).await,
+                        _ => {
+                            panic!("Unknown resource type: {}", resource_id.r#type);
                         }
                     }
                 }
@@ -535,17 +530,17 @@ async fn process_video(client: &tidalv2::client::TidalClient, video_id: &str, re
 
     match result {
         Ok(video_response) => {
-            if recurse > 0 {
-                if let Some(relationships) = &video_response.data.relationships {
-                    if let Some(artists_data) = &relationships.artists.data {
-                        for resource_id in artists_data {
-                            process_artist(client, &resource_id.id, recurse - 1).await;
-                        }
+            if recurse > 0
+                && let Some(relationships) = &video_response.data.relationships
+            {
+                if let Some(artists_data) = &relationships.artists.data {
+                    for resource_id in artists_data {
+                        process_artist(client, &resource_id.id, recurse - 1).await;
                     }
-                    if let Some(albums_data) = &relationships.albums.data {
-                        for resource_id in albums_data {
-                            process_album(client, &resource_id.id, recurse - 1).await;
-                        }
+                }
+                if let Some(albums_data) = &relationships.albums.data {
+                    for resource_id in albums_data {
+                        process_album(client, &resource_id.id, recurse - 1).await;
                     }
                 }
             }

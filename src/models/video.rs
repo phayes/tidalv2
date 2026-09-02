@@ -83,20 +83,17 @@ impl VideoAttributes {
 }
 
 /// Available usage for this video
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum VideoAvailability {
     #[serde(rename = "STREAM")]
+    #[default]
     Stream,
     #[serde(rename = "DJ")]
     Dj,
     #[serde(rename = "STEM")]
     Stem,
-}
-
-impl Default for VideoAvailability {
-    fn default() -> VideoAvailability {
-        Self::Stream
-    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

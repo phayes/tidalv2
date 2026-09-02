@@ -450,7 +450,7 @@ impl TidalClient {
     ///
     /// Returns the explicitly set device type or `DeviceType::Browser` as default.
     pub fn get_device_type(&self) -> DeviceType {
-        self.device_type.unwrap_or_else(|| DeviceType::Browser)
+        self.device_type.unwrap_or(DeviceType::Browser)
     }
 
     /// Get the current user ID if authenticated.
@@ -564,10 +564,7 @@ impl TidalClient {
 
     async fn refresh_authz(&self) -> Result<(), Error> {
         // Try to become the single refresher
-        let permit: Option<SemaphorePermit> = match self.authz_update_semaphore.try_acquire() {
-            Ok(p) => Some(p),
-            Err(_) => None,
-        };
+        let permit: Option<SemaphorePermit> = self.authz_update_semaphore.try_acquire().ok();
 
         match permit {
             // We're the single refresher, fetch the new authz and update the client
@@ -748,11 +745,14 @@ impl TidalClient {
     }
 
     #[async_recursion]
-    async fn execute_request_with_refresh_attempts<T: DeserializeOwned>(
+    async fn execute_request_with_refresh_attempts<T>(
         &self,
         req_builder: reqwest::RequestBuilder,
         token_refresh_attempts: u8,
-    ) -> Result<T, Error> {
+    ) -> Result<T, Error>
+    where
+        T: DeserializeOwned,
+    {
         self.await_rate_limit_backoff().await;
         let original_req_builder = req_builder.try_clone().unwrap();
 
@@ -823,10 +823,10 @@ impl TidalClient {
             self.reset_rate_limit_backoff();
 
             // If we have an etag, add it to the response, if the value doesn't already exist
-            if let Some(etag) = etag {
-                if value.get("etag").is_none() {
-                    value["etag"] = serde_json::Value::String(etag);
-                }
+            if let Some(etag) = etag
+                && value.get("etag").is_none()
+            {
+                value["etag"] = serde_json::Value::String(etag);
             }
 
             let resp: T = match serde_json::from_value(value.clone()) {
@@ -925,10 +925,10 @@ impl TidalClient {
             *guard
         };
 
-        if let Some(ms) = delay {
-            if ms > 0 {
-                sleep(Duration::from_millis(ms)).await;
-            }
+        if let Some(ms) = delay
+            && ms > 0
+        {
+            sleep(Duration::from_millis(ms)).await;
         }
     }
 
