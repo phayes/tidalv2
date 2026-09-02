@@ -155,19 +155,19 @@ impl PlaylistsItemsIdentifierMeta {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlaylistRelationships {
-    #[serde(rename = "coverArt")]
-    pub cover_art: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "coverArt", skip_serializing_if = "Option::is_none")]
+    pub cover_art: Option<MultiRelationship<ResourceIdentifier>>,
     #[serde(rename = "items")]
     pub items: MultiRelationship<ResourceIdentifier<PlaylistsItemsIdentifierMeta>>,
-    #[serde(rename = "owners")]
-    pub owners: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "owners", skip_serializing_if = "Option::is_none")]
+    pub owners: Option<MultiRelationship<ResourceIdentifier>>,
 }
 
 impl PlaylistRelationships {
     pub fn new(
-        cover_art: MultiRelationship<ResourceIdentifier>,
+        cover_art: Option<MultiRelationship<ResourceIdentifier>>,
         items: MultiRelationship<ResourceIdentifier<PlaylistsItemsIdentifierMeta>>,
-        owners: MultiRelationship<ResourceIdentifier>,
+        owners: Option<MultiRelationship<ResourceIdentifier>>,
     ) -> PlaylistRelationships {
         PlaylistRelationships {
             cover_art,

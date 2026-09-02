@@ -14,32 +14,26 @@ use crate::models::*;
 use reqwest;
 
 impl client::TidalClient {
-    /// Retrieves single searchSuggestion by id.
+    /// Get search suggestions by query.
+    ///
+    /// TIDAL returns a collection containing exactly one search-suggestions resource.
     pub async fn search_suggestion_get(
         &self,
-        id: &str,
+        query: &str,
         explicit_filter: Option<&str>,
         include: Option<Vec<String>>,
     ) -> Result<Resource<search_suggestions::SearchSuggestion>, Error> {
-        // add a prefix to parameters to efficiently prevent name collisions
-        let p_id = id;
-        let p_explicit_filter = explicit_filter;
-        let p_include = include;
-
-        let uri_str = format!(
-            "{}/searchSuggestions/{id}",
-            self.base_path_api,
-            id = crate::apis::urlencode(p_id)
-        );
+        let uri_str = format!("{}/searchSuggestions", self.base_path_api);
         let mut req_builder = self.client.request(reqwest::Method::GET, &uri_str);
 
+        req_builder = req_builder.query(&[("filter[query]", query)]);
         if let Some(country_code) = &self.country_code {
             req_builder = req_builder.query(&[("countryCode", country_code.clone())]);
         }
-        if let Some(ref param_value) = p_explicit_filter {
+        if let Some(ref param_value) = explicit_filter {
             req_builder = req_builder.query(&[("explicitFilter", &param_value.to_string())]);
         }
-        if let Some(ref param_value) = p_include {
+        if let Some(ref param_value) = include {
             req_builder = req_builder.query(
                 &param_value
                     .iter()
@@ -48,13 +42,15 @@ impl client::TidalClient {
             );
         }
 
-        self.execute_request(req_builder).await
+        let collection: MultiResource<search_suggestions::SearchSuggestion> =
+            self.execute_request(req_builder).await?;
+        collection.into_singleton()
     }
 
     /// Retrieves directHits relationship.
     ///
     /// # Parameters
-    /// * `id` - Search suggestion id
+    /// * `id` - Opaque search-suggestions identifier from a searchSuggestions collection response
     /// * `explicit_filter` - Explicit filter (e.g. "INCLUDE/EXCLUDE")
     /// * `page_cursor` - Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified
     pub async fn search_suggestion_direct_hits(

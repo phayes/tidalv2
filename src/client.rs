@@ -584,7 +584,7 @@ impl TidalClient {
                                     ("client_id", self.client_id.as_str()),
                                     ("refresh_token", refresh_token.as_str()),
                                     ("grant_type", "refresh_token"),
-                                    ("scope", "r_usr w_usr w_sub"),
+                                    ("scope", "r_usr w_usr"),
                                 ],
                                 basic_auth,
                             )
@@ -658,7 +658,7 @@ impl TidalClient {
                 crate::auth::DEVICE_AUTHORIZATION_PATH,
                 &[
                     ("client_id", self.client_id.as_str()),
-                    ("scope", "r_usr w_usr w_sub"),
+                    ("scope", "r_usr w_usr"),
                 ],
                 None,
             )
@@ -715,7 +715,7 @@ impl TidalClient {
                     ("client_secret", client_secret),
                     ("device_code", device_code),
                     ("grant_type", "urn:ietf:params:oauth:grant-type:device_code"),
-                    ("scope", "r_usr w_usr w_sub"),
+                    ("scope", "r_usr w_usr"),
                 ],
                 None,
             )

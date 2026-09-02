@@ -294,6 +294,23 @@ impl<T> MultiResource<T> {
             links,
         }
     }
+
+    /// Convert a collection that is specified to contain exactly one resource.
+    pub fn into_singleton(self) -> Result<Resource<T>, crate::error::Error> {
+        let actual = self.data.len();
+        let mut data = self.data;
+        match data.pop() {
+            Some(item) if data.is_empty() => Ok(Resource {
+                data: item,
+                included: self.included,
+                links: self.links,
+            }),
+            _ => Err(crate::error::Error::UnexpectedCollectionSize {
+                expected: 1,
+                actual,
+            }),
+        }
+    }
 }
 
 // Consolidated Relationship struct for all single relationship data documents
@@ -402,5 +419,47 @@ impl<M> ResourceIdentifier<M> {
             r#type,
             meta: Some(meta),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::error::Error;
+
+    fn collection(items: Vec<u32>) -> MultiResource<u32> {
+        MultiResource::new(items, Links::new("/searchResults".to_string()))
+    }
+
+    #[test]
+    fn into_singleton_unwraps_one_item() {
+        let resource = collection(vec![7]).into_singleton().expect("singleton");
+        assert_eq!(resource.data, 7);
+        assert_eq!(resource.links.param_self, "/searchResults");
+        assert!(resource.included.is_empty());
+    }
+
+    #[test]
+    fn into_singleton_rejects_empty() {
+        let err = collection(vec![]).into_singleton().unwrap_err();
+        assert!(matches!(
+            err,
+            Error::UnexpectedCollectionSize {
+                expected: 1,
+                actual: 0
+            }
+        ));
+    }
+
+    #[test]
+    fn into_singleton_rejects_multiple() {
+        let err = collection(vec![1, 2]).into_singleton().unwrap_err();
+        assert!(matches!(
+            err,
+            Error::UnexpectedCollectionSize {
+                expected: 1,
+                actual: 2
+            }
+        ));
     }
 }

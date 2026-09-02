@@ -215,36 +215,36 @@ pub struct TracksRelationships {
     pub albums: MultiRelationship<ResourceIdentifier>,
     #[serde(rename = "artists")]
     pub artists: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "genres")]
-    pub genres: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "lyrics")]
-    pub lyrics: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "owners")]
-    pub owners: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "providers")]
-    pub providers: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "radio")]
-    pub radio: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "similarTracks")]
-    pub similar_tracks: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "sourceFile")]
-    pub source_file: Relationship,
-    #[serde(rename = "trackStatistics")]
-    pub track_statistics: Relationship,
+    #[serde(rename = "genres", skip_serializing_if = "Option::is_none")]
+    pub genres: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "lyrics", skip_serializing_if = "Option::is_none")]
+    pub lyrics: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "owners", skip_serializing_if = "Option::is_none")]
+    pub owners: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "providers", skip_serializing_if = "Option::is_none")]
+    pub providers: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "radio", skip_serializing_if = "Option::is_none")]
+    pub radio: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "similarTracks", skip_serializing_if = "Option::is_none")]
+    pub similar_tracks: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "sourceFile", skip_serializing_if = "Option::is_none")]
+    pub source_file: Option<Relationship>,
+    #[serde(rename = "trackStatistics", skip_serializing_if = "Option::is_none")]
+    pub track_statistics: Option<Relationship>,
 }
 
 impl TracksRelationships {
     pub fn new(
         albums: MultiRelationship<ResourceIdentifier>,
         artists: MultiRelationship<ResourceIdentifier>,
-        genres: MultiRelationship<ResourceIdentifier>,
-        lyrics: MultiRelationship<ResourceIdentifier>,
-        owners: MultiRelationship<ResourceIdentifier>,
-        providers: MultiRelationship<ResourceIdentifier>,
-        radio: MultiRelationship<ResourceIdentifier>,
-        similar_tracks: MultiRelationship<ResourceIdentifier>,
-        source_file: Relationship,
-        track_statistics: Relationship,
+        genres: Option<MultiRelationship<ResourceIdentifier>>,
+        lyrics: Option<MultiRelationship<ResourceIdentifier>>,
+        owners: Option<MultiRelationship<ResourceIdentifier>>,
+        providers: Option<MultiRelationship<ResourceIdentifier>>,
+        radio: Option<MultiRelationship<ResourceIdentifier>>,
+        similar_tracks: Option<MultiRelationship<ResourceIdentifier>>,
+        source_file: Option<Relationship>,
+        track_statistics: Option<Relationship>,
     ) -> TracksRelationships {
         TracksRelationships {
             albums,

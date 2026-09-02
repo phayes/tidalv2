@@ -75,6 +75,10 @@ pub enum Error {
     /// URL parsing failed
     #[error("Invalid URL: {0}")]
     Url(#[from] url::ParseError),
+
+    /// A collection document did not contain the expected number of resources
+    #[error("expected {expected} resource(s) in collection, got {actual}")]
+    UnexpectedCollectionSize { expected: usize, actual: usize },
 }
 
 /// An error body returned by a TIDAL API.

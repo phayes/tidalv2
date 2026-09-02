@@ -224,7 +224,11 @@ async fn test_artist_json_deserialization() {
     }
 
     // Verify similar artists relationship
-    if let Some(similar_artists_data) = &relationships.similar_artists.data {
+    if let Some(similar_artists_data) = relationships
+        .similar_artists
+        .as_ref()
+        .and_then(|rel| rel.data.as_ref())
+    {
         assert!(
             !similar_artists_data.is_empty(),
             "Similar artists data should not be empty"
@@ -243,7 +247,11 @@ async fn test_artist_json_deserialization() {
     }
 
     // Verify track providers relationship with meta information
-    if let Some(track_providers_data) = &relationships.track_providers.data {
+    if let Some(track_providers_data) = relationships
+        .track_providers
+        .as_ref()
+        .and_then(|rel| rel.data.as_ref())
+    {
         assert!(
             !track_providers_data.is_empty(),
             "Track providers data should not be empty"

@@ -76,24 +76,26 @@ impl ArtistAttributes {
 pub struct ArtistsRelationships {
     #[serde(rename = "albums")]
     pub albums: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "biography")]
-    pub biography: Relationship,
-    #[serde(rename = "owners")]
-    pub owners: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "profileArt")]
-    pub profile_art: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "radio")]
-    pub radio: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "roles")]
-    pub roles: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "similarArtists")]
-    pub similar_artists: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "trackProviders")]
-    pub track_providers: MultiRelationship<
-        ResourceIdentifier<crate::apis::artists_api::ArtistsTrackProvidersResourceMeta>,
+    #[serde(rename = "biography", skip_serializing_if = "Option::is_none")]
+    pub biography: Option<Relationship>,
+    #[serde(rename = "owners", skip_serializing_if = "Option::is_none")]
+    pub owners: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "profileArt", skip_serializing_if = "Option::is_none")]
+    pub profile_art: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "radio", skip_serializing_if = "Option::is_none")]
+    pub radio: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "roles", skip_serializing_if = "Option::is_none")]
+    pub roles: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "similarArtists", skip_serializing_if = "Option::is_none")]
+    pub similar_artists: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "trackProviders", skip_serializing_if = "Option::is_none")]
+    pub track_providers: Option<
+        MultiRelationship<
+            ResourceIdentifier<crate::apis::artists_api::ArtistsTrackProvidersResourceMeta>,
+        >,
     >,
     #[serde(rename = "tracks")]
     pub tracks: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "videos")]
-    pub videos: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "videos", skip_serializing_if = "Option::is_none")]
+    pub videos: Option<MultiRelationship<ResourceIdentifier>>,
 }

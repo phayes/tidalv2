@@ -261,7 +261,7 @@ impl TidalClient {
                     ("client_id", self.client_id.as_str()),
                     ("grant_type", "authorization_code"),
                     ("redirect_uri", pending.redirect_uri.as_str()),
-                    ("scope", "r_usr+w_usr+w_sub"),
+                    ("scope", "r_usr+w_usr"),
                     ("code_verifier", pending.code_verifier.as_str()),
                     ("client_unique_key", pending.client_unique_key.as_str()),
                 ],
@@ -358,7 +358,7 @@ impl TidalClient {
                         ("client_secret", client_secret),
                         ("device_code", device_code),
                         ("grant_type", "urn:ietf:params:oauth:grant-type:device_code"),
-                        ("scope", "r_usr w_usr w_sub"),
+                        ("scope", "r_usr w_usr"),
                     ],
                     None,
                 )

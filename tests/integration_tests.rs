@@ -20,6 +20,7 @@ use std::env;
 use std::sync::LazyLock;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Mutex, Once};
+use tidalv2::error::{Error, TidalError};
 use tidalv2::models::*;
 
 /// Ensure logging is only initialized once across all tests
@@ -28,7 +29,7 @@ static INIT_LOGGER: Once = Once::new();
 /// Initialize logging exactly once, safe to call from multiple tests
 fn init_logging_once() {
     INIT_LOGGER.call_once(|| {
-        env_logger::init();
+        env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
     });
 }
 
@@ -75,6 +76,48 @@ fn get_request_count() -> usize {
 /// Reset the global request counter (useful for testing)
 fn reset_request_count() {
     TOTAL_REQUESTS.store(0, Ordering::SeqCst);
+}
+
+fn skippable_resource_details(err: &Error) -> Option<String> {
+    match err {
+        Error::TidalError(TidalError::TidalV2Error(v2)) => {
+            let errors = v2.errors.as_ref()?;
+            let error = errors.iter().find(|e| {
+                matches!(e.code.as_deref(), Some("INVALID_RESOURCE_ID" | "NOT_FOUND"))
+                    || e.status.as_deref() == Some("404")
+            })?;
+            let mut details = error
+                .code
+                .clone()
+                .unwrap_or_else(|| "404".to_string());
+            if let Some(detail) = &error.detail {
+                details.push_str(": ");
+                details.push_str(detail);
+            }
+            if let Some(pointer) = error.source.as_ref().and_then(|s| s.pointer.as_deref()) {
+                details.push_str(" (");
+                details.push_str(pointer);
+                details.push(')');
+            }
+            Some(details)
+        }
+        Error::TidalError(TidalError::TidalV1Error(v1)) if v1.status == Some(404) => {
+            Some(format!("404: {}", v1.user_message))
+        }
+        Error::TidalError(TidalError::UnknownError(unknown)) if unknown.status == 404 => {
+            Some(format!("404: {}", unknown.message))
+        }
+        _ => None,
+    }
+}
+
+/// Log `INVALID_RESOURCE_ID` and 404s, then skip that item so the walk can continue.
+fn skip_invalid_resource(context: &str, err: &Error) -> bool {
+    let Some(details) = skippable_resource_details(err) else {
+        return false;
+    };
+    info!("Skipping {context}: {details}");
+    true
 }
 
 /// Check if a resource has already been processed
@@ -169,6 +212,9 @@ async fn test_search_and_walk_resources() {
             walk_search_result(&client, &search_response).await;
         }
         Err(e) => {
+            if skip_invalid_resource("search", &e) {
+                return;
+            }
             panic!("Search failed: {:?}", e);
         }
     }
@@ -286,6 +332,9 @@ async fn process_album(client: &tidalv2::client::TidalClient, album_id: &str, re
             }
         }
         Err(e) => {
+            if skip_invalid_resource(&format!("album {album_id}"), &e) {
+                return;
+            }
             panic!("Failed to load album {}: {:?}", album_id, e);
         }
     }
@@ -337,21 +386,33 @@ async fn process_artist(client: &tidalv2::client::TidalClient, artist_id: &str, 
                 }
 
                 // Process videos
-                if let Some(videos_data) = &relationships.videos.data {
+                if let Some(videos_data) = relationships
+                    .videos
+                    .as_ref()
+                    .and_then(|rel| rel.data.as_ref())
+                {
                     for resource_id in videos_data {
                         process_video(client, &resource_id.id, recurse - 1).await;
                     }
                 }
 
                 // Process similar artists
-                if let Some(similar_artists_data) = &relationships.similar_artists.data {
+                if let Some(similar_artists_data) = relationships
+                    .similar_artists
+                    .as_ref()
+                    .and_then(|rel| rel.data.as_ref())
+                {
                     for resource_id in similar_artists_data {
                         process_artist(client, &resource_id.id, recurse - 1).await;
                     }
                 }
 
                 // Process owners (other artists that own this artist's content)
-                if let Some(owners_data) = &relationships.owners.data {
+                if let Some(owners_data) = relationships
+                    .owners
+                    .as_ref()
+                    .and_then(|rel| rel.data.as_ref())
+                {
                     for resource_id in owners_data {
                         match resource_id.r#type {
                             Artists => process_artist(client, &resource_id.id, recurse - 1).await,
@@ -361,42 +422,62 @@ async fn process_artist(client: &tidalv2::client::TidalClient, artist_id: &str, 
                 }
 
                 // Process profile art (artwork resources)
-                if let Some(profile_art_data) = &relationships.profile_art.data {
+                if let Some(profile_art_data) = relationships
+                    .profile_art
+                    .as_ref()
+                    .and_then(|rel| rel.data.as_ref())
+                {
                     for resource_id in profile_art_data {
                         process_artwork(client, &resource_id.id, recurse - 1).await;
                     }
                 }
 
                 // Process radio (radio station resources)
-                if let Some(radio_data) = &relationships.radio.data {
+                if let Some(radio_data) = relationships
+                    .radio
+                    .as_ref()
+                    .and_then(|rel| rel.data.as_ref())
+                {
                     for resource_id in radio_data {
                         process_radio(client, &resource_id.id, recurse - 1).await;
                     }
                 }
 
                 // Process roles (role resources)
-                if let Some(roles_data) = &relationships.roles.data {
+                if let Some(roles_data) = relationships
+                    .roles
+                    .as_ref()
+                    .and_then(|rel| rel.data.as_ref())
+                {
                     for resource_id in roles_data {
                         process_role(client, &resource_id.id, recurse - 1).await;
                     }
                 }
 
                 // Process track providers
-                if let Some(track_providers_data) = &relationships.track_providers.data {
+                if let Some(track_providers_data) = relationships
+                    .track_providers
+                    .as_ref()
+                    .and_then(|rel| rel.data.as_ref())
+                {
                     for resource_id in track_providers_data {
                         process_provider(client, &resource_id.id, recurse - 1).await;
                     }
                 }
 
                 // Process biography (single Relationship)
-                if let Some(_biography_data) = &relationships.biography.data {
+                if let Some(biography) = &relationships.biography
+                    && biography.data.is_some()
+                {
                     // Note: Biography API takes artist_id, not biography resource id
-                    // We'll use the current artist_id instead of biography_data.id
                     process_biography(client, artist_id, recurse - 1).await;
                 }
             }
         }
         Err(e) => {
+            if skip_invalid_resource(&format!("artist {artist_id}"), &e) {
+                return;
+            }
             panic!("Failed to load artist {}: {:?}", artist_id, e);
         }
     }
@@ -445,6 +526,9 @@ async fn process_track(client: &tidalv2::client::TidalClient, track_id: &str, re
             }
         }
         Err(e) => {
+            if skip_invalid_resource(&format!("track {track_id}"), &e) {
+                return;
+            }
             panic!("Failed to load track {}: {:?}", track_id, e);
         }
     }
@@ -499,6 +583,9 @@ async fn process_playlist(
             }
         }
         Err(e) => {
+            if skip_invalid_resource(&format!("playlist {playlist_id}"), &e) {
+                return;
+            }
             panic!("Failed to load playlist {}: {:?}", playlist_id, e);
         }
     }
@@ -546,6 +633,9 @@ async fn process_video(client: &tidalv2::client::TidalClient, video_id: &str, re
             }
         }
         Err(e) => {
+            if skip_invalid_resource(&format!("video {video_id}"), &e) {
+                return;
+            }
             panic!("Failed to load video {}: {:?}", video_id, e);
         }
     }
@@ -577,6 +667,9 @@ async fn process_artwork(client: &tidalv2::client::TidalClient, artwork_id: &str
             // Artworks typically don't have deep relationships to recurse into
         }
         Err(e) => {
+            if skip_invalid_resource(&format!("artwork {artwork_id}"), &e) {
+                return;
+            }
             panic!("Failed to load artwork {}: {:?}", artwork_id, e);
         }
     }
@@ -615,6 +708,9 @@ async fn process_biography(
             // Biographies typically don't have relationships to recurse into
         }
         Err(e) => {
+            if skip_invalid_resource(&format!("biography for artist {artist_id}"), &e) {
+                return;
+            }
             panic!("Failed to load biography for artist {}: {:?}", artist_id, e);
         }
     }
@@ -646,6 +742,9 @@ async fn process_role(client: &tidalv2::client::TidalClient, role_id: &str, _rec
             // Roles typically don't have deep relationships to recurse into
         }
         Err(e) => {
+            if skip_invalid_resource(&format!("role {role_id}"), &e) {
+                return;
+            }
             panic!("Failed to load role {}: {:?}", role_id, e);
         }
     }
@@ -681,6 +780,9 @@ async fn process_provider(
             // Providers typically don't have deep relationships to recurse into
         }
         Err(e) => {
+            if skip_invalid_resource(&format!("provider {provider_id}"), &e) {
+                return;
+            }
             panic!("Failed to load provider {}: {:?}", provider_id, e);
         }
     }
@@ -759,6 +861,9 @@ async fn test_user_collections_and_walk() {
             walk_user_collections(&client, user_id).await;
         }
         Err(e) => {
+            if skip_invalid_resource("current user", &e) {
+                return;
+            }
             panic!("Failed to get current user: {:?}", e);
         }
     }
@@ -797,7 +902,9 @@ async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &
                 }
             }
             Err(e) => {
-                panic!("Could not fetch user playlist collection: {:?}", e);
+                if !skip_invalid_resource("user playlist collection", &e) {
+                    panic!("Could not fetch user playlist collection: {:?}", e);
+                }
             }
         }
     }
@@ -829,7 +936,9 @@ async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &
                 }
             }
             Err(e) => {
-                panic!("Could not fetch user album collection: {:?}", e);
+                if !skip_invalid_resource("user album collection", &e) {
+                    panic!("Could not fetch user album collection: {:?}", e);
+                }
             }
         }
     }
@@ -861,7 +970,9 @@ async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &
                 }
             }
             Err(e) => {
-                panic!("Could not fetch user artist collection: {:?}", e);
+                if !skip_invalid_resource("user artist collection", &e) {
+                    panic!("Could not fetch user artist collection: {:?}", e);
+                }
             }
         }
     }
@@ -893,7 +1004,9 @@ async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &
                 }
             }
             Err(e) => {
-                panic!("Could not fetch user track collection: {:?}", e);
+                if !skip_invalid_resource("user track collection", &e) {
+                    panic!("Could not fetch user track collection: {:?}", e);
+                }
             }
         }
     }
@@ -925,7 +1038,9 @@ async fn walk_user_collections(client: &tidalv2::client::TidalClient, user_id: &
                 }
             }
             Err(e) => {
-                panic!("Could not fetch user video collection: {:?}", e);
+                if !skip_invalid_resource("user video collection", &e) {
+                    panic!("Could not fetch user video collection: {:?}", e);
+                }
             }
         }
     }

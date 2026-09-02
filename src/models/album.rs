@@ -133,18 +133,18 @@ pub enum AlbumType {
 pub struct AlbumsRelationships {
     #[serde(rename = "artists")]
     pub artists: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "coverArt")]
-    pub cover_art: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "genres")]
-    pub genres: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "coverArt", skip_serializing_if = "Option::is_none")]
+    pub cover_art: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "genres", skip_serializing_if = "Option::is_none")]
+    pub genres: Option<MultiRelationship<ResourceIdentifier>>,
     #[serde(rename = "items")]
     pub items: MultiRelationship<ResourceIdentifier<AlbumsItemsResourceMeta>>,
-    #[serde(rename = "owners")]
-    pub owners: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "providers")]
-    pub providers: MultiRelationship<ResourceIdentifier>,
-    #[serde(rename = "similarAlbums")]
-    pub similar_albums: MultiRelationship<ResourceIdentifier>,
+    #[serde(rename = "owners", skip_serializing_if = "Option::is_none")]
+    pub owners: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "providers", skip_serializing_if = "Option::is_none")]
+    pub providers: Option<MultiRelationship<ResourceIdentifier>>,
+    #[serde(rename = "similarAlbums", skip_serializing_if = "Option::is_none")]
+    pub similar_albums: Option<MultiRelationship<ResourceIdentifier>>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
